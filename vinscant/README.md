@@ -1,0 +1,6 @@
+ono
+
+MOSI: 35
+MISO: 37
+SCK: 36
+SS: 34
