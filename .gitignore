@@ -106,3 +106,9 @@ XUNIT_RESULT*.xml
 
 # Vale
 .vale/styles/*
+
+# pio
+.pio
+
+# sqlite
+*.db
