@@ -2,7 +2,6 @@ package main
 
 import (
 	"log"
-	"strconv"
 
 	"database/sql"
 
@@ -25,16 +24,10 @@ func main() {
 	})
 
 	app.Post("/register", func(c *fiber.Ctx) error {
-		data := c.FormValue("zauth_id")
-		zauth_id, err := strconv.Atoi(data)
-		log.Println(zauth_id)
-		if err != nil {
-			log.Println(err)
-			return c.Status(400).SendString("Invalid zauth_id")
-		}
+		zauth_id := c.FormValue("zauth_id")
 
 		user_insert, _ := db.Prepare("INSERT INTO users (zauth_id) VALUES (?);")
-		_, err = user_insert.Exec(zauth_id)
+		_, err := user_insert.Exec(zauth_id)
 		if err != nil {
 			log.Println(err)
 			return c.Status(400).SendString("User already registered")
