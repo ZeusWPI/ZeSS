@@ -1,4 +1,5 @@
-# Zeus Scan Systeem
+# Zeus Scan Syst(e)em
+*Formerly called Vincent*
 
 Check-in in the the kelder kelder
 
@@ -12,3 +13,6 @@ Goals:
 Secret goals:
 - Streaks
 - Data
+- More Data
+- Skins
+- Battlepass
