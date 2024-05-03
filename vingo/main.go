@@ -6,6 +6,7 @@ import (
 	"database/sql"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/session"
 	"github.com/gofiber/template/html/v2"
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -14,13 +15,33 @@ func main() {
 	db := CreateDb()
 	defer db.Close()
 	engine := html.New("./layouts", ".html")
+	store := session.New()
 
 	app := fiber.New(fiber.Config{
 		Views: engine,
 	})
 
 	app.Get("/", func(c *fiber.Ctx) error {
-		return c.Render("index", fiber.Map{})
+		sess, err := store.Get(c)
+		if err != nil {
+			log.Println(err)
+			return c.Status(500).SendString("Session error")
+		}
+		zauth_id := sess.Get("zauth_id")
+		return c.Render("index", fiber.Map{"zauth_id": zauth_id})
+	})
+
+	app.Post("/login", func(c *fiber.Ctx) error {
+		sess, err := store.Get(c)
+		if err != nil {
+			log.Println(err)
+			return c.Status(500).SendString("Session error")
+		}
+		zauth_id := c.FormValue("zauth_id")
+		sess.Set("zauth_id", zauth_id)
+		sess.Save()
+
+		return c.Status(200).Redirect("/")
 	})
 
 	app.Post("/register", func(c *fiber.Ctx) error {
@@ -42,10 +63,16 @@ func main() {
 	}
 
 	app.Get("/user/scans", func(c *fiber.Ctx) error {
-		// TODO: get user_id from session
-		user_id := "1234"
+		sess, err := store.Get(c)
+		if err != nil {
+			log.Println(err)
+			return c.Status(500).SendString("Session error")
+		}
+		zauth_id := sess.Get("zauth_id")
+
 		scans_select, _ := db.Prepare("select scans.scan_time, scans.serial from cards left join scans where user == ?;")
-		scan_rows, err := scans_select.Query(user_id)
+		log.Println(zauth_id)
+		scan_rows, err := scans_select.Query(zauth_id)
 		if err != nil {
 			log.Println(err)
 			return c.Status(400).SendString("Error fetching scans")
