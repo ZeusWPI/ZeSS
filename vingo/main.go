@@ -12,34 +12,9 @@ import (
 )
 
 func main() {
-	engine := html.New("./layouts", ".html")
-	// _foreign_keys=on because otherwise foreign key constraints are not checked
-	db, _ := sql.Open("sqlite3", "file:zess.db?_foreign_keys=on")
+	db := CreateDb()
 	defer db.Close()
-
-	sqlStmt := `
-		CREATE TABLE IF NOT EXISTS users (
-			zauth_id INTEGER not null primary key
-		);
-
-		CREATE TABLE IF NOT EXISTS cards (
-			serial text not null PRIMARY KEY UNIQUE,
-			user INTEGER not null,
-			FOREIGN KEY(user) REFERENCES users(zauth_id)
-		);
-
-		CREATE TABLE IF NOT EXISTS scans (
-			id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-			scan_time text not null,
-			serial text not null,
-			FOREIGN KEY(serial) REFERENCES cards(serial)
-		);
-	`
-	_, err := db.Exec(sqlStmt)
-
-	if err != nil {
-		log.Println(err)
-	}
+	engine := html.New("./layouts", ".html")
 
 	app := fiber.New(fiber.Config{
 		Views: engine,
@@ -134,4 +109,35 @@ func main() {
 	})
 
 	log.Println(app.Listen(":3000"))
+}
+
+func CreateDb() *sql.DB {
+	// _foreign_keys=on because otherwise foreign key constraints are not checked
+	db, _ := sql.Open("sqlite3", "file:zess.db?_foreign_keys=on")
+
+	sqlStmt := `
+		CREATE TABLE IF NOT EXISTS users (
+			zauth_id INTEGER not null primary key
+		);
+
+		CREATE TABLE IF NOT EXISTS cards (
+			serial text not null PRIMARY KEY UNIQUE,
+			user INTEGER not null,
+			FOREIGN KEY(user) REFERENCES users(zauth_id)
+		);
+
+		CREATE TABLE IF NOT EXISTS scans (
+			id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+			scan_time text not null,
+			serial text not null,
+			FOREIGN KEY(serial) REFERENCES cards(serial)
+		);
+	`
+	_, err := db.Exec(sqlStmt)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return db
 }
