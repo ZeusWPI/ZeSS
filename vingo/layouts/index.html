@@ -6,15 +6,10 @@
     <title>Zess</title>
 </head>
 <body>
-    <p>ZauthID: {{.zauth_id}}</p>
-    <form action="/register" method="POST">
-        <input name="zauth_id" placeholder="zauth_id">
-        <input type="submit" value="register">
-    </form>
-    
-    <form action="/login" method="POST">
-        <input name="zauth_id" placeholder="zauth_id">
-        <input type="submit" value="login">
-    </form>
+    {{if .id}}
+    <div>Hello {{.username}}! Your id is: {{.id}}</div>
+    {{- else}}
+    <a href="/login">Login with Zauth :)</a>
+    {{- end}}
 </body>
 </html>
