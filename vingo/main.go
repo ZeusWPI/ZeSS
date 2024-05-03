@@ -13,6 +13,7 @@ import (
 
 func main() {
 	engine := html.New("./layouts", ".html")
+	// _foreign_keys=on because otherwise foreign key constraints are not checked
 	db, _ := sql.Open("sqlite3", "file:zess.db?_foreign_keys=on")
 	defer db.Close()
 
@@ -65,6 +66,33 @@ func main() {
 		}
 
 		return c.Status(200).Redirect("/")
+	})
+
+	type Scan struct {
+		ScanTime string
+		Serial   string
+	}
+
+	app.Get("/user/scans", func(c *fiber.Ctx) error {
+		// TODO: get user_id from session
+		user_id := "1234"
+		scans_select, _ := db.Prepare("select scans.scan_time, scans.serial from cards left join scans where user == ?;")
+		scan_rows, err := scans_select.Query(user_id)
+		if err != nil {
+			log.Println(err)
+			return c.Status(400).SendString("Error fetching scans")
+		}
+
+		var scans []Scan
+
+		for scan_rows.Next() {
+			var scan Scan
+			_ = scan_rows.Scan(&scan.ScanTime, &scan.Serial)
+
+			scans = append(scans, scan)
+		}
+
+		return c.Render("scans", fiber.Map{"scans": scans})
 	})
 
 	// can only be done while an active register session was initiated by the user, and only from kelder
