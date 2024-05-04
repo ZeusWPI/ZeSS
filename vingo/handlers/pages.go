@@ -14,9 +14,9 @@ func Index(c *fiber.Ctx) error {
 		log.Println(err)
 		return c.Status(500).SendString("Session error")
 	}
-	id := sess.Get(USER_ID)
+	user_id := sess.Get(USER_ID)
 	username := sess.Get(USERNAME)
-	return c.Render("index", fiber.Map{"user_id": id, "username": username})
+	return c.Render("index", fiber.Map{"user_id": user_id, "username": username}, "main")
 }
 
 func Scans(c *fiber.Ctx) error {
@@ -27,11 +27,12 @@ func Scans(c *fiber.Ctx) error {
 	}
 
 	user_id := sess.Get(USER_ID).(int)
+	username := sess.Get(USERNAME)
 	scans, err := database.GetScansForUser(user_id)
 	if err != nil {
 		log.Println(err)
 		return c.Status(500).SendString("Error getting scans")
 	}
 
-	return c.Render("scans", fiber.Map{"scans": scans})
+	return c.Render("scans", fiber.Map{"user_id": user_id, "username": username, "scans": scans}, "main")
 }
