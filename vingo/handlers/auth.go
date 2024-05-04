@@ -28,7 +28,7 @@ func Login(c *fiber.Ctx) error {
 	}
 
 	state, _ := rand.Int(rand.Reader, big.NewInt(1000000000))
-	sess.Set("state", state.String())
+	sess.Set(ZAUTH_STATE, state.String())
 	sess.Save()
 
 	return c.Status(200).Redirect("https://adams.ugent.be/oauth/authorize?client_id=" + ZauthClientId + "&response_type=code&state=" + state.String() + "&redirect_uri=http://localhost:4000/auth/callback")
@@ -43,7 +43,7 @@ func Callback(c *fiber.Ctx) error {
 	}
 
 	// Check if saved state matches the one returned by Zauth
-	expected_state := sess.Get("state")
+	expected_state := sess.Get(ZAUTH_STATE)
 	actual_state := c.Query("state")
 	if expected_state != actual_state {
 		log.Println("State mismatch")
@@ -82,8 +82,8 @@ func Callback(c *fiber.Ctx) error {
 		return c.Status(500).SendString("Error inserting user")
 	}
 
-	sess.Set("id", zauth_user.Id)
-	sess.Set("username", zauth_user.Username)
+	sess.Set(USER_ID, zauth_user.Id)
+	sess.Set(USERNAME, zauth_user.Username)
 	sess.Save()
 
 	return c.Status(200).Redirect("/")

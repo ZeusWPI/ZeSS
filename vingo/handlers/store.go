@@ -10,3 +10,9 @@ var (
 	store = session.New()
 	db    = database.Get()
 )
+
+const (
+	USER_ID     = "user_id"
+	USERNAME    = "username"
+	ZAUTH_STATE = "zauth_state"
+)
