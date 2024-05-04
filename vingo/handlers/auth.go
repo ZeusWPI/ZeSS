@@ -111,6 +111,7 @@ func Callback(c *fiber.Ctx) error {
 		return c.Status(500).SendString("Error inserting user")
 	}
 
+	sess.Regenerate()
 	sess.Set(USER_ID, zauth_user.Id)
 	sess.Set(USERNAME, zauth_user.Username)
 	sess.Save()
