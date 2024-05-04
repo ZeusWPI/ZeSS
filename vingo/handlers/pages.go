@@ -25,23 +25,12 @@ func Scans(c *fiber.Ctx) error {
 		log.Println(err)
 		return c.Status(500).SendString("Session error")
 	}
-	zauth_id := sess.Get(USER_ID)
 
-	scans_select, _ := db.Prepare("SELECT scans.scan_time, scans.card FROM cards LEFT JOIN scans WHERE user == ?;")
-	log.Println(zauth_id)
-	scan_rows, err := scans_select.Query(zauth_id)
+	user_id := sess.Get(USER_ID).(int)
+	scans, err := database.GetScansForUser(user_id)
 	if err != nil {
 		log.Println(err)
-		return c.Status(400).SendString("Error fetching scans")
-	}
-
-	var scans []database.Scan
-
-	for scan_rows.Next() {
-		var scan database.Scan
-		_ = scan_rows.Scan(&scan.ScanTime, &scan.Card)
-
-		scans = append(scans, scan)
+		return c.Status(500).SendString("Error getting scans")
 	}
 
 	return c.Render("scans", fiber.Map{"scans": scans})

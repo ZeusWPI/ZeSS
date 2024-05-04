@@ -15,3 +15,20 @@ var (
 		);
 	`
 )
+
+func GetScansForUser(user_id int) ([]Scan, error) {
+	scans_rows, err := db.Query("SELECT * FROM scans WHERE card IN (SELECT serial FROM cards WHERE user == ?);", user_id)
+	if err != nil {
+		return nil, err
+	}
+
+	var scans []Scan
+
+	for scans_rows.Next() {
+		var scan Scan
+		_ = scans_rows.Scan(&scan.ScanTime, &scan.Card)
+
+		scans = append(scans, scan)
+	}
+	return scans, nil
+}
