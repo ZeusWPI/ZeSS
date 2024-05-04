@@ -4,6 +4,7 @@ import (
 	"crypto/rand"
 	"log"
 	"math/big"
+	"vingo/database"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -104,7 +105,7 @@ func Callback(c *fiber.Ctx) error {
 	}
 
 	// Insert user into database using the Zauth id
-	_, err = db.Exec("INSERT OR IGNORE INTO users (id) VALUES (?);", zauth_user.Id)
+	err = database.CreateUserIfNew(zauth_user.Id)
 	if err != nil {
 		log.Println(err)
 		return c.Status(500).SendString("Error inserting user")

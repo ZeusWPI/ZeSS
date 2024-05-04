@@ -11,3 +11,8 @@ var (
 		);
 	`
 )
+
+func CreateUserIfNew(user_id int) error {
+	_, err := db.Exec("INSERT OR IGNORE INTO users (id) VALUES (?);", user_id)
+	return err
+}
