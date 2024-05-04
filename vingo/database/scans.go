@@ -17,7 +17,7 @@ var (
 )
 
 func GetScansForUser(user_id int) ([]Scan, error) {
-	scans_rows, err := db.Query("SELECT * FROM scans WHERE card IN (SELECT serial FROM cards WHERE user == ?);", user_id)
+	scans_rows, err := db.Query("SELECT scan_time, card FROM scans WHERE card IN (SELECT serial FROM cards WHERE user == ?);", user_id)
 	if err != nil {
 		return nil, err
 	}
@@ -31,4 +31,9 @@ func GetScansForUser(user_id int) ([]Scan, error) {
 		scans = append(scans, scan)
 	}
 	return scans, nil
+}
+
+func CreateScan(card string) error {
+	_, err := db.Exec("INSERT INTO scans (card) VALUES (?);", card)
+	return err
 }
