@@ -8,6 +8,11 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+const (
+	ZAUTH_URL     = "https://adams.ugent.be"
+	CALLBACK_PATH = "/auth/callback" // TODO: hardcode ono
+)
+
 var (
 	ZauthClientId     = ""
 	ZauthClientSecret = ""
@@ -29,7 +34,8 @@ func Login(c *fiber.Ctx) error {
 	sess.Set(ZAUTH_STATE, state.String())
 	sess.Save()
 
-	return c.Status(200).Redirect("https://adams.ugent.be/oauth/authorize?client_id=" + ZauthClientId + "&response_type=code&state=" + state.String() + "&redirect_uri=http://localhost:4000/auth/callback")
+	callback_url := c.BaseURL() + CALLBACK_PATH
+	return c.Status(200).Redirect(ZAUTH_URL + "/oauth/authorize?client_id=" + ZauthClientId + "&response_type=code&state=" + state.String() + "&redirect_uri=" + callback_url)
 }
 
 func Logout(c *fiber.Ctx) error {
@@ -52,10 +58,10 @@ func Callback(c *fiber.Ctx) error {
 	}
 
 	// Check if saved state matches the one returned by Zauth
-	expected_state := sess.Get(ZAUTH_STATE)
-	actual_state := c.Query("state")
-	if expected_state != actual_state {
-		log.Println("State mismatch")
+	expected_state := sess.Get(ZAUTH_STATE).(string)
+	received_state := c.Query("state")
+	if expected_state != received_state {
+		log.Println("State mismatch: got " + received_state + ", expected " + expected_state)
 		return c.Status(400).SendString("State mismatch")
 	}
 
@@ -66,7 +72,7 @@ func Callback(c *fiber.Ctx) error {
 	defer fiber.ReleaseArgs(args)
 	args.Set("grant_type", "authorization_code")
 	args.Set("code", code)
-	args.Set("redirect_uri", "http://localhost:4000/auth/callback")
+	args.Set("redirect_uri", c.BaseURL()+CALLBACK_PATH)
 
 	// Zauth access token
 	type ZauthToken struct {
@@ -76,7 +82,7 @@ func Callback(c *fiber.Ctx) error {
 	}
 
 	zauth_token := new(ZauthToken)
-	status, _, errs := fiber.Post("https://adams.ugent.be/oauth/token").BasicAuth(ZauthClientId, ZauthClientSecret).Form(args).Struct(zauth_token)
+	status, _, errs := fiber.Post(ZAUTH_URL+"/oauth/token").BasicAuth(ZauthClientId, ZauthClientSecret).Form(args).Struct(zauth_token)
 	if len(errs) > 0 || status != 200 {
 		log.Println(status)
 		log.Println(errs)
@@ -90,7 +96,7 @@ func Callback(c *fiber.Ctx) error {
 	}
 
 	zauth_user := new(ZauthUser)
-	status, _, errs = fiber.Get("https://adams.ugent.be/current_user").Set("Authorization", "Bearer "+zauth_token.AccessToken).Struct(zauth_user)
+	status, _, errs = fiber.Get(ZAUTH_URL+"/current_user").Set("Authorization", "Bearer "+zauth_token.AccessToken).Struct(zauth_user)
 	if len(errs) > 0 || status != 200 {
 		log.Println(status)
 		log.Println(errs)
