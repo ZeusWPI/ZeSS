@@ -39,7 +39,7 @@ func Scans(c *fiber.Ctx) error {
 
 	for scan_rows.Next() {
 		var scan database.Scan
-		_ = scan_rows.Scan(&scan.ScanTime, &scan.Serial)
+		_ = scan_rows.Scan(&scan.ScanTime, &scan.Card)
 
 		scans = append(scans, scan)
 	}

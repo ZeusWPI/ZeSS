@@ -1,5 +1,10 @@
 package database
 
+type Scan struct {
+	ScanTime string
+	Card     string
+}
+
 var (
 	scansCreateStmt = `
 		CREATE TABLE IF NOT EXISTS scans (

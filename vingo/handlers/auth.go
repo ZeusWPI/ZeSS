@@ -1,8 +1,6 @@
 package handlers
 
 import (
-	"vingo/database"
-
 	"crypto/rand"
 	"log"
 	"math/big"
@@ -70,7 +68,14 @@ func Callback(c *fiber.Ctx) error {
 	args.Set("code", code)
 	args.Set("redirect_uri", "http://localhost:4000/auth/callback")
 
-	zauth_token := new(database.Token)
+	// Zauth access token
+	type ZauthToken struct {
+		AccessToken string `json:"access_token"`
+		TokenType   string `json:"token_type"`
+		ExpiresIn   int    `json:"expires_in"`
+	}
+
+	zauth_token := new(ZauthToken)
 	status, _, errs := fiber.Post("https://adams.ugent.be/oauth/token").BasicAuth(ZauthClientId, ZauthClientSecret).Form(args).Struct(zauth_token)
 	if len(errs) > 0 || status != 200 {
 		log.Println(status)
@@ -78,7 +83,13 @@ func Callback(c *fiber.Ctx) error {
 		return c.Status(500).SendString("Error fetching token")
 	}
 
-	zauth_user := new(database.User)
+	// Zauth user info
+	type ZauthUser struct {
+		Id       int    `json:"id"`
+		Username string `json:"username"`
+	}
+
+	zauth_user := new(ZauthUser)
 	status, _, errs = fiber.Get("https://adams.ugent.be/current_user").Set("Authorization", "Bearer "+zauth_token.AccessToken).Struct(zauth_user)
 	if len(errs) > 0 || status != 200 {
 		log.Println(status)
