@@ -44,6 +44,7 @@ func main() {
 	// only from kelder?
 	app.Post("/scans", handlers.ScanRegister)
 
+	app.Get("/cards", handlers.Cards)
 	// only from kelder?
 	app.Post("/cards/register", handlers.StartCardRegister)
 

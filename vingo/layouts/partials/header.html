@@ -1,9 +1,10 @@
 <div>
+    {{if .username}}
     <a href="/">Zess</a>
     <a href="/scans">Scans</a>
-    {{if .user_id}}
-        <a href="/logout">Hello {{.username}}!</a><div>
+    <a href="/cards">Cards</a>
+    <a href="/logout">Hello {{.username}}!</a><div>
     {{- else}}
-        <a href="/login">Login with Zauth :)</a>
+    <a href="/login">Login with Zauth :)</a>
     {{- end}}
 </div>

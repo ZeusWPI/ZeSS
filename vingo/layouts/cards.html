@@ -1,0 +1,17 @@
+<form action="/card/register" method="post">
+    <input type="submit" value="Start registering a new card">
+</form>
+<table>
+    <thead>
+        <tr>
+            <th>card</th>
+            <th>created_at</th>
+        </tr>
+    </thead>
+{{range .cards}}
+    <tr>
+        <td>{{.Serial}}</td>
+        <td>{{.CreatedAt}}</td>
+    </tr>
+{{end}}
+</table>
