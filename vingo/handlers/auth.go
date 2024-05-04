@@ -34,6 +34,17 @@ func Login(c *fiber.Ctx) error {
 	return c.Status(200).Redirect("https://adams.ugent.be/oauth/authorize?client_id=" + ZauthClientId + "&response_type=code&state=" + state.String() + "&redirect_uri=http://localhost:4000/auth/callback")
 }
 
+func Logout(c *fiber.Ctx) error {
+	sess, err := store.Get(c)
+	if err != nil {
+		log.Println(err)
+		return c.Status(500).SendString("Session error")
+	}
+
+	sess.Destroy()
+	return c.Status(200).Redirect("/")
+}
+
 // oauth
 func Callback(c *fiber.Ctx) error {
 	sess, err := store.Get(c)

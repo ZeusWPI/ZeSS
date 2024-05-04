@@ -38,6 +38,7 @@ func main() {
 	app.Get("/", handlers.Index)
 
 	app.Get("/login", handlers.Login)
+	app.Get("/logout", handlers.Logout)
 
 	app.Get("/user/scans", handlers.Scans)
 

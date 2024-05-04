@@ -16,7 +16,7 @@ func Index(c *fiber.Ctx) error {
 	}
 	id := sess.Get(USER_ID)
 	username := sess.Get(USERNAME)
-	return c.Render("index", fiber.Map{USER_ID: id, USERNAME: username})
+	return c.Render("index", fiber.Map{"user_id": id, "username": username})
 }
 
 func Scans(c *fiber.Ctx) error {

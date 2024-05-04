@@ -6,8 +6,9 @@
     <title>Zess</title>
 </head>
 <body>
-    {{if .id}}
-    <div>Hello {{.username}}! Your id is: {{.id}}</div>
+    {{if .user_id}}
+    <div>Hello {{.username}}! Your id is: {{.user_id}}</div>
+    <a href="/logout">Logout :(</a>
     {{- else}}
     <a href="/login">Login with Zauth :)</a>
     {{- end}}
