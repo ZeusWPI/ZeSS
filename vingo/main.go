@@ -40,13 +40,12 @@ func main() {
 	app.Get("/login", handlers.Login)
 	app.Get("/logout", handlers.Logout)
 
-	app.Get("/user/scans", handlers.Scans)
+	app.Get("/scans", handlers.Scans)
+	// only from kelder?
+	app.Post("/scans", handlers.ScanRegister)
 
-	// can only be done while an active register session was initiated by the user, and only from kelder
-	app.Post("/card/register", handlers.StartCardRegister)
-
-	// scan can be unauthenticated, but only from kelder?
-	app.Post("/card/scan", handlers.ScanRegister)
+	// only from kelder?
+	app.Post("/cards/register", handlers.StartCardRegister)
 
 	app.Get("/auth/callback", handlers.Callback)
 
