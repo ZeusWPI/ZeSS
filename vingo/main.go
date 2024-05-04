@@ -46,7 +46,7 @@ func main() {
 	app.Post("/card/register", handlers.CardRegister)
 
 	// scan can be unauthenticated, but only from kelder?
-	app.Post("/card/scan", handlers.CardScan)
+	app.Post("/card/scan", handlers.ScanRegister)
 
 	app.Get("/auth/callback", handlers.Callback)
 
