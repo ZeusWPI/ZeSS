@@ -10,6 +10,7 @@ func CardRegister(c *fiber.Ctx) error {
 	data := c.Body()
 	card_id := string(data)
 
+	// TODO: fix user
 	card_insert, _ := db.Prepare("INSERT INTO cards (serial, user) VALUES (?, 1234);")
 	_, err := card_insert.Exec(card_id)
 	if err != nil {
@@ -24,7 +25,7 @@ func CardScan(c *fiber.Ctx) error {
 	data := c.Body()
 	card_id := string(data)
 
-	scan_insert, _ := db.Prepare("INSERT INTO scans (scan_time, serial) VALUES (datetime('now'), ?);")
+	scan_insert, _ := db.Prepare("INSERT INTO scans (card) VALUES (?);")
 	res, err := scan_insert.Exec(card_id)
 	if err != nil {
 		log.Println(err)

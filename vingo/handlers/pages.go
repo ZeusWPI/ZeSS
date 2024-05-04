@@ -27,7 +27,7 @@ func Scans(c *fiber.Ctx) error {
 	}
 	zauth_id := sess.Get("id")
 
-	scans_select, _ := db.Prepare("select scans.scan_time, scans.serial from cards left join scans where user == ?;")
+	scans_select, _ := db.Prepare("SELECT scans.scan_time, scans.card FROM cards LEFT JOIN scans WHERE user == ?;")
 	log.Println(zauth_id)
 	scan_rows, err := scans_select.Query(zauth_id)
 	if err != nil {

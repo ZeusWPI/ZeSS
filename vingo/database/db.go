@@ -15,20 +15,25 @@ func CreateDb() *sql.DB {
 
 	sqlStmt := `
 		CREATE TABLE IF NOT EXISTS users (
-			zauth_id INTEGER not null primary key
+			id INTEGER NOT NULL PRIMARY KEY,
+			admin INTEGER DEFAULT FALSE NOT NULL,
+			leaderboard BOOLEAN DEFAULT FALSE NOT NULL,
+			public BOOLEAN DEFAULT FALSE NOT NULL,
+			created_at TEXT DEFAULT CURRENT_TIMESTAMP NOT NULL
 		);
 
 		CREATE TABLE IF NOT EXISTS cards (
-			serial text not null PRIMARY KEY UNIQUE,
-			user INTEGER not null,
+			serial TEXT NOT NULL PRIMARY KEY UNIQUE,
+			created_at TEXT DEFAULT CURRENT_TIMESTAMP NOT NULL,
+			user INTEGER NOT NULL,
 			FOREIGN KEY(user) REFERENCES users(zauth_id)
 		);
 
 		CREATE TABLE IF NOT EXISTS scans (
 			id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-			scan_time text not null,
-			serial text not null,
-			FOREIGN KEY(serial) REFERENCES cards(serial)
+			scan_time TEXT DEFAULT CURRENT_TIMESTAMP NOT NULL,
+			card TEXT NOT NULL,
+			FOREIGN KEY(card) REFERENCES cards(serial)
 		);
 	`
 	_, err := db.Exec(sqlStmt)
