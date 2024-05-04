@@ -43,7 +43,7 @@ func main() {
 	app.Get("/user/scans", handlers.Scans)
 
 	// can only be done while an active register session was initiated by the user, and only from kelder
-	app.Post("/card/register", handlers.CardRegister)
+	app.Post("/card/register", handlers.StartCardRegister)
 
 	// scan can be unauthenticated, but only from kelder?
 	app.Post("/card/scan", handlers.ScanRegister)

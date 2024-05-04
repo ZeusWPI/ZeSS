@@ -6,7 +6,7 @@ var (
 			serial TEXT NOT NULL PRIMARY KEY UNIQUE,
 			created_at TEXT DEFAULT CURRENT_TIMESTAMP NOT NULL,
 			user INTEGER NOT NULL,
-			FOREIGN KEY(user) REFERENCES users(zauth_id)
+			FOREIGN KEY(user) REFERENCES users(id)
 		);
 	`
 )

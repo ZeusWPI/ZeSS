@@ -9,6 +9,9 @@
     {{if .user_id}}
     <div>Hello {{.username}}! Your id is: {{.user_id}}</div>
     <a href="/logout">Logout :(</a>
+    <form action="/card/register" method="post">
+        <input type="submit" value="Start registering a new card">
+    </form>
     {{- else}}
     <a href="/login">Login with Zauth :)</a>
     {{- end}}

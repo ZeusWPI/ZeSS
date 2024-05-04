@@ -2,16 +2,14 @@ package handlers
 
 import (
 	"log"
-	"vingo/database"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 )
 
-// TODO: Make this work with an actual scanner
-func CardRegister(c *fiber.Ctx) error {
-	data := c.Body()
-	card_id := string(data)
-
+func StartCardRegister(c *fiber.Ctx) error {
+	// keep track of the user that initiated the request in global state
+	// since only one user can be registering a card at a time
 	sess, err := store.Get(c)
 	if err != nil {
 		log.Println(err)
@@ -19,12 +17,14 @@ func CardRegister(c *fiber.Ctx) error {
 	}
 	user_id := sess.Get(USER_ID).(int)
 
-	err = database.CreateCard(card_id, user_id)
-	if err != nil {
-		log.Println(err)
-		// TODO: Check if the error is due to the card already being registered
-		return c.Status(400).SendString("Card already registered")
+	if time.Now().Before(registering_end) {
+		return c.Status(400).SendString("Another user is already registering a card")
 	}
 
-	return c.SendString("Card registered")
+	registering_user = user_id
+	registering_end = time.Now().Add(time.Minute)
+
+	log.Println("Card registration started by user", registering_user)
+
+	return c.Status(200).Redirect("/")
 }
