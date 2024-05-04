@@ -10,3 +10,8 @@ var (
 		);
 	`
 )
+
+func CreateCard(serial string, user_id int) error {
+	_, err := db.Exec("INSERT INTO cards (serial, user) VALUES (?, ?);", serial, user_id)
+	return err
+}
