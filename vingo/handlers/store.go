@@ -41,5 +41,6 @@ func GetUserFromStore(c *fiber.Ctx) *StoreUser {
 		return nil
 	}
 
-	return user.(*StoreUser)
+	storeUser := user.(StoreUser)
+	return &storeUser
 }
