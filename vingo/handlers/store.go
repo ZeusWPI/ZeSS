@@ -1,8 +1,10 @@
 package handlers
 
 import (
+	"log"
 	"time"
 
+	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/session"
 )
 
@@ -15,7 +17,30 @@ var (
 )
 
 const (
+	STORE_USER  = "store_user"
 	USER_ID     = "user_id"
 	USERNAME    = "username"
 	ZAUTH_STATE = "zauth_state"
 )
+
+type StoreUser struct {
+	Id       int
+	Username string
+}
+
+func GetUserFromStore(c *fiber.Ctx) *StoreUser {
+	sess, err := store.Get(c)
+	if err != nil {
+		log.Println(err)
+		return nil
+	}
+
+	user := sess.Get(STORE_USER)
+	log.Println("User from store:", user)
+	if user == nil {
+		return nil
+	}
+
+	storeUser := user.(StoreUser)
+	return &storeUser
+}

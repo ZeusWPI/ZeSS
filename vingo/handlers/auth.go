@@ -112,8 +112,7 @@ func Callback(c *fiber.Ctx) error {
 	}
 
 	sess.Regenerate()
-	sess.Set(USER_ID, zauth_user.Id)
-	sess.Set(USERNAME, zauth_user.Username)
+	sess.Set(STORE_USER, &StoreUser{Id: zauth_user.Id, Username: zauth_user.Username})
 	sess.Save()
 
 	return c.Status(200).Redirect("/")

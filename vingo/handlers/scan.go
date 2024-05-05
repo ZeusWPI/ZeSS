@@ -15,11 +15,12 @@ func ScanRegister(c *fiber.Ctx) error {
 	// if card registering session is active, register the card instead of scanning
 	if time.Now().Before(registering_end) {
 		log.Println("Registering card", card_id, "for user", registering_user)
+
+		err := database.CreateCard(card_id, registering_user)
 		// error or not, end registering session
 		registering_user = 0
 		registering_end = time.Now()
 
-		err := database.CreateCard(card_id, registering_user)
 		if err != nil {
 			log.Println(err)
 			return c.Status(500).SendString("Error registering card")

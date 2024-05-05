@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/gob"
 	"os"
 	"vingo/database"
 	"vingo/handlers"
@@ -13,6 +14,8 @@ import (
 )
 
 func main() {
+	gob.Register(handlers.StoreUser{})
+
 	ZauthClientId, id_ok := os.LookupEnv("ZauthClientId")
 	if !id_ok {
 		ZauthClientId = "tomtest"
