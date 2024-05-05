@@ -1,17 +1,31 @@
-<form action="/cards/register" method="post">
-    <input type="submit" value="Start registering a new card">
-</form>
-<table>
-    <thead>
+<div class="box">
+    <form action="/cards/register" method="post">
+        <div>
+            If you don't have any cards yet, click the button below to start registering a new card.
+            Once clicked, you will have 1 minute to scan the card you want to use at the scanner and it will be linked to your account.
+        </div>
+        <div class="field is-grouped is-grouped-right">
+            <input class="button is-success" type="submit" value="Start registering a new card">
+        </div>
+    </form>
+</div>
+<div class="box">
+    {{if .cards}}
+    <table class="table is-fullwidth is-striped is-hoverable">
+        <thead>
+            <tr>
+                <th>card</th>
+                <th>created_at</th>
+            </tr>
+        </thead>
+    {{range .cards}}
         <tr>
-            <th>card</th>
-            <th>created_at</th>
+            <td>{{.Serial}}</td>
+            <td>{{.CreatedAt}}</td>
         </tr>
-    </thead>
-{{range .cards}}
-    <tr>
-        <td>{{.Serial}}</td>
-        <td>{{.CreatedAt}}</td>
-    </tr>
-{{end}}
-</table>
+    {{end}}
+    </table>
+    {{- else}}
+    <div class="title">No cards yet!</div>
+    {{- end}}
+</div>
