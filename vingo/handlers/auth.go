@@ -105,7 +105,7 @@ func Callback(c *fiber.Ctx) error {
 	}
 
 	// Insert user into database using the Zauth id
-	err = database.CreateUserIfNew(zauth_user.Id)
+	err = database.CreateUserIfNew(zauth_user.Id, zauth_user.Username)
 	if err != nil {
 		log.Println(err)
 		return c.Status(500).SendString("Error inserting user")
