@@ -24,5 +24,5 @@ func StartCardRegister(c *fiber.Ctx) error {
 
 	log.Println("Card registration started by user", registering_user)
 
-	return c.Status(200).Redirect("/")
+	return c.Status(200).Redirect("/cards")
 }
