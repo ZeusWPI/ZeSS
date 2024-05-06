@@ -4,13 +4,13 @@
         <a class="navbar-item" href="/">Zess</a>
     </div>
         <div class="navbar-menu">
-            {{if .username}}
+            {{if .user}}
             <div class="navbar-start">
                 <a class="navbar-item" href="/scans">Scans</a>
                 <a class="navbar-item" href="/cards">Cards</a>
             </div>
             <div class="navbar-end">
-                <a class="navbar-item" href="/logout">Hello {{.username}}!</a>
+                <a class="navbar-item" href="/logout">Hello {{.user.Username}}!</a>
             </div>
             {{- else}}
             <div class="navbar-end">
