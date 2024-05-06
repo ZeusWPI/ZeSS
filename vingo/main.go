@@ -16,19 +16,8 @@ import (
 func main() {
 	gob.Register(handlers.StoreUser{})
 
-	ZauthClientId, id_ok := os.LookupEnv("ZauthClientId")
-	if !id_ok {
-		ZauthClientId = "tomtest"
-		log.Println("ZauthClientId not set, using default tomtest")
-	}
-
-	ZauthClientSecret, secret_ok := os.LookupEnv("ZauthClientSecret")
-	if !secret_ok {
-		ZauthClientSecret = "blargh"
-		log.Println("ZauthClientSecret not set, using default blargh")
-	}
-
-	handlers.SetZauth(ZauthClientId, ZauthClientSecret)
+	zauth_client_id, zauth_client_secret := getConfigFromEnv()
+	handlers.SetZauth(zauth_client_id, zauth_client_secret)
 
 	db := database.Get()
 	defer db.Close()
@@ -54,4 +43,19 @@ func main() {
 	app.Get("/auth/callback", handlers.Callback)
 
 	log.Println(app.Listen(":4000"))
+}
+
+func getConfigFromEnv() (string, string) {
+	// stuff for Zauth oauth flow
+	zauth_client_id, id_ok := os.LookupEnv("ZAUTH_CLIENT_ID")
+	if !id_ok {
+		log.Fatal("ZAUTH_CLIENT_ID environment variable not set")
+	}
+
+	zauth_client_secret, secret_ok := os.LookupEnv("ZAUHT_CLIENT_SECRET")
+	if !secret_ok {
+		log.Fatal("ZAUHT_CLIENT_SECRET environment variable not set")
+	}
+
+	return zauth_client_id, zauth_client_secret
 }
