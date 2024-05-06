@@ -10,6 +10,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/template/html/v2"
+	"github.com/joho/godotenv"
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -47,6 +48,11 @@ func main() {
 }
 
 func getConfigFromEnv() (string, string, string) {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
 	// stuff for Zauth oauth flow
 	zauth_client_id, id_ok := os.LookupEnv("ZAUTH_CLIENT_ID")
 	if !id_ok {

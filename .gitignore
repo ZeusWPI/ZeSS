@@ -112,3 +112,5 @@ XUNIT_RESULT*.xml
 
 # sqlite
 *.db
+
+.env
