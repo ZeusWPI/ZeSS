@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"crypto/rand"
+	"fmt"
 	"log"
 	"math/big"
 	"vingo/database"
@@ -36,7 +37,7 @@ func Login(c *fiber.Ctx) error {
 	sess.Save()
 
 	callback_url := c.BaseURL() + CALLBACK_PATH
-	return c.Status(200).Redirect(ZAUTH_URL + "/oauth/authorize?client_id=" + ZauthClientId + "&response_type=code&state=" + state.String() + "&redirect_uri=" + callback_url)
+	return c.Status(200).Redirect(fmt.Sprintf("%s/oauth/authorize?client_id=%s&response_type=code&state=%s&redirect_uri=%s", ZAUTH_URL, ZauthClientId, state.String(), callback_url))
 }
 
 func Logout(c *fiber.Ctx) error {
@@ -48,6 +49,19 @@ func Logout(c *fiber.Ctx) error {
 
 	sess.Destroy()
 	return c.Status(200).Redirect("/")
+}
+
+// Zauth access token
+type ZauthToken struct {
+	AccessToken string `json:"access_token"`
+	TokenType   string `json:"token_type"`
+	ExpiresIn   int    `json:"expires_in"`
+}
+
+// Zauth user info
+type ZauthUser struct {
+	Id       int    `json:"id"`
+	Username string `json:"username"`
 }
 
 // oauth
@@ -62,11 +76,10 @@ func Callback(c *fiber.Ctx) error {
 	expected_state := sess.Get(ZAUTH_STATE).(string)
 	received_state := c.Query("state")
 	if expected_state != received_state {
-		log.Println("State mismatch: got " + received_state + ", expected " + expected_state)
+		log.Println("State mismatch: got", received_state, "expected", expected_state)
 		return c.Status(400).SendString("State mismatch")
 	}
 
-	// Convert code into access token
 	code := c.Query("code")
 
 	args := fiber.AcquireArgs()
@@ -75,29 +88,27 @@ func Callback(c *fiber.Ctx) error {
 	args.Set("code", code)
 	args.Set("redirect_uri", c.BaseURL()+CALLBACK_PATH)
 
-	// Zauth access token
-	type ZauthToken struct {
-		AccessToken string `json:"access_token"`
-		TokenType   string `json:"token_type"`
-		ExpiresIn   int    `json:"expires_in"`
-	}
-
+	// Convert callback code into access token
 	zauth_token := new(ZauthToken)
-	status, _, errs := fiber.Post(ZAUTH_URL+"/oauth/token").BasicAuth(ZauthClientId, ZauthClientSecret).Form(args).Struct(zauth_token)
+	status, _, errs := fiber.
+		Post(ZAUTH_URL+"/oauth/token").
+		BasicAuth(ZauthClientId, ZauthClientSecret).
+		Form(args).
+		Struct(zauth_token)
+
 	if len(errs) > 0 || status != 200 {
 		log.Println(status)
 		log.Println(errs)
 		return c.Status(500).SendString("Error fetching token")
 	}
 
-	// Zauth user info
-	type ZauthUser struct {
-		Id       int    `json:"id"`
-		Username string `json:"username"`
-	}
-
+	// Get user info using access token
 	zauth_user := new(ZauthUser)
-	status, _, errs = fiber.Get(ZAUTH_URL+"/current_user").Set("Authorization", "Bearer "+zauth_token.AccessToken).Struct(zauth_user)
+	status, _, errs = fiber.
+		Get(ZAUTH_URL+"/current_user").
+		Set("Authorization", "Bearer "+zauth_token.AccessToken).
+		Struct(zauth_user)
+
 	if len(errs) > 0 || status != 200 {
 		log.Println(status)
 		log.Println(errs)
@@ -111,6 +122,7 @@ func Callback(c *fiber.Ctx) error {
 		return c.Status(500).SendString("Error inserting user")
 	}
 
+	// Regenerate the session to set a new key
 	sess.Regenerate()
 	sess.Set(STORE_USER, &StoreUser{Id: zauth_user.Id, Username: zauth_user.Username})
 	sess.Save()
