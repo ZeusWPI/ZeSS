@@ -28,7 +28,7 @@ type StoreUser struct {
 	Username string
 }
 
-func GetUserFromStore(c *fiber.Ctx) *StoreUser {
+func getUserFromStore(c *fiber.Ctx) *StoreUser {
 	sess, err := store.Get(c)
 	if err != nil {
 		log.Println(err)

@@ -6,10 +6,10 @@ import (
 )
 
 var (
-	db = CreateDb()
+	db = createDb()
 )
 
-func CreateDb() *sql.DB {
+func createDb() *sql.DB {
 	// _foreign_keys=on because otherwise foreign key constraints are not checked
 	db, _ := sql.Open("sqlite3", "file:zess.db?_foreign_keys=on")
 

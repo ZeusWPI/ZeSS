@@ -10,7 +10,7 @@ import (
 func StartCardRegister(c *fiber.Ctx) error {
 	// keep track of the user that initiated the request in global state
 	// since only one user can be registering a card at a time
-	user := GetUserFromStore(c)
+	user := getUserFromStore(c)
 	if user == nil {
 		return c.Status(401).Redirect("/login")
 	}

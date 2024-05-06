@@ -9,7 +9,7 @@ import (
 )
 
 func Index(c *fiber.Ctx) error {
-	current_user := GetUserFromStore(c)
+	current_user := getUserFromStore(c)
 
 	username := ""
 	if current_user != nil {
@@ -20,7 +20,7 @@ func Index(c *fiber.Ctx) error {
 }
 
 func Scans(c *fiber.Ctx) error {
-	current_user := GetUserFromStore(c)
+	current_user := getUserFromStore(c)
 	if current_user == nil {
 		return c.Status(401).Redirect("/login")
 	}
@@ -35,7 +35,7 @@ func Scans(c *fiber.Ctx) error {
 }
 
 func Cards(c *fiber.Ctx) error {
-	current_user := GetUserFromStore(c)
+	current_user := getUserFromStore(c)
 	if current_user == nil {
 		return c.Status(401).Redirect("/login")
 	}
