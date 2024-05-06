@@ -2,15 +2,34 @@ package handlers
 
 import (
 	"log"
+	"strings"
 	"time"
 	"vingo/database"
 
 	"github.com/gofiber/fiber/v2"
 )
 
+var (
+	scan_key = ""
+)
+
+func SetScanKey(key string) {
+	scan_key = key
+}
+
 func ScanRegister(c *fiber.Ctx) error {
+	// Check if the key is correct
 	data := c.Body()
-	card_id := string(data)
+	s_data := strings.Split(string(data), ";")
+	if len(s_data) != 2 {
+		return c.Status(400).SendString("Invalid format: card_id;key")
+	}
+
+	card_id := s_data[0]
+	key := s_data[1]
+	if key != scan_key {
+		return c.Status(401).SendString("Invalid key")
+	}
 
 	// if card registering session is active, register the card instead of scanning
 	if time.Now().Before(registering_end) {

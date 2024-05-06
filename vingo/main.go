@@ -16,8 +16,9 @@ import (
 func main() {
 	gob.Register(handlers.StoreUser{})
 
-	zauth_client_id, zauth_client_secret := getConfigFromEnv()
+	zauth_client_id, zauth_client_secret, scan_key := getConfigFromEnv()
 	handlers.SetZauth(zauth_client_id, zauth_client_secret)
+	handlers.SetScanKey(scan_key)
 
 	db := database.Get()
 	defer db.Close()
@@ -45,7 +46,7 @@ func main() {
 	log.Println(app.Listen(":4000"))
 }
 
-func getConfigFromEnv() (string, string) {
+func getConfigFromEnv() (string, string, string) {
 	// stuff for Zauth oauth flow
 	zauth_client_id, id_ok := os.LookupEnv("ZAUTH_CLIENT_ID")
 	if !id_ok {
@@ -57,5 +58,11 @@ func getConfigFromEnv() (string, string) {
 		log.Fatal("ZAUHT_CLIENT_SECRET environment variable not set")
 	}
 
-	return zauth_client_id, zauth_client_secret
+	// PSK that will authorize the scanner
+	scan_key, key_ok := os.LookupEnv("SCAN_KEY")
+	if !key_ok {
+		log.Fatal("SCAN_KEY environment variable not set")
+	}
+
+	return zauth_client_id, zauth_client_secret, scan_key
 }
