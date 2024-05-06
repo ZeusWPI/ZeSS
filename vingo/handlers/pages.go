@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"time"
 	"vingo/database"
 
 	"log"
@@ -40,5 +41,7 @@ func Cards(c *fiber.Ctx) error {
 		return c.Status(500).SendString("Error getting cards")
 	}
 
-	return c.Render("cards", fiber.Map{"user": current_user, "cards": cards}, "main")
+	registering := time.Now().Before(registering_end)
+
+	return c.Render("cards", fiber.Map{"user": current_user, "cards": cards, "registering": registering}, "main")
 }

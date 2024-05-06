@@ -5,7 +5,11 @@
             Once clicked, you will have 1 minute to scan the card you want to use at the scanner and it will be linked to your account.
         </div>
         <div class="field is-grouped is-grouped-right">
-            <input class="button is-success" type="submit" value="Start registering a new card">
+            {{if .registering}}
+                <input class="button is-danger" disabled type="submit" value="Somebody is already registering a card">
+            {{- else}}
+                <input class="button is-success" type="submit" value="Start registering a new card">
+            {{- end}}
         </div>
     </form>
 </div>
