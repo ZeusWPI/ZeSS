@@ -114,3 +114,8 @@ XUNIT_RESULT*.xml
 *.db
 
 .env
+
+# vinscant
+key.txt
+mfrc522.py
+webrepl_cli.py

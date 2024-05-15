@@ -4,12 +4,14 @@ ono
 - ESP32-S2
 - RFID-RC522
 
-Connect RFID-RC522 Rfid reader on these pins: 
+Connect RFID-RC522 Rfid reader on these pins:
+```
 SDA: 34
 MOSI: 35
 SCK: 36
 MISO: 37
 RST: 0
+```
 
 # Setup:
 - Install micropython
