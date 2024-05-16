@@ -6,7 +6,11 @@
         </div>
         <div class="field is-grouped is-grouped-right">
             {{if .registering}}
-                <input class="button is-danger" disabled type="submit" value="Somebody is already registering a card">
+                {{ if .reg_user }}
+                    <input class="button is-warning" disabled type="submit" value="You are registering a card!">
+                {{- else}}
+                    <input class="button is-danger" disabled type="submit" value="Somebody is already registering a card">
+                {{- end}}
             {{- else}}
                 <input class="button is-success" type="submit" value="Start registering a new card">
             {{- end}}

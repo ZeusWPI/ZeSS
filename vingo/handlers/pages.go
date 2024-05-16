@@ -42,6 +42,7 @@ func Cards(c *fiber.Ctx) error {
 	}
 
 	registering := time.Now().Before(registering_end)
+	registering_is_user := current_user.Id == registering_user
 
-	return c.Render("cards", fiber.Map{"user": current_user, "cards": cards, "registering": registering}, "main")
+	return c.Render("cards", fiber.Map{"user": current_user, "cards": cards, "registering": registering, "reg_user": registering_is_user}, "main")
 }
