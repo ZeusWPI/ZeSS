@@ -1,7 +1,9 @@
 package database
 
+import "time"
+
 type Scan struct {
-	ScanTime string
+	ScanTime time.Time
 	Card     string
 }
 

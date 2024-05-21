@@ -9,7 +9,7 @@
         </thead>
         {{range .scans}}
         <tr>
-            <td>{{.ScanTime}}</td>
+            <td>{{.ScanTime.Local.Format "Mon 2 January 2006 15:04:05"}}</td>
             <td>{{.Card}}</td>
         </tr>
         {{end}}
