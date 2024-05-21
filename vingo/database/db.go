@@ -6,13 +6,10 @@ import (
 )
 
 var (
-	db = createDb()
+	db *sql.DB
 )
 
-func createDb() *sql.DB {
-	// _foreign_keys=on because otherwise foreign key constraints are not checked
-	db, _ := sql.Open("sqlite3", "file:zess.db?_foreign_keys=on")
-
+func createTables() {
 	// Tables to create
 	createStmts := []string{usersCreateStmt, cardsCreateStmt, scansCreateStmt}
 	for _, stmt := range createStmts {
@@ -22,10 +19,18 @@ func createDb() *sql.DB {
 			log.Fatal(err)
 		}
 	}
-
-	return db
 }
 
 func Get() *sql.DB {
 	return db
+}
+
+func OpenDatabase(conn string) {
+	new_db, err := sql.Open("postgres", conn)
+	if err != nil {
+		log.Panicln("Error opening database connection")
+		log.Fatal(err)
+	}
+	db = new_db
+	createTables()
 }

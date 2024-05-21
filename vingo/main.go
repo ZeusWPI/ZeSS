@@ -11,20 +11,18 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/template/html/v2"
 	"github.com/joho/godotenv"
-	_ "github.com/mattn/go-sqlite3"
+	_ "github.com/lib/pq"
 )
 
 func main() {
 	gob.Register(handlers.StoreUser{})
 
-	zauth_client_id, zauth_client_secret, scan_key := getConfigFromEnv()
-	handlers.SetZauth(zauth_client_id, zauth_client_secret)
-	handlers.SetScanKey(scan_key)
+	setupFromEnv()
 
 	db := database.Get()
 	defer db.Close()
-	engine := html.New("./layouts", ".html")
 
+	engine := html.New("./layouts", ".html")
 	app := fiber.New(fiber.Config{
 		Views: engine,
 	})
@@ -47,7 +45,7 @@ func main() {
 	log.Println(app.Listen(":4000"))
 }
 
-func getConfigFromEnv() (string, string, string) {
+func setupFromEnv() {
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file")
@@ -64,11 +62,21 @@ func getConfigFromEnv() (string, string, string) {
 		log.Fatal("ZAUHT_CLIENT_SECRET environment variable not set")
 	}
 
+	handlers.SetZauth(zauth_client_id, zauth_client_secret)
+
 	// PSK that will authorize the scanner
 	scan_key, key_ok := os.LookupEnv("SCAN_KEY")
 	if !key_ok {
 		log.Fatal("SCAN_KEY environment variable not set")
 	}
 
-	return zauth_client_id, zauth_client_secret, scan_key
+	handlers.SetScanKey(scan_key)
+
+	// Database
+	database_string, db_ok := os.LookupEnv("POSTGRES_CONNECTION_STRING")
+	if !db_ok {
+		log.Fatal("POSTGRES_CONNECTION_STRING environment variable not set")
+	}
+
+	database.OpenDatabase(database_string)
 }

@@ -9,20 +9,19 @@ var (
 	cardsCreateStmt = `
 		CREATE TABLE IF NOT EXISTS cards (
 			serial TEXT NOT NULL PRIMARY KEY UNIQUE,
-			created_at TEXT DEFAULT CURRENT_TIMESTAMP NOT NULL,
-			user INTEGER NOT NULL,
-			FOREIGN KEY(user) REFERENCES users(id)
+			created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+			user_id INTEGER NOT NULL REFERENCES users(id)
 		);
 	`
 )
 
 func CreateCard(serial string, user_id int) error {
-	_, err := db.Exec("INSERT INTO cards (serial, user) VALUES (?, ?);", serial, user_id)
+	_, err := db.Exec("INSERT INTO cards (serial, user_id) VALUES ($1, $2);", serial, user_id)
 	return err
 }
 
 func GetCardsForUser(user_id int) ([]Card, error) {
-	rows, err := db.Query("SELECT serial, created_at FROM cards WHERE user = ?;", user_id)
+	rows, err := db.Query("SELECT serial, created_at FROM cards WHERE user_id = $1;", user_id)
 	if err != nil {
 		return nil, err
 	}

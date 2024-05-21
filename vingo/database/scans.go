@@ -8,17 +8,16 @@ type Scan struct {
 var (
 	scansCreateStmt = `
 		CREATE TABLE IF NOT EXISTS scans (
-			id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-			scan_time TEXT DEFAULT CURRENT_TIMESTAMP NOT NULL,
+			id SERIAL NOT NULL PRIMARY KEY,
+			scan_time TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
 			scan_type BOOLEAN,
-			card TEXT NOT NULL,
-			FOREIGN KEY(card) REFERENCES cards(serial)
+			card_serial TEXT NOT NULL REFERENCES cards(serial)
 		);
 	`
 )
 
 func GetScansForUser(user_id int) ([]Scan, error) {
-	scans_rows, err := db.Query("SELECT scan_time, card FROM scans WHERE card IN (SELECT serial FROM cards WHERE user == ?);", user_id)
+	scans_rows, err := db.Query("SELECT scan_time, card_serial FROM scans WHERE card_serial IN (SELECT serial FROM cards WHERE user_id = $1);", user_id)
 	if err != nil {
 		return nil, err
 	}
@@ -35,6 +34,6 @@ func GetScansForUser(user_id int) ([]Scan, error) {
 }
 
 func CreateScan(card string) error {
-	_, err := db.Exec("INSERT INTO scans (card) VALUES (?);", card)
+	_, err := db.Exec("INSERT INTO scans (card_serial) VALUES ($1);", card)
 	return err
 }
