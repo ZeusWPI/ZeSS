@@ -1,8 +1,10 @@
 package database
 
+import "time"
+
 type Card struct {
 	Serial    string
-	CreatedAt string
+	CreatedAt time.Time
 }
 
 var (
