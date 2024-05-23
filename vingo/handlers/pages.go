@@ -9,7 +9,19 @@ import (
 
 func Index(c *fiber.Ctx) error {
 	current_user := getUserFromStore(c)
-	return c.Render("index", fiber.Map{"user": current_user}, "main")
+	if current_user != nil {
+		return stats(c, current_user)
+	} else {
+		return landing(c)
+	}
+}
+
+func landing(c *fiber.Ctx) error {
+	return c.Render("landing", nil, "main")
+}
+
+func stats(c *fiber.Ctx, user *StoreUser) error {
+	return c.Render("stats", fiber.Map{"user": user}, "main")
 }
 
 func Scans(c *fiber.Ctx) error {
