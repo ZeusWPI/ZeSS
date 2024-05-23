@@ -21,7 +21,13 @@ func landing(c *fiber.Ctx) error {
 }
 
 func stats(c *fiber.Ctx, user *StoreUser) error {
-	return c.Render("stats", fiber.Map{"user": user}, "main")
+	days, err := database.GetPresenceHistory(user.Id, 7)
+	if err != nil {
+		logger.Println("Error get presence history:", err)
+		return c.Status(500).SendString("Error getting presence history")
+	}
+
+	return c.Render("stats", fiber.Map{"user": user, "days_present_7": days}, "main")
 }
 
 func Scans(c *fiber.Ctx) error {

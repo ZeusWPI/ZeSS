@@ -1,3 +1,19 @@
+
+<table class="table is-striped is-hoverable">
+<thead>
+    <tr>
+        <th>date</th>
+        <th>present</th>
+    </tr>
+</thead>
+{{ range .days_present_7 }}
+<tr>
+    <td>{{ .Date.Format "Mon 02 Jan" }}</td>
+    <td>{{ if .Present }} ✅ {{- else }} ❌ {{- end }}</td>
+</tr>
+{{ end }}
+</table>
+
 <p>something something show cool stats</p>
 
 <p>total scans</p>
