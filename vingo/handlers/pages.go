@@ -4,8 +4,6 @@ import (
 	"time"
 	"vingo/database"
 
-	"log"
-
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -22,7 +20,7 @@ func Scans(c *fiber.Ctx) error {
 
 	scans, err := database.GetScansForUser(current_user.Id)
 	if err != nil {
-		log.Println(err)
+		logger.Println("Error get scans:", err)
 		return c.Status(500).SendString("Error getting scans")
 	}
 
@@ -37,7 +35,7 @@ func Cards(c *fiber.Ctx) error {
 
 	cards, err := database.GetCardsForUser(current_user.Id)
 	if err != nil {
-		log.Println(err)
+		logger.Println("", err)
 		return c.Status(500).SendString("Error getting cards")
 	}
 

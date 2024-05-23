@@ -3,7 +3,6 @@ package handlers
 import (
 	"crypto/rand"
 	"fmt"
-	"log"
 	"math/big"
 	"vingo/database"
 
@@ -28,7 +27,7 @@ func SetZauth(client_id string, client_secret string) {
 func Login(c *fiber.Ctx) error {
 	sess, err := store.Get(c)
 	if err != nil {
-		log.Println(err)
+		logger.Println("login:", err)
 		return c.Status(500).SendString("Session error")
 	}
 
@@ -43,7 +42,7 @@ func Login(c *fiber.Ctx) error {
 func Logout(c *fiber.Ctx) error {
 	sess, err := store.Get(c)
 	if err != nil {
-		log.Println(err)
+		logger.Println("logout:", err)
 		return c.Status(500).SendString("Session error")
 	}
 
@@ -68,7 +67,7 @@ type ZauthUser struct {
 func Callback(c *fiber.Ctx) error {
 	sess, err := store.Get(c)
 	if err != nil {
-		log.Println(err)
+		logger.Println(err)
 		return c.Status(500).SendString("Session error")
 	}
 
@@ -76,7 +75,7 @@ func Callback(c *fiber.Ctx) error {
 	expected_state := sess.Get(ZAUTH_STATE).(string)
 	received_state := c.Query("state")
 	if expected_state != received_state {
-		log.Println("State mismatch: got", received_state, "expected", expected_state)
+		logger.Println("State mismatch: got", received_state, "expected", expected_state)
 		return c.Status(400).SendString("State mismatch")
 	}
 
@@ -97,8 +96,9 @@ func Callback(c *fiber.Ctx) error {
 		Struct(zauth_token)
 
 	if len(errs) > 0 || status != 200 {
-		log.Println(status)
-		log.Println(errs)
+		logger.Println("Error callback code -> access token from Zauth")
+		logger.Println(status)
+		logger.Println(errs)
 		return c.Status(500).SendString("Error fetching token")
 	}
 
@@ -110,15 +110,16 @@ func Callback(c *fiber.Ctx) error {
 		Struct(zauth_user)
 
 	if len(errs) > 0 || status != 200 {
-		log.Println(status)
-		log.Println(errs)
+		logger.Println("Error fetching user info from Zauth")
+		logger.Println(status)
+		logger.Println(errs)
 		return c.Status(500).SendString("Error fetching user")
 	}
 
 	// Insert user into database using the Zauth id
 	err = database.CreateUserIfNew(zauth_user.Id, zauth_user.Username)
 	if err != nil {
-		log.Println(err)
+		logger.Println("Insert user:", err)
 		return c.Status(500).SendString("Error inserting user")
 	}
 

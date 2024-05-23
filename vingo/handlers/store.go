@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"log"
+	"os"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -9,7 +10,8 @@ import (
 )
 
 var (
-	store = session.New()
+	store  = session.New()
+	logger = log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lshortfile)
 
 	// State for registering a new card
 	registering_user = 0
@@ -31,12 +33,12 @@ type StoreUser struct {
 func getUserFromStore(c *fiber.Ctx) *StoreUser {
 	sess, err := store.Get(c)
 	if err != nil {
-		log.Println(err)
+		logger.Println(err)
 		return nil
 	}
 
 	user := sess.Get(STORE_USER)
-	log.Println("User from store:", user)
+	logger.Println("User from store:", user)
 	if user == nil {
 		return nil
 	}

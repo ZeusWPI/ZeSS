@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"log"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -22,7 +21,7 @@ func StartCardRegister(c *fiber.Ctx) error {
 	registering_user = user.Id
 	registering_end = time.Now().Add(time.Minute)
 
-	log.Println("Card registration started by user", registering_user)
+	logger.Println("Card registration started by user", registering_user)
 
 	return c.Status(200).Redirect("/cards")
 }
