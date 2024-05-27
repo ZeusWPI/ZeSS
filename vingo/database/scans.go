@@ -66,7 +66,7 @@ func GetPresenceHistory(user_id int) ([]Present, error) {
 		ON ds.date = scans.scan_date
 		LEFT JOIN days
 		ON ds.date = days.date
-		ORDER BY ds.date DESC;
+		ORDER BY ds.date;
 	`, user_id)
 	if err != nil {
 		return nil, err

@@ -1,25 +1,45 @@
-
-<table class="table is-striped is-hoverable">
-<thead>
-    <tr>
-        <th>date</th>
-        <th>present</th>
-    </tr>
-</thead>
+<div class="week_ct">
 {{ range .days_present_7 }}
-<tr>
-    <td>{{ .Date.Format "Mon 02 Jan" }}</td>
-    <td>{{ if .Present }} 🟩 {{ else if .StreakDay}} 🟥 {{ else }} ⬛ {{ end }}</td>
-</tr>
+    <div class="week_day {{ if .Present }} present {{ else if .StreakDay}} abscent {{ end }}">
+        {{ .Date.Format "Mon 02 Jan" }}
+    </div>
 {{ end }}
-</table>    
+</div>
 
-<p>something something show cool stats</p>
+<style>
+    .week_ct {
+        display: flex;
+        flex-direction: row;
 
-<p>total scans</p>
+        justify-content: space-between;
 
-<p>total hours in kelder if counted</p>
+        box-shadow: 10px 3px 20px 0px rgba(0,0,0,0.39);
+        padding: 30px;
+        border-radius: 20px;
+        margin-top: 30px;
+    }
 
-<p>total days checked in</p>
+    .week_day {
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
-<p>graphs</p>
+        height: 7rem;
+        width: 7rem;
+
+        background-color: rgb(69, 69, 69);
+        font-weight: bolder;
+        color: white;
+
+        border-radius: 20px;
+    }
+
+    .present {
+        background-color: rgb(30, 219, 20);
+    }
+
+    .abscent {
+        background-color: rgb(244, 33, 33);
+    }
+
+</style>
