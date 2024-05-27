@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 	"time"
+	"vingo/database"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/session"
@@ -25,12 +26,7 @@ const (
 	ZAUTH_STATE = "zauth_state"
 )
 
-type StoreUser struct {
-	Id       int
-	Username string
-}
-
-func getUserFromStore(c *fiber.Ctx) *StoreUser {
+func getUserFromStore(c *fiber.Ctx) *database.User {
 	sess, err := store.Get(c)
 	if err != nil {
 		logger.Println(err)
@@ -43,6 +39,6 @@ func getUserFromStore(c *fiber.Ctx) *StoreUser {
 		return nil
 	}
 
-	storeUser := user.(StoreUser)
-	return &storeUser
+	databaseUser := user.(database.User)
+	return &databaseUser
 }

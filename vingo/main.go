@@ -15,7 +15,7 @@ import (
 )
 
 func main() {
-	gob.Register(handlers.StoreUser{})
+	gob.Register(database.User{})
 
 	setupFromEnv()
 

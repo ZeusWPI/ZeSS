@@ -20,7 +20,7 @@ func landing(c *fiber.Ctx) error {
 	return c.Render("landing", nil, "main")
 }
 
-func stats(c *fiber.Ctx, user *StoreUser) error {
+func stats(c *fiber.Ctx, user *database.User) error {
 	days, err := database.GetPresenceHistory(user.Id, 7)
 	if err != nil {
 		logger.Println("Error get presence history:", err)

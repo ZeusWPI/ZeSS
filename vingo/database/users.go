@@ -1,5 +1,13 @@
 package database
 
+type User struct {
+	Id          int
+	Username    string
+	Admin       bool
+	Leaderboard bool
+	Public      bool
+}
+
 var (
 	usersCreateStmt = `
 		CREATE TABLE IF NOT EXISTS users (
@@ -12,6 +20,13 @@ var (
 		);
 	`
 )
+
+func GetUser(user_id int) (*User, error) {
+	row := db.QueryRow("SELECT id, username, admin, leaderboard, public FROM users WHERE id = $1;", user_id)
+	user := new(User)
+	err := row.Scan(&user.Id, &user.Username, &user.Admin, &user.Leaderboard, &user.Public)
+	return user, err
+}
 
 func CreateUserIfNew(user_id int, username string) error {
 	_, err := db.Exec("INSERT INTO users (id, username) VALUES ($1, $2) ON CONFLICT DO NOTHING;", user_id, username)

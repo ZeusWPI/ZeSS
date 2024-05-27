@@ -123,9 +123,15 @@ func Callback(c *fiber.Ctx) error {
 		return c.Status(500).SendString("Error inserting user")
 	}
 
+	user, err := database.GetUser(zauth_user.Id)
+	if err != nil {
+		logger.Println("Get user:", err)
+		return c.Status(500).SendString("Error fetching user")
+	}
+
 	// Regenerate the session to set a new key
 	sess.Regenerate()
-	sess.Set(STORE_USER, &StoreUser{Id: zauth_user.Id, Username: zauth_user.Username})
+	sess.Set(STORE_USER, &user)
 	sess.Save()
 
 	return c.Status(200).Redirect("/")
