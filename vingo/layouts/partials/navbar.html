@@ -8,6 +8,9 @@
             <div class="navbar-start">
                 <a class="navbar-item" href="/scans">Scans</a>
                 <a class="navbar-item" href="/cards">Cards</a>
+                {{if .user.Admin}}
+                <a class="navbar-item admin" href="/days">Days</a>
+                {{- end}}
             </div>
             <div class="navbar-end">
                 <a class="navbar-item" href="/logout">Hello {{.user.Username}}!</a>
@@ -20,3 +23,9 @@
         </div>
     </div>
 </nav>
+
+<style>
+    a.admin {
+        background-color: orangered;
+    }
+</style>

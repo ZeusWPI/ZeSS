@@ -62,3 +62,22 @@ func Cards(c *fiber.Ctx) error {
 
 	return c.Render("cards", fiber.Map{"user": current_user, "cards": cards, "registering": registering, "reg_user": registering_is_user}, "main")
 }
+
+func Days(c *fiber.Ctx) error {
+	current_user := getUserFromStore(c)
+	if current_user == nil {
+		return c.Status(401).Redirect("/login")
+	}
+
+	if !current_user.Admin {
+		return c.Status(403).SendString("Forbidden")
+	}
+
+	days, err := database.GetDays()
+	if err != nil {
+		logger.Println("Error get days:", err)
+		return c.Status(500).SendString("Error getting days")
+	}
+
+	return c.Render("days", fiber.Map{"user": current_user, "days": days}, "main")
+}

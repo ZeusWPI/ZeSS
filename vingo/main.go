@@ -40,6 +40,10 @@ func main() {
 	// only from kelder?
 	app.Post("/cards/register", handlers.StartCardRegister)
 
+	app.Get("/days", handlers.Days)
+	app.Post("/days", handlers.DaysRegister)
+	app.Post("/days/:id", handlers.DaysDelete)
+
 	app.Get("/auth/callback", handlers.Callback)
 
 	log.Println(app.Listen(":4000"))

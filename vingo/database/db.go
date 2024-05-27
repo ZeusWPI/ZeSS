@@ -11,7 +11,7 @@ var (
 
 func createTables() {
 	// Tables to create
-	createStmts := []string{usersCreateStmt, cardsCreateStmt, scansCreateStmt}
+	createStmts := []string{usersCreateStmt, cardsCreateStmt, scansCreateStmt, daysCreateStmt}
 	for _, stmt := range createStmts {
 		_, err := db.Exec(stmt)
 		if err != nil {

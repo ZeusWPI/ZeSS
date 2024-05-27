@@ -42,3 +42,13 @@ func getUserFromStore(c *fiber.Ctx) *database.User {
 	databaseUser := user.(database.User)
 	return &databaseUser
 }
+
+func isAdmin(c *fiber.Ctx) bool {
+	user := getUserFromStore(c)
+	logger.Println("Is admin:", user)
+	if user == nil {
+		return false
+	}
+
+	return user.Admin
+}
