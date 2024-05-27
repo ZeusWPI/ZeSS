@@ -8,8 +8,9 @@ type Scan struct {
 }
 
 type Present struct {
-	Date    time.Time
-	Present bool
+	Date      time.Time
+	Present   bool
+	StreakDay bool
 }
 
 var (
@@ -45,27 +46,28 @@ func CreateScan(card_serial string) error {
 	return err
 }
 
-func GetPresenceHistory(user_id int, last_n_days int) ([]Present, error) {
-	// When asked for last 7 days, expect to return 7 days (today and last 6 days)
-	last_n_days = last_n_days - 1
+func GetPresenceHistory(user_id int) ([]Present, error) {
 	rows, err := db.Query(`
 		WITH date_series AS (
-			SELECT generate_series(CURRENT_DATE - ($1 || ' days')::INTERVAL, CURRENT_DATE, '1 day') AS date
+			SELECT generate_series(CURRENT_DATE - INTERVAL '6 days', CURRENT_DATE, '1 day') AS date
 		)
 		SELECT 
 			ds.date,
-			CASE WHEN scans.scan_date IS NOT NULL THEN TRUE ELSE FALSE END AS present
+			CASE WHEN scans.scan_date IS NOT NULL THEN TRUE ELSE FALSE END AS present,
+			CASE WHEN days.date IS NOT NULL THEN TRUE ELSE FALSE END AS streak_day
 		FROM date_series ds
 		LEFT JOIN (
 			SELECT DISTINCT (scan_time AT TIME ZONE 'Europe/Brussels')::date AS scan_date
 			FROM scans
 			LEFT JOIN cards
 			ON card_serial = serial
-			WHERE user_id = $2
+			WHERE user_id = $1
 		) scans
 		ON ds.date = scans.scan_date
+		LEFT JOIN days
+		ON ds.date = days.date
 		ORDER BY ds.date DESC;
-	`, last_n_days, user_id)
+	`, user_id)
 	if err != nil {
 		return nil, err
 	}
@@ -73,7 +75,7 @@ func GetPresenceHistory(user_id int, last_n_days int) ([]Present, error) {
 	var presences []Present
 	for rows.Next() {
 		var present Present
-		_ = rows.Scan(&present.Date, &present.Present)
+		_ = rows.Scan(&present.Date, &present.Present, &present.StreakDay)
 
 		presences = append(presences, present)
 	}
