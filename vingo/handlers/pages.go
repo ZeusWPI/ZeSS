@@ -32,9 +32,6 @@ func stats(c *fiber.Ctx, user *database.User) error {
 
 func Scans(c *fiber.Ctx) error {
 	current_user := getUserFromStore(c)
-	if current_user == nil {
-		return c.Status(401).Redirect("/login")
-	}
 
 	scans, err := database.GetScansForUser(current_user.Id)
 	if err != nil {
@@ -47,9 +44,6 @@ func Scans(c *fiber.Ctx) error {
 
 func Cards(c *fiber.Ctx) error {
 	current_user := getUserFromStore(c)
-	if current_user == nil {
-		return c.Status(401).Redirect("/login")
-	}
 
 	cards, err := database.GetCardsForUser(current_user.Id)
 	if err != nil {
@@ -65,13 +59,6 @@ func Cards(c *fiber.Ctx) error {
 
 func Days(c *fiber.Ctx) error {
 	current_user := getUserFromStore(c)
-	if current_user == nil {
-		return c.Status(401).Redirect("/login")
-	}
-
-	if !current_user.Admin {
-		return c.Status(403).SendString("Forbidden")
-	}
 
 	days, err := database.GetDays()
 	if err != nil {

@@ -23,30 +23,38 @@ func main() {
 	defer db.Close()
 
 	engine := html.New("./layouts", ".html")
-	app := fiber.New(fiber.Config{
+	public := fiber.New(fiber.Config{
 		Views: engine,
 	})
 
-	app.Get("/", handlers.Index)
+	// Public routes
+	public.Get("/", handlers.Index)
 
-	app.Get("/login", handlers.Login)
-	app.Get("/logout", handlers.Logout)
+	public.Get("/login", handlers.Login)
+	public.Get("/auth/callback", handlers.Callback)
 
-	app.Get("/scans", handlers.Scans)
-	// only from kelder?
-	app.Post("/scans", handlers.ScanRegister)
+	public.Post("/scans", handlers.ScanRegister)
 
-	app.Get("/cards", handlers.Cards)
-	// only from kelder?
-	app.Post("/cards/register", handlers.StartCardRegister)
+	// Logged in routes
+	logged := public.Group("/", handlers.IsLoggedIn)
+	{
+		logged.Get("/logout", handlers.Logout)
 
-	app.Get("/days", handlers.Days)
-	app.Post("/days", handlers.DaysRegister)
-	app.Post("/days/:id", handlers.DaysDelete)
+		logged.Get("/scans", handlers.Scans)
 
-	app.Get("/auth/callback", handlers.Callback)
+		logged.Get("/cards", handlers.Cards)
+		logged.Post("/cards/register", handlers.StartCardRegister)
+	}
 
-	log.Println(app.Listen(":4000"))
+	// Admin routes
+	admin := logged.Group("/", handlers.IsAdmin)
+	{
+		admin.Get("/days", handlers.Days)
+		admin.Post("/days", handlers.DaysRegister)
+		admin.Post("/days/:id", handlers.DaysDelete)
+	}
+
+	log.Println(public.Listen(":4000"))
 }
 
 func setupFromEnv() {

@@ -10,9 +10,6 @@ func StartCardRegister(c *fiber.Ctx) error {
 	// keep track of the user that initiated the request in global state
 	// since only one user can be registering a card at a time
 	user := getUserFromStore(c)
-	if user == nil {
-		return c.Status(401).Redirect("/login")
-	}
 
 	if time.Now().Before(registering_end) {
 		return c.Status(400).SendString("Another user is already registering a card")

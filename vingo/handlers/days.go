@@ -8,10 +8,6 @@ import (
 )
 
 func DaysRegister(c *fiber.Ctx) error {
-	if !isAdmin(c) {
-		return c.Status(403).SendString("Forbidden")
-	}
-
 	form_start_date := c.FormValue("start_date")
 	form_end_date := c.FormValue("end_date")
 
@@ -33,10 +29,6 @@ func DaysRegister(c *fiber.Ctx) error {
 }
 
 func DaysDelete(c *fiber.Ctx) error {
-	if !isAdmin(c) {
-		return c.Status(403).SendString("Forbidden")
-	}
-
 	day_id := c.Params("id")
 	logger.Println("Deleting day", day_id)
 	err := database.DeleteDay(day_id)
