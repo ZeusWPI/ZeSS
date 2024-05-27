@@ -14,6 +14,8 @@ RST: 0
 ```
 
 # Setup:
+- If you're on windows and the board is not detected: install the ESP32-S2 toolchain from https://dl.espressif.com/dl/esp-idf/
+    - Or just install the usb chip driver for your board (eg. for CP2102N: https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers?tab=downloads)
 - Install micropython
     - Get binary for correct chip. Current: https://micropython.org/download/ESP32_GENERIC_S2/
     - install using commands on that website
