@@ -46,6 +46,8 @@ func main() {
 		logged.Post("/cards/register", handlers.StartCardRegister)
 
 		logged.Get("/leaderboard", handlers.Leaderboard)
+
+		logged.Get("/settings", handlers.Settings)
 	}
 
 	// Admin routes

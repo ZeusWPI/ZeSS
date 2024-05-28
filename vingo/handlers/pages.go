@@ -80,3 +80,9 @@ func Leaderboard(c *fiber.Ctx) error {
 
 	return c.Render("leaderboard", fiber.Map{"user": current_user, "leaderboard": leaderboard}, "main")
 }
+
+func Settings(c *fiber.Ctx) error {
+	current_user := getUserFromStore(c)
+
+	return c.Render("settings", fiber.Map{"user": current_user}, "main")
+}
