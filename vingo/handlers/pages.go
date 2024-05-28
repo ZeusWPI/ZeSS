@@ -68,3 +68,15 @@ func Days(c *fiber.Ctx) error {
 
 	return c.Render("days", fiber.Map{"user": current_user, "days": days}, "main")
 }
+
+func Leaderboard(c *fiber.Ctx) error {
+	current_user := getUserFromStore(c)
+
+	leaderboard, err := database.TotalDaysPerUser()
+	if err != nil {
+		logger.Println("Error getting leaderboard:", err)
+		return c.Status(500).SendString("Error getting leaderboard")
+	}
+
+	return c.Render("leaderboard", fiber.Map{"user": current_user, "leaderboard": leaderboard}, "main")
+}

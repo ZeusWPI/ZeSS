@@ -13,6 +13,12 @@ type Present struct {
 	StreakDay bool
 }
 
+type LeaderboardItem struct {
+	Position  int
+	Username  string
+	TotalDays int
+}
+
 var (
 	scansCreateStmt = `
 		CREATE TABLE IF NOT EXISTS scans (
@@ -81,4 +87,29 @@ func GetPresenceHistory(user_id int) ([]Present, error) {
 	}
 
 	return presences, nil
+}
+
+func TotalDaysPerUser() ([]LeaderboardItem, error) {
+	rows, err := db.Query(`
+	SELECT count, username, ROW_NUMBER() OVER (ORDER BY count desc) AS position
+	FROM (SELECT COUNT(DISTINCT (scan_time AT TIME ZONE 'Europe/Brussels')::date), username
+		FROM scans
+			LEFT JOIN cards ON card_serial = serial
+			LEFT JOIN users ON user_id = users.id
+			GROUP BY username);
+	`)
+
+	if err != nil {
+		return nil, err
+	}
+
+	var leaderboard []LeaderboardItem
+	for rows.Next() {
+		var item LeaderboardItem
+		_ = rows.Scan(&item.TotalDays, &item.Username, &item.Position)
+
+		leaderboard = append(leaderboard, item)
+	}
+
+	return leaderboard, nil
 }

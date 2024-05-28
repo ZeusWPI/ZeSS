@@ -1,13 +1,14 @@
 <nav class="navbar is-warning">
     <div class="container has-text-white">
     <div class="navbar-brand">
-        <a class="navbar-item" href="/">Zess</a>
+        <a class="navbar-item" href="/">ZeSS</a>
     </div>
         <div class="navbar-menu">
             {{if .user}}
             <div class="navbar-start">
                 <a class="navbar-item" href="/scans">Scans</a>
                 <a class="navbar-item" href="/cards">Cards</a>
+                <a class="navbar-item" href="/leaderboard">Leaderboard</a>
                 {{if .user.Admin}}
                 <a class="navbar-item admin" href="/days">Days</a>
                 {{- end}}
