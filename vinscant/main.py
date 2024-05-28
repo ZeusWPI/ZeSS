@@ -53,7 +53,8 @@ class StatusNotifier:
             timer.deinit()
 
     def gotoSleep(self):
-        Timer(0).init(mode=Timer.ONE_SHOT, period=500, callback=self.idle)
+        time.sleep(.5)
+        self.idle()
         
 
     def good(self):
@@ -101,7 +102,6 @@ def do_read():
                         notifier.error()
                     lastUid = uid
                     lastTime = currentTime
-                    # TODO prevent it from crashing after same card is scanned multiple times in row
                 else:
                     print("Authentication error")
                     notifier.error()
