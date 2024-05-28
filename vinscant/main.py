@@ -2,6 +2,7 @@ import mfrc522
 import urequests as req
 from machine import Pin, Timer, PWM
 from neopixel import NeoPixel
+import time
 
 
 def get_key():
@@ -53,6 +54,7 @@ class StatusNotifier:
 
     def gotoSleep(self):
         Timer(0).init(mode=Timer.ONE_SHOT, period=500, callback=self.idle)
+        
 
     def good(self):
         self.led.setColor(0, 255, 0)
@@ -67,6 +69,8 @@ class StatusNotifier:
     
 def do_read():
     rdr = mfrc522.MFRC522(sck=36,mosi=35,miso=37,rst=0,cs=34)
+    lastUid = ''
+    lastTime = 0
 
     print("")
     print("Place card before reader to read from address 0x08")
@@ -81,15 +85,23 @@ def do_read():
                     # beep
                     notifier.processing()
                     uid = uidToString(uid)
+                    currentTime = time.time()
                     print("vinscant: Card detected %s" % uid)
-                    res = req.post("https://zess.zeus.gent/scans", data=f"{uid};{key}")
-                    print("vingo: " + res.text)
-                    res.close()
-                    # beep beep
-                    if 200 <= res.status_code < 300:
-                        notifier.good()
+                    if uid != lastUid or currentTime - lastTime > 5:
+                        res = req.post("https://zess.zeus.gent/scans", data=f"{uid};{key}")
+                        print("vingo: " + res.text)
+                        res.close()
+                        # beep beep
+                        if 200 <= res.status_code < 300:
+                            notifier.good()
+                        else:
+                            notifier.error()
                     else:
+                        print("vinscant: Card already seen")
                         notifier.error()
+                    lastUid = uid
+                    lastTime = currentTime
+                    # TODO prevent it from crashing after same card is scanned multiple times in row
                 else:
                     print("Authentication error")
                     notifier.error()
