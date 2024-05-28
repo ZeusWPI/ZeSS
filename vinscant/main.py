@@ -16,12 +16,28 @@ def uidToString(uid):
     return mystring
 
 class Led:
-    def __init__(self, pin=Pin(18, Pin.OUT)):
-        self.neopixel = NeoPixel(pin, 1)
+    def __init__(self, rood=Pin(1, Pin.OUT), geel=Pin(2, Pin.OUT), groen=Pin(3, Pin.OUT)):
+        self.rood = rood
+        self.geel = geel
+        self.groen = groen
 
     def setColor(self, r, g, b):
-        self.neopixel[0] = (r, g, b)
-        self.neopixel.write()
+        if r and g:
+            self.rood.off()
+            self.geel.on()
+            self.groen.off()
+        elif r:
+            self.rood.on()
+            self.geel.off()
+            self.groen.off()
+        elif g:
+            self.rood.off()
+            self.geel.off()
+            self.groen.on()
+        else:
+            self.rood.off()
+            self.geel.off()
+            self.groen.off()
 
     def turnOff(self):
         self.setColor(0, 0, 0)
@@ -39,21 +55,24 @@ class Buzzer:
             self.pwm.deinit()
 
 class StatusNotifier:
+    colors = ((1,0,0),(1,1,0),(0,1,0))
     def __init__(self, buzzer: Buzzer, led: Led):
         self.buzzer = buzzer
         self.led = led
+        self.state = 0
 
     def processing(self):
         self.led.setColor(255, 127, 0)
 
-    def idle(self, timer=None):
-        self.led.turnOff()
+    def idle(self):
         self.buzzer.stop()
-        if timer:
-            timer.deinit()
+        self.led.setColor(*StatusNotifier.colors[self.state])
+        self.state = (self.state + 1) % 3
 
     def gotoSleep(self):
         time.sleep(.5)
+        self.buzzer.stop()
+        time.sleep(1.5)
         self.idle()
         
 
@@ -105,6 +124,7 @@ def do_read():
                 else:
                     print("Authentication error")
                     notifier.error()
+            notifier.idle()
     except KeyboardInterrupt:
         print("KeyboardInterrupt")
         return
