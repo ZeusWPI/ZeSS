@@ -55,7 +55,7 @@ func CreateScan(card_serial string) error {
 func GetPresenceHistory(user_id int) ([]Present, error) {
 	rows, err := db.Query(`
 		WITH date_series AS (
-			SELECT generate_series(CURRENT_DATE AT TIME ZONE 'Europe/Brussels' - INTERVAL '6 days', CURRENT_DATE, '1 day')::date AS date
+			SELECT generate_series(CURRENT_DATE AT TIME ZONE 'Europe/Brussels' - INTERVAL '6 days', CURRENT_DATE AT TIME ZONE 'Europe/Brussels', '1 day')::date AS date
 		)
 		SELECT 
 			ds.date,
