@@ -1,7 +1,6 @@
 import mfrc522 
 import urequests as req
-from machine import Pin, Timer, PWM
-from neopixel import NeoPixel
+from machine import Pin, PWM
 import time
 
 
@@ -16,28 +15,21 @@ def uidToString(uid):
     return mystring
 
 class Led:
+    ledConfig = {
+            (True, False, False): (True, False, False),
+            (True, True, False): (False, True, False),
+            (False, True, False): (False, False, True)
+            }
     def __init__(self, rood=Pin(1, Pin.OUT), geel=Pin(2, Pin.OUT), groen=Pin(3, Pin.OUT)):
         self.rood = rood
         self.geel = geel
         self.groen = groen
 
     def setColor(self, r, g, b):
-        if r and g:
-            self.rood.off()
-            self.geel.on()
-            self.groen.off()
-        elif r:
-            self.rood.on()
-            self.geel.off()
-            self.groen.off()
-        elif g:
-            self.rood.off()
-            self.geel.off()
-            self.groen.on()
-        else:
-            self.rood.off()
-            self.geel.off()
-            self.groen.off()
+        config = Led.ledConfig[tuple(value != 0 for value in (r, g, b))]
+        self.rood.value(config[0])
+        self.geel.value(config[1])
+        self.groen.value(config[2])
 
     def turnOff(self):
         self.setColor(0, 0, 0)
