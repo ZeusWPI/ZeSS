@@ -6,11 +6,11 @@ ono
 
 Connect RFID-RC522 Rfid reader on these pins:
 ```
-SDA: 34
+SDA/CS: 34
 MOSI: 35
-SCK: 36
-MISO: 37
-RST: 0
+SCK: 34
+MISO: 36
+RST: 16
 ```
 
 # Setup:
@@ -30,3 +30,4 @@ RST: 0
 - Beeps
 - Boops
 - Status light based on server response
+- Switch to esp-rs

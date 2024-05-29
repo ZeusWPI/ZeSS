@@ -18,7 +18,8 @@ class Led:
     ledConfig = {
             (True, False, False): (True, False, False),
             (True, True, False): (False, True, False),
-            (False, True, False): (False, False, True)
+            (False, True, False): (False, False, True),
+            (False, False, False): (False, False, False)
             }
     def __init__(self, rood=Pin(1, Pin.OUT), geel=Pin(2, Pin.OUT), groen=Pin(3, Pin.OUT)):
         self.rood = rood
@@ -80,7 +81,7 @@ class StatusNotifier:
 
     
 def do_read():
-    rdr = mfrc522.MFRC522(sck=36,mosi=35,miso=37,rst=0,cs=34)
+    rdr = mfrc522.MFRC522(rst=16,cs=33,sck=34,mosi=35,miso=36)
     lastUid = ''
     lastTime = 0
 
