@@ -31,7 +31,7 @@ var (
 )
 
 func GetScansForUser(user_id int) ([]Scan, error) {
-	scans_rows, err := db.Query("SELECT scan_time, card_serial FROM scans WHERE card_serial IN (SELECT serial FROM cards WHERE user_id = $1);", user_id)
+	scans_rows, err := db.Query("SELECT scan_time, card_serial FROM scans WHERE card_serial IN (SELECT serial FROM cards WHERE user_id = $1) ORDER BY scan_time DESC;", user_id)
 	if err != nil {
 		return nil, err
 	}
