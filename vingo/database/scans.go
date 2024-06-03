@@ -30,6 +30,11 @@ var (
 	`
 )
 
+func CreateScan(card_serial string) error {
+	_, err := db.Exec("INSERT INTO scans (card_serial) VALUES ($1);", card_serial)
+	return err
+}
+
 func GetScansForUser(user_id int) ([]Scan, error) {
 	scans_rows, err := db.Query("SELECT scan_time, card_serial FROM scans WHERE card_serial IN (SELECT serial FROM cards WHERE user_id = $1) ORDER BY scan_time DESC;", user_id)
 	if err != nil {
@@ -45,11 +50,6 @@ func GetScansForUser(user_id int) ([]Scan, error) {
 		scans = append(scans, scan)
 	}
 	return scans, nil
-}
-
-func CreateScan(card_serial string) error {
-	_, err := db.Exec("INSERT INTO scans (card_serial) VALUES ($1);", card_serial)
-	return err
 }
 
 func GetPresenceHistory(user_id int) ([]Present, error) {

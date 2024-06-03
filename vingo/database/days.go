@@ -16,15 +16,6 @@ var (
 		`
 )
 
-func CreateDay(day time.Time) error {
-	_, err := db.Exec("INSERT INTO days (date) VALUES ($1);", day)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
 func CreateDays(first_day time.Time, last_day time.Time) error {
 	tx, err := db.Begin()
 	if err != nil {
