@@ -63,7 +63,7 @@ func GetPresenceHistory(user_id int) ([]Present, error) {
 			CASE WHEN days.date IS NOT NULL THEN TRUE ELSE FALSE END AS streak_day
 		FROM date_series ds
 		LEFT JOIN (
-			SELECT DISTINCT (scan_time AT TIME ZONE 'Europe/Brussels')::date AS scan_date
+			SELECT DISTINCT ((scan_time - INTERVAL '4 hours') AT TIME ZONE 'Europe/Brussels')::date AS scan_date
 			FROM scans
 			LEFT JOIN cards
 			ON card_serial = serial
@@ -92,7 +92,7 @@ func GetPresenceHistory(user_id int) ([]Present, error) {
 func TotalDaysPerUser() ([]LeaderboardItem, error) {
 	rows, err := db.Query(`
 	SELECT count, username, RANK() OVER (ORDER BY count desc) AS position
-	FROM (SELECT COUNT(DISTINCT (scan_time AT TIME ZONE 'Europe/Brussels')::date), username
+	FROM (SELECT COUNT(DISTINCT ((scan_time - INTERVAL '4 hours') AT TIME ZONE 'Europe/Brussels')::date), username
 		FROM scans
 			LEFT JOIN cards ON card_serial = serial
 			LEFT JOIN users ON user_id = users.id
