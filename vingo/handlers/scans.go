@@ -24,7 +24,7 @@ func ScanRegister(c *fiber.Ctx) error {
 		return c.Status(400).SendString("Invalid format: card_id;key")
 	}
 
-	card_id := s_data[0]
+	card_serial := s_data[0]
 	key := s_data[1]
 	if key != scan_key {
 		return c.Status(401).SendString("Invalid key")
@@ -32,9 +32,9 @@ func ScanRegister(c *fiber.Ctx) error {
 
 	// if card registering session is active, register the card instead of scanning
 	if time.Now().Before(registering_end) {
-		logger.Println("Registering card", card_id, "for user", registering_user)
+		logger.Println("Registering card", card_serial, "for user", registering_user)
 
-		err := database.CreateCard(card_id, registering_user)
+		err := database.CreateCard(card_serial, registering_user)
 		// error or not, end registering session
 		registering_user = 0
 		registering_end = time.Now()
@@ -47,12 +47,18 @@ func ScanRegister(c *fiber.Ctx) error {
 	}
 
 	// add scan to database
-	err := database.CreateScan(card_id)
+	err := database.CreateScan(card_serial)
 	if err != nil {
 		logger.Println(err)
 		// technically only when error is foreign key constraint
 		return c.Status(404).SendString("Card doesn't exist")
 	}
 
-	return c.SendString("Card scanned")
+	user, err := database.GetUserFromCard(card_serial)
+	if err != nil {
+		logger.Println(err)
+		return c.Status(404).SendString("Card doesn't exist")
+	}
+
+	return c.SendString(user.Username)
 }
