@@ -24,7 +24,7 @@ var (
 		CREATE TABLE IF NOT EXISTS scans (
 			id SERIAL NOT NULL PRIMARY KEY,
 			scan_time TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
-			scan_type BOOLEAN,
+			scan_in BOOLEAN,
 			card_serial TEXT NOT NULL REFERENCES cards(serial)
 		);
 	`
