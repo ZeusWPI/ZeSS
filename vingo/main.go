@@ -49,6 +49,7 @@ func main() {
 		logged.Get("/leaderboard", handlers.Leaderboard)
 
 		logged.Get("/settings", handlers.Settings)
+		logged.Post("/settings", handlers.SettingsUpdate)
 	}
 
 	// Admin routes
