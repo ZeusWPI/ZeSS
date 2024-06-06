@@ -1,39 +1,39 @@
 <div class="box">
     <form action="/cards/register" method="post">
         <div>
-            If you don't have any cards yet, click the button below to start registering a new card.
+            If you don't have any cards yet, click the button below to start registering a new card.<br/>
             Once clicked, you will have 1 minute to scan the card you want to use at the scanner and it will be linked to your account.
         </div>
-        <div class="field is-grouped is-grouped-right">
-            {{if .registering}}
+        <div>
+            {{ if .registering }}
                 {{ if .reg_user }}
-                    <input class="button is-warning" disabled type="submit" value="You are registering a card!">
-                {{- else}}
-                    <input class="button is-danger" disabled type="submit" value="Somebody is already registering a card">
-                {{- end}}
-            {{- else}}
-                <input class="button is-success" type="submit" value="Start registering a new card">
-            {{- end}}
+                    <input class="warning" disabled type="submit" value="You are registering a card!">
+                {{ else }}
+                    <input class="danger" disabled type="submit" value="Somebody is already registering a card">
+                {{ end }}
+            {{ else }}
+                <input class="success" type="submit" value="Start registering a new card">
+            {{ end }}
         </div>
     </form>
 </div>
 <div class="box">
-    {{if .cards}}
-    <table class="table is-fullwidth is-striped is-hoverable">
-        <thead>
+    {{ if .cards }}
+        <table>
+            <thead>
+                <tr>
+                    <th>card</th>
+                    <th>created_at</th>
+                </tr>
+            </thead>
+        {{ range .cards }}
             <tr>
-                <th>card</th>
-                <th>created_at</th>
+                <td>{{ .Serial }}</td>
+                <td>{{ .CreatedAt.Local.Format "2 January 2006 15:04:05" }}</td>
             </tr>
-        </thead>
-    {{range .cards}}
-        <tr>
-            <td>{{.Serial}}</td>
-            <td>{{.CreatedAt.Local.Format "2 January 2006 15:04:05"}}</td>
-        </tr>
-    {{end}}
-    </table>
-    {{- else}}
-    <div class="title">No cards yet!</div>
-    {{- end}}
+        {{ end }}
+        </table>
+    {{ else }}
+        <h1>No cards yet!</h1>
+    {{ end }}
 </div>

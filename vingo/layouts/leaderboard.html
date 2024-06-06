@@ -1,5 +1,5 @@
 <div class="box">
-    <table class="table is-fullwidth is-striped is-hoverable">
+    <table>
         <thead>
             <tr>
                 <th>#</th>
@@ -7,12 +7,12 @@
                 <th>Total days scanned</th>
             </tr>
         </thead>
-        {{range .leaderboard}}
-        <tr>
-            <td>{{.Position}}</td>
-            <td>{{.Username}}</td>
-            <td>{{.TotalDays}}</td>
-        </tr>
-        {{end}}
+        {{ range .leaderboard }}
+            <tr>
+                <td>{{.Position}}</td>
+                <td>{{.Username}}</td>
+                <td>{{.TotalDays}}</td>
+            </tr>
+        {{ end }}
     </table>
 </div>
