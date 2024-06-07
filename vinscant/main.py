@@ -1,6 +1,6 @@
 import mfrc522 
 import urequests as req
-from machine import Pin, PWM
+from machine import Pin, PWM, WDT
 import time
 from neopixel import NeoPixel
 
@@ -109,11 +109,17 @@ def do_read():
                     print("Authentication error")
                     notifier.error()
             notifier.idle()
+            watchdog.feed()
     except KeyboardInterrupt:
         print("KeyboardInterrupt")
+
         return
 
 notifier = StatusNotifier(Buzzer(Pin(37, Pin.OUT)), Led())
 notifier.idle()
 key = get_key()
+print("vinscant: watchdog starting in 2s, interupt now with Ctrl+C")
+time.sleep(2)
+watchdog = WDT(timeout=10 * 1000)
+print("vinscant: watchdog started")
 do_read()
