@@ -2,6 +2,7 @@ import mfrc522
 import urequests as req
 from machine import Pin, PWM
 import time
+from neopixel import NeoPixel
 
 
 def get_key():
@@ -15,22 +16,12 @@ def uidToString(uid):
     return mystring
 
 class Led:
-    ledConfig = {
-            (True, False, False): (True, False, False),
-            (True, True, False): (False, True, False),
-            (False, True, False): (False, False, True),
-            (False, False, False): (False, False, False)
-            }
-    def __init__(self, rood=Pin(1, Pin.OUT), geel=Pin(2, Pin.OUT), groen=Pin(3, Pin.OUT)):
-        self.rood = rood
-        self.geel = geel
-        self.groen = groen
+    def __init__(self, pin=Pin(18, Pin.OUT)):
+        self.neopixel = NeoPixel(pin, 1)
 
     def setColor(self, r, g, b):
-        config = Led.ledConfig[tuple(value != 0 for value in (r, g, b))]
-        self.rood.value(config[0])
-        self.geel.value(config[1])
-        self.groen.value(config[2])
+        self.neopixel[0] = (r, g, b)
+        self.neopixel.write()
 
     def turnOff(self):
         self.setColor(0, 0, 0)
@@ -48,14 +39,14 @@ class Buzzer:
             self.pwm.deinit()
 
 class StatusNotifier:
-    colors = ((1,0,0),(1,1,0),(0,1,0))
+    colors = ((255, 0, 0), (255, 127, 0), (0, 255, 0))
     def __init__(self, buzzer: Buzzer, led: Led):
         self.buzzer = buzzer
         self.led = led
         self.state = 0
 
     def processing(self):
-        self.led.setColor(255, 127, 0)
+        self.led.setColor(*StatusNotifier.colors[1])
 
     def idle(self):
         self.buzzer.stop()
@@ -70,12 +61,12 @@ class StatusNotifier:
         
 
     def good(self):
-        self.led.setColor(0, 255, 0)
+        self.led.setColor(*StatusNotifier.colors[2])
         self.buzzer.start(500)
         self.gotoSleep()
 
     def error(self):
-        self.led.setColor(255, 0, 0)
+        self.led.setColor(*StatusNotifier.colors[0])
         self.buzzer.start(250)
         self.gotoSleep()
 
@@ -122,7 +113,7 @@ def do_read():
         print("KeyboardInterrupt")
         return
 
-notifier = StatusNotifier(Buzzer(Pin(17, Pin.OUT)), Led())
+notifier = StatusNotifier(Buzzer(Pin(37, Pin.OUT)), Led())
 notifier.idle()
 key = get_key()
 do_read()
