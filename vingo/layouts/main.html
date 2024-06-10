@@ -8,9 +8,9 @@
         :root {
             font-family: sans-serif;
             --color-1: #ffb70f;
-            --color-success: #50dd99;
+            --color-success: #1edb14;
             --color-warning: #ffb70f;
-            --color-danger: #ee4444;
+            --color-danger: #f42121;
             --color-inactive: rgb(69, 69, 69);
             --color-text: black;
             --color-shadow: #f0f0f0;
@@ -39,6 +39,7 @@
             font-size: medium;
             transition-duration: 125ms;
             transition-property: filter;
+            cursor: pointer;
         }
         input[type=submit]:hover {
             filter: brightness(95%);
@@ -88,6 +89,21 @@
 
         .push-to-end {
             margin-inline-start: auto;
+        }
+
+        @media only screen and (max-width: 768px) {
+            div.content {
+                margin: 8px;
+            }
+
+            div.box {
+                margin: 8px;
+                padding: 8px;
+            }
+
+            .hide-mobile {
+                display: none;
+            }
         }
 
         /* Color classes */
