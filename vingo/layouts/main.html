@@ -74,7 +74,7 @@
         /* Layout classes */
 
         div.content {
-            margin: 16px 32px 16px 32px;
+            margin: 16px 6vw;
         }
         div.content > *:first-child {
             margin-top: 0px;
@@ -131,6 +131,7 @@
             text-wrap: nowrap;
             background-color: var(--color-1);
             box-shadow: 0 2px 0 0 var(--color-shadow);
+            padding: 0px 6vw;
         }
         nav * {
             display: flex;
@@ -152,6 +153,11 @@
         }
         nav > div > a > *:first-child {
             margin-left: 0px;
+        }
+        @media only screen and (max-width: 768px) {
+            nav {
+                padding: 0px 0px;
+            }
         }
     </style>
 </head>
