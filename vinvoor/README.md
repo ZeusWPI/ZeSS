@@ -10,3 +10,8 @@ That's what this does!
 -   Install dependencies `yarn install`
 -   Start the frontend `yarn run dev`
 -   Visit: http://localhost:5173
+
+## How to run (for production)
+
+-   Build the image `docker build -t vinvoor:latest .`.
+-   Run the image `docker run -p 80:3000 vinvoor:latest`.

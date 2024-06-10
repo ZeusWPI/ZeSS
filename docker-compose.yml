@@ -1,0 +1,36 @@
+services:
+  zess-db:
+    image: postgres
+    environment:
+      - POSTGRES_PASSWORD=zess
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=zess
+    expose:
+      - 5432
+    network_mode: host
+
+  zess-backend:
+    build:
+      context: vingo
+      dockerfile: Dockerfile.dev
+    expose:
+      - 4000
+    volumes:
+      - ./vingo:/backend
+      - backend-cache:/root/.cache/go-build
+    depends_on:
+      - zess-db
+    network_mode: host
+
+  zess-frontend:
+    build:
+      context: vinvoor
+      dockerfile: Dockerfile.dev
+    expose:
+      - 5173
+    volumes:
+      - ./vinvoor:/frontend
+    network_mode: host
+
+volumes:
+  backend-cache:
