@@ -5,7 +5,7 @@ class MusicPlayer:
         self.melody = melody
         self.pin = pin
         self.pwm: PWM = PWM(pin, freq=1, duty_u16=0)
-        self.timer = Timer(1)
+        self.timer = Timer(0)
 
     @staticmethod
     def midi_to_freq(note: int):
