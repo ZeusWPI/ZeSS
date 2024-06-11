@@ -1,0 +1,39 @@
+services:
+  zess-db:
+    image: postgres:alpine3.20
+    environment:
+      - POSTGRES_PASSWORD=zess
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=zess
+    ports:
+      - 5432:5432
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  zess-backend:
+    build:
+      context: vingo
+      dockerfile: Dockerfile.dev
+    ports:
+      - 4000:4000
+    volumes:
+      - ./vingo:/backend
+      - backend-packages:/go/pkg/mod
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      - zess-db
+
+  zess-frontend:
+    build:
+      context: vinvoor
+      dockerfile: Dockerfile.dev
+    ports:
+      - 5173:5173
+    volumes:
+      - ./vinvoor:/frontend
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+volumes:
+  backend-packages:
