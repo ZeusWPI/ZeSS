@@ -16,6 +16,9 @@ jobs:
       with:
         fetch-depth: 0
 
+    - name: show logs
+      run: git log --format="%s" origin/main..HEAD
+
     - name: check commit messages
       run: |
         git log --format="%s" origin/main..HEAD | while IFS= read -r message; do
