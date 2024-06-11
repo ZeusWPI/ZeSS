@@ -1,0 +1,6 @@
+key.txt
+mfrc522.py
+webrepl_cli.py
+
+# ESP-IDF default build directory name
+build
