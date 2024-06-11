@@ -8,7 +8,7 @@ from neopixel import NeoPixel
 def get_key():
     with open("key.txt", "r") as file:
         return file.read().strip()
-
+LEDDY_ADDRESS = "http://10.0.2.3"
 def uidToString(uid):
     mystring = ""
     for i in uid:
@@ -64,7 +64,7 @@ class StatusNotifier:
         self.led.setColor(*StatusNotifier.colors[2])
         self.buzzer.start(500)
         if name:
-            req.post("http://10.0.2.3", data=f"ScrollingText Welkom {name}!").close()
+            leddy.setText(f"Welkom {name}!")
         self.gotoSleep()
 
     def error(self):
@@ -72,12 +72,29 @@ class StatusNotifier:
         self.buzzer.start(250)
         self.gotoSleep()
 
-watchdog = None
+class Leddy:
+    def __init__(self, address="http://10.0.2.3") -> None:
+        self.address = address
+
+    def _post(self, command: str):
+        try:
+            req.post(self.address, data=command, timeout=2).close()
+        except Exception:
+            print("vinscant: leddy doesn't work :\x28") # indentation does weird
+
+    def setText(self, text: str):
+        self._post(f"Option autoResetMs {5 * 1000}")
+        self._post(f"ScrollingText {text}")
     
 def do_read():
     rdr = mfrc522.MFRC522(rst=16,cs=33,sck=34,mosi=35,miso=36)
     lastUid = ''
     lastTime = 0
+
+    print("vinscant: watchdog starting in 2s, interupt now with Ctrl+C")
+    time.sleep(2)
+    watchdog = WDT(timeout=10 * 1000)
+    print("vinscant: watchdog started")
 
     print("")
     print("Place card before reader to read from address 0x08")
@@ -122,9 +139,5 @@ def do_read():
 notifier = StatusNotifier(Buzzer(Pin(37, Pin.OUT)), Led())
 notifier.idle()
 key = get_key()
-print("vinscant: watchdog starting in 2s, interupt now with Ctrl+C")
-time.sleep(2)
-watchdog = WDT(timeout=10 * 1000)
-print("vinscant: watchdog started")
-req.post("http://10.0.2.3", data=f"Option autoResetMs {5 * 1000}").close()
+leddy = Leddy()
 do_read()
