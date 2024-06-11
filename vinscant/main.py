@@ -1,14 +1,14 @@
 import mfrc522 
 import urequests as req
-from machine import Pin, PWM, WDT
+from machine import Pin, PWM, WDT, bitstream
 import time
 from neopixel import NeoPixel
+import esp32
 
 
 def get_key():
     with open("key.txt", "r") as file:
         return file.read().strip()
-LEDDY_ADDRESS = "http://10.0.2.3"
 def uidToString(uid):
     mystring = ""
     for i in uid:
@@ -20,8 +20,16 @@ class Led:
         self.neopixel = NeoPixel(pin, 1)
 
     def setColor(self, r, g, b):
+        print("color change begin")
         self.neopixel[0] = (r, g, b)
+        print("color change step 1")
+        # bitganging causes hang
+        # study the following file for more info
+        # https://github.com/micropython/micropython/blob/master/extmod/machine_bitstream.c
+        # TODO overwrite NeoPixel.write to use RMT directly
+        esp32.RMT.bitstream_channel(None)
         self.neopixel.write()
+        print("color change done")
 
     def turnOff(self):
         self.setColor(0, 0, 0)
