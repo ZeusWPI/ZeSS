@@ -1,0 +1,29 @@
+name: commit message check
+run-name: commit message check
+on: [push]
+
+jobs:
+  check_commit_messages:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: check commit messages
+      run: |
+        git log --format="%s" origin/main..HEAD | while IFS= read -r message; do
+          if ! [[ $message =~ ^(vingo:|vinscant:|vinvoor:|zess:) ]]; then
+            echo $message
+            echo "Error: commit message should start with vingo:|vinscant:|vinvoor:|zess: depending on which subproject you are working on."
+            exit 1
+          fi
+
+          if ! [[ $message =~ ^.*:\ [a-z].* ]]; then
+            echo $message
+            echo "Error: first letter after project specifier should be lower case"
+            exit 1
+          fi
+        done
