@@ -14,26 +14,26 @@
     </form>
 </div>
 <div class="box">
-    {{if .days}}
-    <table class="table is-fullwidth is-striped is-hoverable">
-        <thead>
-            <tr>
-                <th>date</th>
-                <th>delete</th>
-            </tr>
-        </thead>
-        {{range .days}}
-        <tr>
-            <td>{{.Date.Format "Mon 2 January 2006"}}</td>
-            <td>
-                <form action="/days/{{ .Id }}" method="post">
-                    <input type="submit" class="is-danger" value="Delete">
-              </form>
-            </td>
-        </tr>
-        {{end}}
-    </table>
-    {{- else}}
-    <div class="title">No days yet!</div>
-    {{- end}}
+    {{ if .days }}
+        <table>
+            <thead>
+                <tr>
+                    <th>date</th>
+                    <th>delete</th>
+                </tr>
+            </thead>
+            {{ range .days }}
+                <tr>
+                    <td>{{ .Date.Format "Mon 2 January 2006" }}</td>
+                    <td>
+                        <form action="/days/{{ .Id }}" method="post">
+                            <input type="submit" class="danger" value="Delete">
+                      </form>
+                    </td>
+                </tr>
+            {{ end }}
+        </table>
+    {{ else }}
+        <h1>No days yet!</h1>
+    {{ end }}
 </div>

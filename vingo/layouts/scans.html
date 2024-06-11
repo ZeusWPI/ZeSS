@@ -1,20 +1,20 @@
 <div class="box">
-    {{if .scans}}
-    <table class="table is-fullwidth is-striped is-hoverable">
-        <thead>
-            <tr>
-                <th>scan_time</th>
-                <th>card</th>
-            </tr>
-        </thead>
-        {{range .scans}}
-        <tr>
-            <td>{{.ScanTime.Local.Format "Mon 2 January 2006 15:04:05"}}</td>
-            <td>{{.Card}}</td>
-        </tr>
-        {{end}}
-    </table>
-    {{- else}}
-    <div class="title">No scans yet!</div>
-    {{- end}}
+    {{ if .scans }}
+        <table>
+            <thead>
+                <tr>
+                    <th>scan_time</th>
+                    <th>card</th>
+                </tr>
+            </thead>
+            {{ range .scans }}
+                <tr>
+                    <td>{{ .ScanTime.Local.Format "Mon 2 January 2006 15:04:05" }}</td>
+                    <td>{{ .Card }}</td>
+                </tr>
+            {{ end }}
+        </table>
+    {{ else }}
+        <div class="title">No scans yet!</div>
+    {{ end }}
 </div>

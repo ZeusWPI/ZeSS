@@ -1,45 +1,30 @@
-<div class="week_ct">
-{{ range .days_present_7 }}
-    <div class="week_day {{ if .Present }} present {{ else if .StreakDay}} abscent {{ end }}">
-        {{ .Date.Format "Mon 02 Jan" }}
-    </div>
-{{ end }}
-</div>
-
 <style>
-    .week_ct {
+    .weekBox {
         display: flex;
-        flex-direction: row;
-
+        flex-direction: row-reverse;
         justify-content: space-between;
-
-        box-shadow: 10px 3px 20px 0px rgba(0,0,0,0.39);
-        padding: 30px;
-        border-radius: 20px;
-        margin-top: 30px;
+        overflow: auto;
     }
 
-    .week_day {
+    .weekBox > div {
+        height: 80px;
+        width: 80px;
+        border-radius: 20px;
+
         display: flex;
         align-items: center;
         justify-content: center;
 
-        height: 7rem;
-        width: 7rem;
-
-        background-color: rgb(69, 69, 69);
-        font-weight: bolder;
         color: white;
-
-        border-radius: 20px;
+        font-weight: bolder;
+        text-wrap: nowrap;
     }
-
-    .present {
-        background-color: rgb(30, 219, 20);
-    }
-
-    .abscent {
-        background-color: rgb(244, 33, 33);
-    }
-
 </style>
+
+<div class="box weekBox">
+    {{ range .days_present_7 }}
+        <div class="box {{ if .Present }} success {{ else if .StreakDay }} danger {{ else }} inactive {{ end }}">
+            {{ .Date.Format "Mon 02 Jan" }}
+        </div>
+    {{ end }}
+</div>

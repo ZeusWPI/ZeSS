@@ -1,8 +1,8 @@
 import mfrc522 
 import urequests as req
-from machine import Pin, Timer, PWM
-from neopixel import NeoPixel
+from machine import Pin, PWM, WDT
 import time
+from neopixel import NeoPixel
 
 
 def get_key():
@@ -16,28 +16,12 @@ def uidToString(uid):
     return mystring
 
 class Led:
-    def __init__(self, rood=Pin(1, Pin.OUT), geel=Pin(2, Pin.OUT), groen=Pin(3, Pin.OUT)):
-        self.rood = rood
-        self.geel = geel
-        self.groen = groen
+    def __init__(self, pin=Pin(18, Pin.OUT)):
+        self.neopixel = NeoPixel(pin, 1)
 
     def setColor(self, r, g, b):
-        if r and g:
-            self.rood.off()
-            self.geel.on()
-            self.groen.off()
-        elif r:
-            self.rood.on()
-            self.geel.off()
-            self.groen.off()
-        elif g:
-            self.rood.off()
-            self.geel.off()
-            self.groen.on()
-        else:
-            self.rood.off()
-            self.geel.off()
-            self.groen.off()
+        self.neopixel[0] = (r, g, b)
+        self.neopixel.write()
 
     def turnOff(self):
         self.setColor(0, 0, 0)
@@ -55,14 +39,14 @@ class Buzzer:
             self.pwm.deinit()
 
 class StatusNotifier:
-    colors = ((1,0,0),(1,1,0),(0,1,0))
+    colors = ((255, 0, 0), (255, 127, 0), (0, 255, 0))
     def __init__(self, buzzer: Buzzer, led: Led):
         self.buzzer = buzzer
         self.led = led
         self.state = 0
 
     def processing(self):
-        self.led.setColor(255, 127, 0)
+        self.led.setColor(*StatusNotifier.colors[1])
 
     def idle(self):
         self.buzzer.stop()
@@ -77,18 +61,18 @@ class StatusNotifier:
         
 
     def good(self):
-        self.led.setColor(0, 255, 0)
+        self.led.setColor(*StatusNotifier.colors[2])
         self.buzzer.start(500)
         self.gotoSleep()
 
     def error(self):
-        self.led.setColor(255, 0, 0)
+        self.led.setColor(*StatusNotifier.colors[0])
         self.buzzer.start(250)
         self.gotoSleep()
 
     
 def do_read():
-    rdr = mfrc522.MFRC522(sck=36,mosi=35,miso=37,rst=0,cs=34)
+    rdr = mfrc522.MFRC522(rst=16,cs=33,sck=34,mosi=35,miso=36)
     lastUid = ''
     lastTime = 0
 
@@ -125,11 +109,17 @@ def do_read():
                     print("Authentication error")
                     notifier.error()
             notifier.idle()
+            watchdog.feed()
     except KeyboardInterrupt:
         print("KeyboardInterrupt")
+
         return
 
-notifier = StatusNotifier(Buzzer(Pin(17, Pin.OUT)), Led())
+notifier = StatusNotifier(Buzzer(Pin(37, Pin.OUT)), Led())
 notifier.idle()
 key = get_key()
+print("vinscant: watchdog starting in 2s, interupt now with Ctrl+C")
+time.sleep(2)
+watchdog = WDT(timeout=10 * 1000)
+print("vinscant: watchdog started")
 do_read()
