@@ -1,5 +1,17 @@
 #!/bin/sh
 
+# Exit function
+
+ctrl_c() {
+    echo "-------------------------------------"
+    echo "Stopping all containers..."
+    echo "-------------------------------------"
+    docker-compose -f docker-compose.yml stop
+    exit 0
+}
+
+trap ctrl_c INT
+
 # Parse input
 
 backend=false
