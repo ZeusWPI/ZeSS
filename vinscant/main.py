@@ -60,9 +60,11 @@ class StatusNotifier:
         self.idle()
         
 
-    def good(self):
+    def good(self, name=None):
         self.led.setColor(*StatusNotifier.colors[2])
         self.buzzer.start(500)
+        if name:
+            req.post("http://10.0.2.3", data=f"ScrollingText Welkom {name}!").close()
         self.gotoSleep()
 
     def error(self):
@@ -70,6 +72,7 @@ class StatusNotifier:
         self.buzzer.start(250)
         self.gotoSleep()
 
+watchdog = None
     
 def do_read():
     rdr = mfrc522.MFRC522(rst=16,cs=33,sck=34,mosi=35,miso=36)
@@ -94,10 +97,11 @@ def do_read():
                     if uid != lastUid or currentTime - lastTime > 5:
                         res = req.post("https://zess.zeus.gent/scans", data=f"{uid};{key}")
                         print("vingo: " + res.text)
+                        name = res.text
                         res.close()
                         # beep beep
                         if 200 <= res.status_code < 300:
-                            notifier.good()
+                            notifier.good(name)
                         else:
                             notifier.error()
                     else:
@@ -112,7 +116,7 @@ def do_read():
             watchdog.feed()
     except KeyboardInterrupt:
         print("KeyboardInterrupt")
-
+        watchdog = WDT(timeout=60 * 60 * 1000)
         return
 
 notifier = StatusNotifier(Buzzer(Pin(37, Pin.OUT)), Led())
@@ -122,4 +126,5 @@ print("vinscant: watchdog starting in 2s, interupt now with Ctrl+C")
 time.sleep(2)
 watchdog = WDT(timeout=10 * 1000)
 print("vinscant: watchdog started")
+req.post("http://10.0.2.3", data=f"Option autoResetMs {5 * 1000}").close()
 do_read()
