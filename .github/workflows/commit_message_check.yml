@@ -1,6 +1,10 @@
 name: commit message check
 run-name: commit message check
-on: [push]
+on:
+  push:
+    branches:
+      - main
+  pull-request:
 
 jobs:
   check_commit_messages:
