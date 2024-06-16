@@ -17,11 +17,13 @@ const (
 var (
 	ZauthClientId     = ""
 	ZauthClientSecret = ""
+	ZauthRedirectUri  = ""
 )
 
-func SetZauth(client_id string, client_secret string) {
+func SetZauth(client_id string, client_secret string, redirect_uri string) {
 	ZauthClientId = client_id
 	ZauthClientSecret = client_secret
+	ZauthRedirectUri = redirect_uri
 }
 
 func Login(c *fiber.Ctx) error {
@@ -134,5 +136,5 @@ func Callback(c *fiber.Ctx) error {
 	sess.Set(STORE_USER, &user)
 	sess.Save()
 
-	return c.Status(200).Redirect("/")
+	return c.Status(200).Redirect(ZauthRedirectUri)
 }

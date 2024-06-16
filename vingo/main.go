@@ -9,6 +9,7 @@ import (
 	"log"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/template/html/v2"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
@@ -27,6 +28,12 @@ func main() {
 	public := fiber.New(fiber.Config{
 		Views: engine,
 	})
+
+	public.Use(cors.New(cors.Config{
+		AllowOrigins:     "http://localhost:5173",
+		AllowHeaders:     "Origin, Content-Type, Accept",
+		AllowCredentials: true,
+	}))
 
 	// Public routes
 	public.Get("/", handlers.Index)
@@ -84,12 +91,17 @@ func setupFromEnv() {
 		log.Fatal("ZAUTH_CLIENT_ID environment variable not set")
 	}
 
-	zauth_client_secret, secret_ok := os.LookupEnv("ZAUHT_CLIENT_SECRET")
+	zauth_client_secret, secret_ok := os.LookupEnv("ZAUTH_CLIENT_SECRET")
 	if !secret_ok {
-		log.Fatal("ZAUHT_CLIENT_SECRET environment variable not set")
+		log.Fatal("ZAUTH_CLIENT_SECRET environment variable not set")
 	}
 
-	handlers.SetZauth(zauth_client_id, zauth_client_secret)
+	zauth_redirect_uri, redirect_ok := os.LookupEnv("ZAUTH_REDIRECT_URI")
+	if !redirect_ok {
+		log.Fatal("ZAUTH_REDIRECT_URI environment variable not set")
+	}
+
+	handlers.SetZauth(zauth_client_id, zauth_client_secret, zauth_redirect_uri)
 
 	// PSK that will authorize the scanner
 	scan_key, key_ok := os.LookupEnv("SCAN_KEY")
