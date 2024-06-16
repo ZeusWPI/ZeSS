@@ -16,7 +16,9 @@
     "@fontsource/roboto": "^5.0.13",
     "@mui/icons-material": "^5.15.19",
     "@mui/material": "^5.15.19",
+    "@types/js-cookie": "^3.0.6",
     "@types/react-router-dom": "^5.3.3",
+    "js-cookie": "^3.0.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.23.1"
