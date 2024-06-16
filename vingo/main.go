@@ -52,7 +52,7 @@ func main() {
 		logged.Post("/settings", handlers.SettingsUpdate)
 	}
 
-	api := logged.Group("/api", handlers.IsLoggedIn)
+	api := logged.Group("/api", handlers.IsLoggedInAPI)
 	{
 		api.Get("/user", handlers.User)
 		api.Get("/leaderboard", handlers.Leaderboard)
