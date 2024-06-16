@@ -41,21 +41,30 @@ func main() {
 	{
 		logged.Get("/logout", handlers.Logout)
 
-		logged.Get("/scans", handlers.Scans)
+		logged.Get("/scans", handlers.ScansPage)
 
-		logged.Get("/cards", handlers.Cards)
+		logged.Get("/cards", handlers.CardsPage)
 		logged.Post("/cards/register", handlers.StartCardRegister)
 
-		logged.Get("/leaderboard", handlers.Leaderboard)
+		logged.Get("/leaderboard", handlers.LeaderboardPage)
 
 		logged.Get("/settings", handlers.Settings)
 		logged.Post("/settings", handlers.SettingsUpdate)
 	}
 
+	api := logged.Group("/api", handlers.IsLoggedIn)
+	{
+		api.Get("/user", handlers.User)
+		api.Get("/leaderboard", handlers.Leaderboard)
+		api.Get("/scans", handlers.Scans)
+		api.Get("/cards", handlers.Cards)
+		api.Get("/settings", handlers.Settings)
+	}
+
 	// Admin routes
 	admin := logged.Group("/", handlers.IsAdmin)
 	{
-		admin.Get("/days", handlers.Days)
+		admin.Get("/days", handlers.DaysPage)
 		admin.Post("/days", handlers.DaysRegister)
 		admin.Post("/days/:id", handlers.DaysDelete)
 	}

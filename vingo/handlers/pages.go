@@ -30,7 +30,7 @@ func stats(c *fiber.Ctx, user *database.User) error {
 	return c.Render("stats", fiber.Map{"user": user, "days_present_7": days}, "main")
 }
 
-func Scans(c *fiber.Ctx) error {
+func ScansPage(c *fiber.Ctx) error {
 	current_user := getUserFromStore(c)
 
 	scans, err := database.GetScansForUser(current_user.Id)
@@ -42,7 +42,7 @@ func Scans(c *fiber.Ctx) error {
 	return c.Render("scans", fiber.Map{"user": current_user, "scans": scans}, "main")
 }
 
-func Cards(c *fiber.Ctx) error {
+func CardsPage(c *fiber.Ctx) error {
 	current_user := getUserFromStore(c)
 
 	cards, err := database.GetCardsForUser(current_user.Id)
@@ -57,7 +57,7 @@ func Cards(c *fiber.Ctx) error {
 	return c.Render("cards", fiber.Map{"user": current_user, "cards": cards, "registering": registering, "reg_user": registering_is_user}, "main")
 }
 
-func Days(c *fiber.Ctx) error {
+func DaysPage(c *fiber.Ctx) error {
 	current_user := getUserFromStore(c)
 
 	days, err := database.GetDays()
@@ -69,7 +69,7 @@ func Days(c *fiber.Ctx) error {
 	return c.Render("days", fiber.Map{"user": current_user, "days": days}, "main")
 }
 
-func Leaderboard(c *fiber.Ctx) error {
+func LeaderboardPage(c *fiber.Ctx) error {
 	current_user := getUserFromStore(c)
 
 	leaderboard, err := database.TotalDaysPerUser()
@@ -81,7 +81,7 @@ func Leaderboard(c *fiber.Ctx) error {
 	return c.Render("leaderboard", fiber.Map{"user": current_user, "leaderboard": leaderboard}, "main")
 }
 
-func Settings(c *fiber.Ctx) error {
+func SettingsPage(c *fiber.Ctx) error {
 	current_user := getUserFromStore(c)
 
 	return c.Render("settings", fiber.Map{"user": current_user}, "main")

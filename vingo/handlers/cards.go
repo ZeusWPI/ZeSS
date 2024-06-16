@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"time"
+	"vingo/database"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -21,4 +22,15 @@ func StartCardRegister(c *fiber.Ctx) error {
 	logger.Println("Card registration started by user", registering_user)
 
 	return c.Status(200).Redirect("/cards")
+}
+
+func Cards(c *fiber.Ctx) error {
+	user := getUserFromStore(c)
+	cards, err := database.GetCardsForUser(user.Id)
+	if err != nil {
+		logger.Println("", err)
+		return c.Status(500).SendString("Error getting cards")
+	}
+
+	return c.JSON(cards)
 }

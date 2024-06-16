@@ -23,9 +23,9 @@ func CreateSettings(user_id int) error {
 }
 
 func GetSettings(user_id int) (*Settings, error) {
-	row := db.QueryRow("SELECT scan_in_out FROM scans WHERE user_id = $1;", user_id)
+	row := db.QueryRow("SELECT scan_in_out, leaderboard, public FROM settings WHERE user_id = $1;", user_id)
 	settings := new(Settings)
-	err := row.Scan(&settings.ScanInOut)
+	err := row.Scan(&settings.ScanInOut, &settings.Leaderboard, &settings.Public)
 	return settings, err
 }
 

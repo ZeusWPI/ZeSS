@@ -62,3 +62,14 @@ func ScanRegister(c *fiber.Ctx) error {
 
 	return c.SendString(user.Username)
 }
+
+func Scans(c *fiber.Ctx) error {
+	user := getUserFromStore(c)
+	scans, err := database.GetScansForUser(user.Id)
+	if err != nil {
+		logger.Println("Error get scans:", err)
+		return c.Status(500).SendString("Error getting scans")
+	}
+
+	return c.JSON(scans)
+}
