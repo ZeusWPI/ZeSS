@@ -16,14 +16,24 @@ trap ctrl_c INT
 
 backend=false
 frontend=false
+clean=false
 
-while getopts 'bf' flag; do
+while getopts 'bfc' flag; do
   case "${flag}" in
     b) backend=true ;;
     f) frontend=true ;;
+    c) clean=true ;;
     *) echo "Unexpected option ${flag}" ;;
   esac
 done
+
+# Build the docker containers if clean flag is set
+
+if [ "$clean" = true ]; then
+    rm vingo/.env || true
+    docker-compose -f docker-compose.yml build
+fi
+
 
 # Check for the required files
 
