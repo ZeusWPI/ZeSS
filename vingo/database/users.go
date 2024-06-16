@@ -34,7 +34,7 @@ func GetUser(user_id int) (*User, error) {
 
 func GetUserFromCard(card_serial string) (*User, error) {
 	row := db.QueryRow(`
-		SELECT users.id, users.username, users.admin, users.leaderboard, users.public
+		SELECT users.id, users.username, users.admin
 		FROM users
 		JOIN cards ON users.id = cards.user_id
 		WHERE cards.serial = $1;
