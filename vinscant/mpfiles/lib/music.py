@@ -9,7 +9,7 @@ class MusicPlayer:
 
     @staticmethod
     def midi_to_freq(note: int):
-        return 440 * 2**((float(note) - 69) / 12)
+        return 440 * 2**((float(note) - 69) / 12) / 2
 
     def start(self):
         self.timer.init(mode=Timer.PERIODIC, freq=1, callback=self.playNote)
