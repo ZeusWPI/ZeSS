@@ -1,8 +1,10 @@
 import { useEffect } from "react";
 
 export const Logout = () => {
+    const baseUrl = import.meta.env.VITE_BASE_URL;
+
     useEffect(() => {
-        window.location.href = "http://localhost:4000/logout";
+        window.location.href = `${baseUrl}/logout`;
     }, []);
 
     return <></>;

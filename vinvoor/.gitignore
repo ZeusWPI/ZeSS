@@ -26,3 +26,4 @@ dist-ssr
 .vite/
 bin/
 pkg/
+.env

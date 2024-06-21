@@ -15,6 +15,8 @@ import (
 	_ "github.com/lib/pq"
 )
 
+var corsAllowOrigins = ""
+
 func main() {
 	gob.Register(database.User{})
 	gob.Register(database.Settings{})
@@ -30,7 +32,7 @@ func main() {
 	})
 
 	public.Use(cors.New(cors.Config{
-		AllowOrigins:     "http://localhost:5173, https://zess.zeus.gent",
+		AllowOrigins:     corsAllowOrigins,
 		AllowHeaders:     "Origin, Content-Type, Accept, Access-Control-Allow-Origin",
 		AllowCredentials: true,
 	}))
@@ -84,6 +86,12 @@ func setupFromEnv() {
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
+
+	cors_allow_origins, origins_ok := os.LookupEnv("CORS_ALLOW_ORIGINS")
+	if !origins_ok {
+		log.Fatal("CORS_ALLOW_ORIGINS environment variable not set")
+	}
+	corsAllowOrigins = cors_allow_origins
 
 	// stuff for Zauth oauth flow
 	zauth_client_id, id_ok := os.LookupEnv("ZAUTH_CLIENT_ID")
