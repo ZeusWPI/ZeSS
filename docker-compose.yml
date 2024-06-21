@@ -5,6 +5,8 @@ services:
       - POSTGRES_PASSWORD=zess
       - POSTGRES_USER=postgres
       - POSTGRES_DB=zess
+    volumes:
+      - db-data:/var/lib/postgresql/data
     ports:
       - 5432:5432
     extra_hosts:
@@ -28,6 +30,7 @@ services:
     build:
       context: vinvoor
       dockerfile: Dockerfile.dev
+    user: ${CURRENT_UID}
     ports:
       - 5173:5173
     volumes:
@@ -37,3 +40,4 @@ services:
 
 volumes:
   backend-packages:
+  db-data:

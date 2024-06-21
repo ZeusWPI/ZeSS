@@ -1,12 +1,16 @@
 #!/bin/sh
 
+# Current user
+
+UID=$(id -u):$(id -g)
+
 # Exit function
 
 ctrl_c() {
     echo "-------------------------------------"
     echo "Stopping all containers..."
     echo "-------------------------------------"
-    docker-compose -f docker-compose.yml stop
+    CURRENT_UID=$UID docker-compose -f docker-compose.yml down
     exit 0
 }
 
@@ -31,6 +35,7 @@ done
 
 if [ "$clean" = true ]; then
     rm vingo/.env || true
+    rm vinvoor/.env || true
     docker-compose -f docker-compose.yml build
 fi
 
@@ -46,7 +51,7 @@ fi
 
 # Start the docker containers
 
-docker-compose -f docker-compose.yml up -d
+CURRENT_UID=$UID docker-compose -f docker-compose.yml up -d
 
 echo "-------------------------------------"
 echo "Following logs..."
@@ -61,4 +66,4 @@ else
     docker-compose -f docker-compose.yml logs -f zess-backend zess-frontend
 fi
 
-docker-compose -f docker-compose.yml down
+CURRENT_UID=$UID docker-compose -f docker-compose.yml down
