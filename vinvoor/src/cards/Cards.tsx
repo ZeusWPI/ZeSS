@@ -9,7 +9,7 @@ import {
     Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import { CardType } from "./types/Cards";
+import { CardType } from "../types/Cards";
 
 export const Cards = () => {
     const [cards, setCards] = useState<CardType[]>([]);
@@ -20,20 +20,14 @@ export const Cards = () => {
         })
             .then((response) => response.json())
             .then((data) => {
-                console.log(data);
-
                 setCards(data);
             });
     }, []);
 
-    if (cards.length === 1) {
-        console.log(typeof cards[0].created_at);
-    }
-
     return (
         <Grid container spacing={2}>
             {cards.map((card) => (
-                <Grid item id={card.serial} xs={2}>
+                <Grid item key={card.serial} xs={2}>
                     <Paper elevation={4} sx={{ textAlign: "center" }}>
                         <Card>
                             <CardContent>
