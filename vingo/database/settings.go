@@ -1,9 +1,9 @@
 package database
 
 type Settings struct {
-	ScanInOut   bool
-	Leaderboard bool
-	Public      bool
+	ScanInOut   bool `json:"scan_in_out"`
+	Leaderboard bool `json:"leaderboard"`
+	Public      bool `json:"public"`
 }
 
 var (

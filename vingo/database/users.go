@@ -1,10 +1,10 @@
 package database
 
 type User struct {
-	Id       int
-	Username string
-	Admin    bool
-	Settings Settings
+	Id       int      `json:"id"`
+	Username string   `json:"username"`
+	Admin    bool     `json:"admin"`
+	Settings Settings `json:"settings"`
 }
 
 var (
