@@ -20,7 +20,9 @@ export const ThemeContext = createContext<ThemeContextProps>({
 });
 
 export const ThemeProvider: FC<ThemeProviderProps> = ({ children }) => {
-    const [themeMode, setThemeMode] = useState<ThemeMode>("light");
+    const [themeMode, setThemeMode] = useState<ThemeMode>(
+        (import.meta.env.VITE_DEFAULT_THEME_MODE as ThemeMode) || "light"
+    );
 
     const toggleTheme = () => {
         setThemeMode((prevMode) => (prevMode === "light" ? "dark" : "light"));

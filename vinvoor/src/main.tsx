@@ -6,7 +6,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { App } from "./App.tsx";
-import { Cards } from "./cards/Cards.tsx";
+import { Cards } from "./cards/Card.tsx";
 import { ErrorPage } from "./errors/ErrorPage.tsx";
 import { Login } from "./user/Login.tsx";
 import { Logout } from "./user/Logout.tsx";
