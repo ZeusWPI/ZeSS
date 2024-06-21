@@ -14,10 +14,12 @@ interface UserProviderProps {
     children: ReactNode;
 }
 
-export const UserContext = createContext<{
+interface UserContextProps {
     user: User | undefined;
     setUser: Dispatch<SetStateAction<User | undefined>>;
-}>({
+}
+
+export const UserContext = createContext<UserContextProps>({
     user: undefined,
     setUser: () => {},
 });

@@ -15,9 +15,7 @@ export const NavBarPages: FC<NavBarPagesProps> = ({ pages, sx }) => {
                     <Button
                         color="inherit"
                         sx={{
-                            my: 2,
                             color: "white",
-                            display: "block",
                         }}
                     >
                         {page}

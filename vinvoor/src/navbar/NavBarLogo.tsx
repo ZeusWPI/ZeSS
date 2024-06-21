@@ -14,7 +14,6 @@ export const NavBarLogo: FC<NavBarLogoProps> = ({ sx }) => {
                 sx={{
                     ...sx,
                     textTransform: "none",
-                    my: 2,
                     color: "white",
                 }}
             >
