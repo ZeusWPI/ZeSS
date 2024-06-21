@@ -15,7 +15,7 @@ import { FC, useState } from "react";
 import { Link } from "react-router-dom";
 import { User } from "./types/User";
 
-const pages = [];
+const pages = ["Cards"];
 const settings = ["Logout"];
 
 interface Props {
