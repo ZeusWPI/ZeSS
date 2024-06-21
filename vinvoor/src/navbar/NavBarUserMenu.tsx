@@ -32,8 +32,6 @@ export const NavBarUserMenu: FC<NavBarUserMenuProps> = ({ settings }) => {
                         sx={{
                             textTransform: "none",
                             color: "white",
-                            borderColor: "white",
-                            borderWidth: "2px",
                         }}
                     >
                         <AccountCircle sx={{ mr: "3px" }} />
@@ -74,9 +72,7 @@ export const NavBarUserMenu: FC<NavBarUserMenuProps> = ({ settings }) => {
                         color="inherit"
                         size="large"
                         sx={{
-                            mt: "45px",
                             textTransform: "none",
-                            my: 2,
                             color: "white",
                         }}
                     >

@@ -1,5 +1,6 @@
 import { AppBar, Box, Container, Toolbar } from "@mui/material";
 import { useContext } from "react";
+import { DarkModeToggle } from "../components/DarkModeToggle";
 import { UserContext } from "../user/UserProvider";
 import { NavBarLogo } from "./NavBarLogo";
 import { NavBarPages } from "./NavBarPages";
@@ -47,9 +48,10 @@ export const NavBar = () => {
                         <NavBarLogo sx={{ display: screenSize.mobile }} />
                     </Box>
 
-                    {/* Display the user menu */}
+                    {/* Display a dark mode switch and the user menu */}
 
                     <Box sx={{ flexGrow: 0 }}>
+                        <DarkModeToggle />
                         <NavBarUserMenu settings={settings} />
                     </Box>
                 </Toolbar>
