@@ -1,8 +1,10 @@
+import { ThemeProvider } from "@mui/material";
 import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import "./App.css";
 import { NavBar } from "./NavBar";
+import { theme } from "./theme";
 import { User } from "./types/User";
 
 export const App = () => {
@@ -25,9 +27,9 @@ export const App = () => {
     }, [sessionId]);
 
     return (
-        <>
+        <ThemeProvider theme={theme}>
             <NavBar user={user} />
             <Outlet />
-        </>
+        </ThemeProvider>
     );
 };
