@@ -10,18 +10,15 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { CardType } from "../types/Cards";
+import { fetchApi } from "../util/fetch";
 
 export const Cards = () => {
     const [cards, setCards] = useState<CardType[]>([]);
 
     useEffect(() => {
-        fetch("http://localhost:4000/api/cards", {
-            credentials: "include",
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                setCards(data);
-            });
+        fetchApi("cards").then((data) => {
+            setCards(data);
+        });
     }, []);
 
     return (

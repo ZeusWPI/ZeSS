@@ -40,6 +40,9 @@ fi
 if [ ! -f vingo/.env ]; then
     cp vingo/dev.env vingo/.env
 fi
+if [ ! -f vinvoor/.env ]; then
+    cp vinvoor/dev.env vinvoor/.env
+fi
 
 # Start the docker containers
 

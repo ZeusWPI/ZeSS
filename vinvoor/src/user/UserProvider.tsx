@@ -9,6 +9,7 @@ import {
     useState,
 } from "react";
 import { User } from "../types/User";
+import { fetchApi } from "../util/fetch";
 
 interface UserProviderProps {
     children: ReactNode;
@@ -34,10 +35,7 @@ export const UserProvider: FC<UserProviderProps> = ({ children }) => {
             return;
         }
 
-        fetch("http://localhost:4000/api/user", {
-            credentials: "include",
-        })
-            .then((response) => response.json())
+        fetchApi("user")
             .then((data) => {
                 setUser(data);
             })
