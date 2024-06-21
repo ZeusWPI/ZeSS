@@ -1,9 +1,9 @@
-import { Box, Button, SxProps, Theme } from "@mui/material";
+import { Box, Button, SxProps, Theme, Typography } from "@mui/material";
 import { FC } from "react";
 import { UnstyledLink } from "../components/UnstyledLink";
 
 interface NavBarPagesProps {
-    pages: string[];
+    pages: readonly string[];
     sx?: SxProps<Theme>;
 }
 
@@ -18,7 +18,7 @@ export const NavBarPages: FC<NavBarPagesProps> = ({ pages, sx }) => {
                             color: "white",
                         }}
                     >
-                        {page}
+                        <Typography>{page}</Typography>
                     </Button>
                 </UnstyledLink>
             ))}

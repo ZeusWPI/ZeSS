@@ -1,18 +1,5 @@
+import { Box, Typography } from "@mui/material";
 import { isRouteErrorResponse, useRouteError } from "react-router-dom";
-
-export const ErrorPage = () => {
-    const error = useRouteError();
-
-    return (
-        <div>
-            <h1>Oops!</h1>
-            <p>Sorry, an unexpected error has occurred.</p>
-            <p>
-                <i>{get_error(error)}</i>
-            </p>
-        </div>
-    );
-};
 
 const get_error = (error: unknown) => {
     if (isRouteErrorResponse(error)) {
@@ -25,4 +12,33 @@ const get_error = (error: unknown) => {
         console.error(error);
         return "Unknown error";
     }
+};
+
+export const ErrorPage = () => {
+    const error = useRouteError();
+
+    return (
+        <Box
+            sx={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                height: "100vh", // Full viewport height
+                bgcolor: "background.default",
+                padding: "24px", // Adjust padding as needed
+                textAlign: "center",
+            }}
+        >
+            <Typography variant="h1" gutterBottom>
+                Oops!
+            </Typography>
+            <Typography variant="body1" gutterBottom>
+                Sorry, an unexpected error has occurred.
+            </Typography>
+            <Typography variant="body2" sx={{ fontStyle: "italic" }}>
+                {get_error(error)}
+            </Typography>
+        </Box>
+    );
 };

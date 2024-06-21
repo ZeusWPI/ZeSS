@@ -8,11 +8,11 @@ import {
     Theme,
     Typography,
 } from "@mui/material";
-import { FC, useState } from "react";
+import { FC, MouseEvent, useState } from "react";
 import { UnstyledLink } from "../components/UnstyledLink";
 
 interface NavBarSandwichProps {
-    pages: string[];
+    pages: readonly string[];
     sx?: SxProps<Theme>;
 }
 
@@ -21,7 +21,7 @@ export const NavBarSandwich: FC<NavBarSandwichProps> = ({ pages, sx }) => {
         undefined
     );
 
-    const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
+    const handleOpenNavMenu = (event: MouseEvent<HTMLElement>) => {
         setAnchorElNav(event.currentTarget);
     };
 

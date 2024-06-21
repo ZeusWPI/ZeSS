@@ -1,20 +1,20 @@
 import { AccountCircle } from "@mui/icons-material";
 import { Button, Menu, MenuItem, Typography } from "@mui/material";
-import { FC, useContext, useState } from "react";
+import { FC, MouseEvent, useContext, useState } from "react";
 import { UnstyledLink } from "../components/UnstyledLink";
 import { UserContext } from "../user/UserProvider";
 
 interface NavBarUserMenuProps {
-    settings: string[];
+    settings: readonly string[];
 }
 
 export const NavBarUserMenu: FC<NavBarUserMenuProps> = ({ settings }) => {
     const { user } = useContext(UserContext);
-    const [anchorElUser, setAnchorElUser] = useState<undefined | HTMLElement>(
+    const [anchorElUser, setAnchorElUser] = useState<HTMLElement | undefined>(
         undefined
     );
 
-    const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
+    const handleOpenUserMenu = (event: MouseEvent<HTMLElement>) => {
         setAnchorElUser(event.currentTarget);
     };
 
@@ -76,7 +76,7 @@ export const NavBarUserMenu: FC<NavBarUserMenuProps> = ({ settings }) => {
                             color: "white",
                         }}
                     >
-                        Login
+                        <Typography>Login</Typography>
                     </Button>
                 </UnstyledLink>
             )}
