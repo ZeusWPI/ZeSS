@@ -7,12 +7,24 @@ import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { App } from "./App.tsx";
 import { ErrorPage } from "./errors/ErrorPage.tsx";
+import { Login } from "./Login.tsx";
+import { Logout } from "./Logout.tsx";
 
 const router = createBrowserRouter([
     {
         path: "/",
         element: <App />,
         errorElement: <ErrorPage />,
+        children: [
+            {
+                path: "login",
+                element: <Login />,
+            },
+            {
+                path: "logout",
+                element: <Logout />,
+            },
+        ],
     },
 ]);
 

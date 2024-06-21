@@ -49,7 +49,7 @@ func Logout(c *fiber.Ctx) error {
 	}
 
 	sess.Destroy()
-	return c.Status(200).Redirect("/")
+	return c.Status(200).Redirect(ZauthRedirectUri)
 }
 
 // Zauth access token
