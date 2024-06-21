@@ -6,6 +6,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { App } from "./App.tsx";
+import { Cards } from "./Cards.tsx";
 import { ErrorPage } from "./errors/ErrorPage.tsx";
 import { Login } from "./Login.tsx";
 import { Logout } from "./Logout.tsx";
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
             {
                 path: "logout",
                 element: <Logout />,
+            },
+            {
+                path: "cards",
+                element: <Cards />,
             },
         ],
     },
