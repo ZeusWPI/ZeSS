@@ -37,9 +37,11 @@ Secret goals:
 - Run the script `./dev.sh` with optional flags:
   - `-b`: Show the output of the backend.
   - `-f`: Show the output of the frontend.
-  - If both flags or no flags are provided, the output of both the backend and frontend are shown.
+  - `-c`: Rebuilds the docker containers.
+  - If both `-b` and `-f` or no flags are provided, the output of both the backend and frontend are shown.
 
 The backend is accessible at `localhost:3000`, and the frontend at `localhost:5173`.
+Both the backend and the frontend support hot module reloading (HMR).
 
 ### Manual
 
