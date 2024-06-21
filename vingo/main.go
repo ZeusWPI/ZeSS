@@ -31,6 +31,7 @@ func main() {
 
 	public.Use(cors.New(cors.Config{
 		AllowOrigins:     "http://localhost:5173, https://zess.zeus.gent",
+		AllowHeaders:     "Origin, Content-Type, Accept, Access-Control-Allow-Origin",
 		AllowCredentials: true,
 	}))
 
