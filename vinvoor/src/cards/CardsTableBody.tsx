@@ -43,9 +43,7 @@ export const CardsTableBody: FC<CardsTableBodyProps> = ({
                             <TableCell
                                 key={headCell.id}
                                 align={headCell.align}
-                                padding={
-                                    headCell.disablePadding ? "none" : "normal"
-                                }
+                                padding={headCell.padding}
                             >
                                 <Typography>{row[headCell.id]}</Typography>
                             </TableCell>

@@ -6,8 +6,9 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { App } from "./App.tsx";
-import { Cards } from "./cards/Card.tsx";
+import { Cards } from "./cards/Cards.tsx";
 import { ErrorPage } from "./errors/ErrorPage.tsx";
+import { Leaderboard } from "./leaderboard/Leaderboard.tsx";
 import { Login } from "./user/Login.tsx";
 import { Logout } from "./user/Logout.tsx";
 
@@ -28,6 +29,10 @@ const router = createBrowserRouter([
             {
                 path: "cards",
                 element: <Cards />,
+            },
+            {
+                path: "leaderboard",
+                element: <Leaderboard />,
             },
         ],
     },

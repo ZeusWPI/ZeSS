@@ -5,12 +5,12 @@ import { Card } from "../types/cards";
 import { CardsAdd } from "./CardsAdd";
 import { CardsDelete } from "./CardsDelete";
 
-interface CardTableToolBarProps {
+interface CardTableToolbarProps {
     selected: readonly string[];
     setCards: Dispatch<SetStateAction<readonly Card[]>>;
 }
 
-export const CardsTableToolbar: FC<CardTableToolBarProps> = ({
+export const CardsTableToolbar: FC<CardTableToolbarProps> = ({
     selected,
     setCards,
 }) => {
@@ -32,7 +32,7 @@ export const CardsTableToolbar: FC<CardTableToolBarProps> = ({
             {numSelected > 0 ? (
                 <>
                     <Typography
-                        sx={{ flex: "1 1 100%" }}
+                        sx={{ flex: "1" }}
                         variant="subtitle1"
                         fontWeight="medium"
                     >

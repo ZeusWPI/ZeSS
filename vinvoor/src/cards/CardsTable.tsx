@@ -12,7 +12,7 @@ import { Card } from "../types/cards";
 import { TableOrder } from "../types/table";
 import { CardsTableBody } from "./CardsTableBody";
 import { CardsTableHead } from "./CardsTableHead";
-import { CardsTableToolbar } from "./CardsTableToolBar";
+import { CardsTableToolbar } from "./CardsTableToolbar";
 
 interface CardTableProps {
     cards: readonly Card[];

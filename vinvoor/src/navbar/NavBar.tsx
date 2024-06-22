@@ -7,7 +7,7 @@ import { NavBarPages } from "./NavBarPages";
 import { NavBarSandwich } from "./NavBarSandwich";
 import { NavBarUserMenu } from "./NavBarUserMenu";
 
-const pages = ["Cards"];
+const pages = ["Cards", "Leaderboard"];
 const settings = ["Logout"];
 
 export const NavBar = () => {
