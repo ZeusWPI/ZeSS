@@ -50,7 +50,7 @@ export const CardsTableHead: FC<CardTableHeadProps> = ({
                     <TableCell
                         key={headCell.id}
                         align={headCell.align}
-                        padding={headCell.disablePadding ? "none" : "normal"}
+                        padding={headCell.padding}
                     >
                         <TableSortLabel
                             active={orderBy === headCell.id}

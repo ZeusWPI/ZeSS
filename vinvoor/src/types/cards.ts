@@ -10,12 +10,12 @@ export const CardsHeadCells: readonly TableHeadCell<Card>[] = [
         id: "serial",
         label: "Serial",
         align: "left",
-        disablePadding: true,
+        padding: "none",
     },
     {
         id: "createdAt",
         label: "Created at",
         align: "right",
-        disablePadding: false,
+        padding: "normal",
     },
 ];
