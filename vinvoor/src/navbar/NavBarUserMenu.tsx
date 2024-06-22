@@ -9,7 +9,9 @@ interface NavBarUserMenuProps {
 }
 
 export const NavBarUserMenu: FC<NavBarUserMenuProps> = ({ settings }) => {
-    const { user } = useContext(UserContext);
+    const {
+        userState: { user },
+    } = useContext(UserContext);
     const [anchorElUser, setAnchorElUser] = useState<HTMLElement | undefined>(
         undefined
     );
