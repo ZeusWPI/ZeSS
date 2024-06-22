@@ -3,8 +3,8 @@ package database
 import "time"
 
 type Scan struct {
-	ScanTime time.Time
-	Card     string
+	ScanTime time.Time `json:"scan_time"`
+	Card     string    `json:"card"`
 }
 
 type Present struct {
@@ -14,9 +14,9 @@ type Present struct {
 }
 
 type LeaderboardItem struct {
-	Position  int
-	Username  string
-	TotalDays int
+	Position  int    `json:"position"`
+	Username  string `json:"username"`
+	TotalDays int    `json:"total_days"`
 }
 
 var (
@@ -57,7 +57,7 @@ func GetPresenceHistory(user_id int) ([]Present, error) {
 		WITH date_series AS (
 			SELECT generate_series(CURRENT_DATE AT TIME ZONE 'Europe/Brussels' - INTERVAL '6 days', CURRENT_DATE AT TIME ZONE 'Europe/Brussels', '1 day')::date AS date
 		)
-		SELECT 
+		SELECT
 			ds.date,
 			CASE WHEN scans.scan_date IS NOT NULL THEN TRUE ELSE FALSE END AS present,
 			CASE WHEN days.date IS NOT NULL THEN TRUE ELSE FALSE END AS streak_day
