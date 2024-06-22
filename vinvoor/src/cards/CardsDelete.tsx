@@ -3,14 +3,14 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { Button, IconButton, Tooltip, Typography } from "@mui/material";
 import { Dispatch, FC, SetStateAction, useState } from "react";
 import { ConfirmationModal } from "../components/ConfirmationModal";
-import { CardType } from "../types/Cards";
+import { Card } from "../types/cards";
 
 interface CardDeleteProps {
     selected: readonly string[];
-    setCards: Dispatch<SetStateAction<readonly CardType[] | undefined>>;
+    setCards: Dispatch<SetStateAction<readonly Card[]>>;
 }
 
-export const CardDelete: FC<CardDeleteProps> = ({ selected, setCards }) => {
+export const CardsDelete: FC<CardDeleteProps> = ({ selected, setCards }) => {
     const [open, setOpen] = useState<boolean>(false);
 
     const numSelected = selected.length;

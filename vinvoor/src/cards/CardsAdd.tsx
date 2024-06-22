@@ -3,7 +3,7 @@ import { Button, Typography } from "@mui/material";
 import { useState } from "react";
 import { ConfirmationModal } from "../components/ConfirmationModal";
 
-export const CardAdd = () => {
+export const CardsAdd = () => {
     const [open, setOpen] = useState<boolean>(false);
 
     const handleOpen = () => setOpen(true);
