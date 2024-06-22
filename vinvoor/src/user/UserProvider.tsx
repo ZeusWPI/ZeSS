@@ -8,7 +8,7 @@ import {
     useEffect,
     useState,
 } from "react";
-import { User } from "../types/User";
+import { User } from "../types/user";
 import { fetchApi } from "../util/fetch";
 
 interface UserProviderProps {
@@ -36,9 +36,7 @@ export const UserProvider: FC<UserProviderProps> = ({ children }) => {
         }
 
         fetchApi("user")
-            .then((data) => {
-                setUser(data);
-            })
+            .then((data) => setUser(data))
             .catch(() => Cookies.remove("session_id"));
     }, []);
 

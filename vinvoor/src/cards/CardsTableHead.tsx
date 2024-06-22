@@ -1,5 +1,4 @@
 import {
-    Box,
     Checkbox,
     TableCell,
     TableHead,
@@ -7,23 +6,23 @@ import {
     TableSortLabel,
     Typography,
 } from "@mui/material";
-import { visuallyHidden } from "@mui/utils";
 import { ChangeEvent, FC, MouseEvent } from "react";
-import { CardType, headCells, Order } from "../types/Cards";
+import { Card, CardsHeadCells } from "../types/cards";
+import { TableOrder } from "../types/table";
 
 interface CardTableHeadProps {
     numSelected: number;
     onRequestSort: (
-        event: MouseEvent<unknown>,
-        property: keyof CardType
+        event: MouseEvent<HTMLButtonElement>,
+        property: keyof Card
     ) => void;
     onSelectAllClick: (event: ChangeEvent<HTMLInputElement>) => void;
-    order: Order;
+    order: TableOrder;
     orderBy: string;
     rowCount: number;
 }
 
-export const CardTableHead: FC<CardTableHeadProps> = ({
+export const CardsTableHead: FC<CardTableHeadProps> = ({
     numSelected,
     onRequestSort,
     onSelectAllClick,
@@ -32,7 +31,7 @@ export const CardTableHead: FC<CardTableHeadProps> = ({
     rowCount,
 }) => {
     const createSortHandler =
-        (property: keyof CardType) => (event: MouseEvent<unknown>) =>
+        (property: keyof Card) => (event: MouseEvent<HTMLButtonElement>) =>
             onRequestSort(event, property);
 
     return (
@@ -40,7 +39,6 @@ export const CardTableHead: FC<CardTableHeadProps> = ({
             <TableRow>
                 <TableCell padding="checkbox">
                     <Checkbox
-                        color="primary"
                         indeterminate={
                             numSelected > 0 && numSelected < rowCount
                         }
@@ -48,12 +46,11 @@ export const CardTableHead: FC<CardTableHeadProps> = ({
                         onChange={onSelectAllClick}
                     />
                 </TableCell>
-                {headCells.map((headCell) => (
+                {CardsHeadCells.map((headCell) => (
                     <TableCell
                         key={headCell.id}
-                        align={headCell.timestamp ? "right" : "left"}
+                        align={headCell.align}
                         padding={headCell.disablePadding ? "none" : "normal"}
-                        sortDirection={orderBy === headCell.id ? order : false}
                     >
                         <TableSortLabel
                             active={orderBy === headCell.id}
@@ -61,13 +58,6 @@ export const CardTableHead: FC<CardTableHeadProps> = ({
                             onClick={createSortHandler(headCell.id)}
                         >
                             <Typography>{headCell.label}</Typography>
-                            {orderBy === headCell.id ? (
-                                <Box component="span" sx={visuallyHidden}>
-                                    {order === "desc"
-                                        ? "sorted descending"
-                                        : "sorted ascending"}
-                                </Box>
-                            ) : null}
                         </TableSortLabel>
                     </TableCell>
                 ))}
