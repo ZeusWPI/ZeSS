@@ -1,7 +1,7 @@
 package database
 
 type Settings struct {
-	ScanInOut   bool `json:"scan_in_out"`
+	ScanInOut   bool `json:"scanInOut"`
 	Leaderboard bool `json:"leaderboard"`
 	Public      bool `json:"public"`
 }
