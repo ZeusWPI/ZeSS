@@ -15,33 +15,60 @@ interface UserProviderProps {
     children: ReactNode;
 }
 
-interface UserContextProps {
+interface UserState {
     user: User | undefined;
-    setUser: Dispatch<SetStateAction<User | undefined>>;
+    loading: boolean;
+    error: Error | undefined;
 }
 
-export const UserContext = createContext<UserContextProps>({
+interface UserContextProps {
+    userState: UserState;
+    setUserState: Dispatch<SetStateAction<UserState>>;
+}
+
+const defaultUserState: UserState = {
     user: undefined,
-    setUser: () => {},
+    loading: true,
+    error: undefined,
+};
+
+export const UserContext = createContext<UserContextProps>({
+    userState: defaultUserState,
+    setUserState: () => {},
 });
 
 export const UserProvider: FC<UserProviderProps> = ({ children }) => {
-    const [user, setUser] = useState<User | undefined>(undefined);
+    const [userState, setUserState] = useState<UserState>(defaultUserState);
 
     useEffect(() => {
         const sessionId = Cookies.get("session_id");
 
         if (!sessionId) {
+            setUserState({
+                user: undefined,
+                loading: false,
+                error: new Error("No session ID"),
+            });
+
             return;
         }
 
+        let newUserState = { ...userState };
+
         fetchApi("user")
-            .then((data) => setUser(data))
-            .catch(() => Cookies.remove("session_id"));
+            .then((data) => (newUserState.user = data))
+            .catch((error) => {
+                Cookies.remove("session_id");
+                newUserState.error = error;
+            })
+            .finally(() => {
+                newUserState.loading = false;
+                setUserState(newUserState);
+            });
     }, []);
 
     return (
-        <UserContext.Provider value={{ user, setUser }}>
+        <UserContext.Provider value={{ userState, setUserState }}>
             {children}
         </UserContext.Provider>
     );

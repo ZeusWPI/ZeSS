@@ -9,6 +9,9 @@ export const lightTheme = createTheme({
         secondary: {
             main: "#002379",
         },
+        github: {
+            main: "#FFF4F2",
+        },
     },
 });
 
@@ -21,6 +24,9 @@ export const darkTheme = createTheme({
         secondary: {
             main: "#002379",
         },
+        github: {
+            main: "#996860",
+        },
     },
     components: {
         MuiAppBar: {
@@ -32,3 +38,13 @@ export const darkTheme = createTheme({
         },
     },
 });
+
+declare module "@mui/material/styles" {
+    interface Palette {
+        github: Palette["primary"];
+    }
+
+    interface PaletteOptions {
+        github?: PaletteOptions["primary"];
+    }
+}

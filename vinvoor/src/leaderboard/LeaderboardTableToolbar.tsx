@@ -9,7 +9,9 @@ interface LeaderboardTableToolbarProps {}
 export const LeaderboardTableToolbar: FC<
     LeaderboardTableToolbarProps
 > = ({}) => {
-    const { user } = useContext(UserContext);
+    const {
+        userState: { user },
+    } = useContext(UserContext);
 
     return (
         <Toolbar sx={{ p: { xs: 1, sm: 2 }, m: { xs: 1, sm: 2 } }}>

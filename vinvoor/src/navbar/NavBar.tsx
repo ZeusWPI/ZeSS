@@ -11,7 +11,9 @@ const pages = ["Cards", "Leaderboard"];
 const settings = ["Logout"];
 
 export const NavBar = () => {
-    const { user } = useContext(UserContext);
+    const {
+        userState: { user },
+    } = useContext(UserContext);
 
     const screenSize = {
         mobile: { xs: "flex", md: "none" },
