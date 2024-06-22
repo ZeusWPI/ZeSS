@@ -6,7 +6,7 @@ export interface User {
 }
 
 export interface Settings {
-    scan_in_out: boolean;
+    scanInOut: boolean;
     leaderboard: boolean;
     public: boolean;
 }

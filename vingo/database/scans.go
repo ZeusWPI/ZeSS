@@ -3,7 +3,7 @@ package database
 import "time"
 
 type Scan struct {
-	ScanTime time.Time `json:"scan_time"`
+	ScanTime time.Time `json:"scanTime"`
 	Card     string    `json:"card"`
 }
 
@@ -16,7 +16,7 @@ type Present struct {
 type LeaderboardItem struct {
 	Position  int    `json:"position"`
 	Username  string `json:"username"`
-	TotalDays int    `json:"total_days"`
+	TotalDays int    `json:"totalDays"`
 }
 
 var (
