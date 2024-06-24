@@ -1,4 +1,4 @@
-from machine import bitstream, Pin, PWM, WDT
+from machine import bitstream, Pin, PWM, WDT, Timer
 from neopixel import NeoPixel
 import esp32
 import gc
@@ -63,11 +63,14 @@ class StatusNotifier:
         self.led.setColor(*StatusNotifier.colors[self.state])
         self.state = (self.state + 1) % 3
 
-    def gotoSleep(self):
+    def gotoSleep(self, timer: Timer = None):
         print("(StatusNotifier will sleep and feed watchdog for some time)")
         watchdog.feed()
-        time.sleep(.5)
-        watchdog.feed()
+        if timer:
+            timer.deinit()
+        else:
+            time.sleep(.5)
+            watchdog.feed()
         self.buzzer.stop()
         time.sleep(1.5)
         watchdog.feed()
@@ -76,9 +79,9 @@ class StatusNotifier:
     def good(self, name=None):
         self.led.setColor(*StatusNotifier.colors[2])
         self.buzzer.start(500)
+        Timer(0).init(period=500, mode=Timer.ONE_SHOT, callback=self.gotoSleep)
         if name:
             leddy.setText(f"Welkom {name}!")
-        self.gotoSleep()
 
     def error(self):
         self.led.setColor(*StatusNotifier.colors[0])
