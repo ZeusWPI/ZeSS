@@ -1,20 +1,7 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 # Current user
-
-UID=$(id -u):$(id -g)
-
-# Exit function
-
-ctrl_c() {
-    echo "-------------------------------------"
-    echo "Stopping all containers..."
-    echo "-------------------------------------"
-    CURRENT_UID=$UID docker-compose -f docker-compose.yml down
-    exit 0
-}
-
-trap ctrl_c INT
+export CURRENT_UID=$(id -u):$(id -g)
 
 # Parse input
 
@@ -50,8 +37,7 @@ if [ ! -f vinvoor/.env ]; then
 fi
 
 # Start the docker containers
-
-CURRENT_UID=$UID docker-compose -f docker-compose.yml up -d
+docker-compose -f docker-compose.yml up -d
 
 echo "-------------------------------------"
 echo "Following logs..."
@@ -66,4 +52,4 @@ else
     docker-compose -f docker-compose.yml logs -f zess-backend zess-frontend
 fi
 
-CURRENT_UID=$UID docker-compose -f docker-compose.yml down
+docker-compose -f docker-compose.yml down
