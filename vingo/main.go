@@ -67,6 +67,7 @@ func main() {
 		api.Get("/leaderboard", handlers.Leaderboard)
 		api.Get("/scans", handlers.Scans)
 		api.Get("/cards", handlers.Cards)
+		api.Post("/cards/register", handlers.StartCardRegisterAPI)
 		api.Get("/settings", handlers.Settings)
 	}
 
