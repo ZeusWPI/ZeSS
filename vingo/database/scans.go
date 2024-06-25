@@ -19,17 +19,6 @@ type LeaderboardItem struct {
 	TotalDays int    `json:"totalDays"`
 }
 
-var (
-	scansCreateStmt = `
-		CREATE TABLE IF NOT EXISTS scans (
-			id SERIAL NOT NULL PRIMARY KEY,
-			scan_time TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
-			scan_in BOOLEAN,
-			card_serial TEXT NOT NULL REFERENCES cards(serial)
-		);
-	`
-)
-
 func CreateScan(card_serial string) error {
 	_, err := db.Exec("INSERT INTO scans (card_serial) VALUES ($1);", card_serial)
 	return err
