@@ -3,19 +3,11 @@ package database
 import "time"
 
 type Card struct {
+	Id        int       `json:"id"`
 	Serial    string    `json:"serial"`
 	CreatedAt time.Time `json:"createdAt"`
+	Name      string    `json:"name"`
 }
-
-var (
-	cardsCreateStmt = `
-		CREATE TABLE IF NOT EXISTS cards (
-			serial TEXT NOT NULL PRIMARY KEY UNIQUE,
-			created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
-			user_id INTEGER NOT NULL REFERENCES users(id)
-		);
-	`
-)
 
 func CreateCard(serial string, user_id int) error {
 	_, err := db.Exec("INSERT INTO cards (serial, user_id) VALUES ($1, $2);", serial, user_id)
@@ -23,7 +15,7 @@ func CreateCard(serial string, user_id int) error {
 }
 
 func GetCardsForUser(user_id int) ([]Card, error) {
-	rows, err := db.Query("SELECT serial, created_at FROM cards WHERE user_id = $1;", user_id)
+	rows, err := db.Query("SELECT id, serial, created_at, name FROM cards WHERE user_id = $1;", user_id)
 	if err != nil {
 		return nil, err
 	}
@@ -32,7 +24,7 @@ func GetCardsForUser(user_id int) ([]Card, error) {
 	cards := make([]Card, 0)
 	for rows.Next() {
 		var card Card
-		err := rows.Scan(&card.Serial, &card.CreatedAt)
+		err := rows.Scan(&card.Id, &card.Serial, &card.CreatedAt, &card.Name)
 		if err != nil {
 			return nil, err
 		}
@@ -40,4 +32,9 @@ func GetCardsForUser(user_id int) ([]Card, error) {
 	}
 
 	return cards, nil
+}
+
+func SetCardName(id int, name string, user_id int) error {
+	_, err := db.Exec("UPDATE cards SET name = $1 WHERE user_id = $2 and id = $3;", name, user_id, id)
+	return err
 }

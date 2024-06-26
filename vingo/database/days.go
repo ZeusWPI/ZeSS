@@ -7,15 +7,6 @@ type Day struct {
 	Date time.Time
 }
 
-var (
-	daysCreateStmt = `
-		CREATE TABLE IF NOT EXISTS days (
-			id SERIAL NOT NULL PRIMARY KEY,
-			date DATE NOT NULL UNIQUE
-		);
-		`
-)
-
 func CreateDays(first_day time.Time, last_day time.Time) error {
 	tx, err := db.Begin()
 	if err != nil {

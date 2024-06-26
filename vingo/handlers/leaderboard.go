@@ -13,5 +13,6 @@ func Leaderboard(c *fiber.Ctx) error {
 		return c.Status(500).SendString("Error getting leaderboard")
 	}
 
+	logger.Println(users)
 	return c.JSON(users)
 }

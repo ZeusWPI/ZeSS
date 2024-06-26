@@ -6,17 +6,6 @@ type Settings struct {
 	Public      bool `json:"public"`
 }
 
-var (
-	settingsCreateStmt = `
-		CREATE TABLE IF NOT EXISTS settings (
-			user_id INT NOT NULL PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
-			public BOOLEAN NOT NULL DEFAULT FALSE,
-			scan_in_out BOOLEAN NOT NULL DEFAULT FALSE,
-			leaderboard BOOLEAN NOT NULL DEFAULT TRUE
-		);
-	`
-)
-
 func CreateSettings(user_id int) error {
 	_, err := db.Exec("INSERT INTO settings (user_id) VALUES ($1) ON CONFLICT DO NOTHING;", user_id)
 	return err

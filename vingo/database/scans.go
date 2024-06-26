@@ -1,6 +1,8 @@
 package database
 
-import "time"
+import (
+	"time"
+)
 
 type Scan struct {
 	ScanTime time.Time `json:"scanTime"`
@@ -19,17 +21,6 @@ type LeaderboardItem struct {
 	TotalDays int    `json:"totalDays"`
 }
 
-var (
-	scansCreateStmt = `
-		CREATE TABLE IF NOT EXISTS scans (
-			id SERIAL NOT NULL PRIMARY KEY,
-			scan_time TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
-			scan_in BOOLEAN,
-			card_serial TEXT NOT NULL REFERENCES cards(serial)
-		);
-	`
-)
-
 func CreateScan(card_serial string) error {
 	_, err := db.Exec("INSERT INTO scans (card_serial) VALUES ($1);", card_serial)
 	return err
@@ -41,8 +32,7 @@ func GetScansForUser(user_id int) ([]Scan, error) {
 		return nil, err
 	}
 
-	var scans []Scan
-
+	scans := []Scan{}
 	for scans_rows.Next() {
 		var scan Scan
 		_ = scans_rows.Scan(&scan.ScanTime, &scan.Card)
@@ -78,7 +68,7 @@ func GetPresenceHistory(user_id int) ([]Present, error) {
 		return nil, err
 	}
 
-	var presences []Present
+	presences := []Present{}
 	for rows.Next() {
 		var present Present
 		_ = rows.Scan(&present.Date, &present.Present, &present.StreakDay)
@@ -103,7 +93,7 @@ func TotalDaysPerUser() ([]LeaderboardItem, error) {
 		return nil, err
 	}
 
-	var leaderboard []LeaderboardItem
+	leaderboard := []LeaderboardItem{}
 	for rows.Next() {
 		var item LeaderboardItem
 		_ = rows.Scan(&item.TotalDays, &item.Username, &item.Position)
