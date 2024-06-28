@@ -1,38 +1,13 @@
-import {
-    styled,
-    TableBody,
-    TableCell,
-    tableCellClasses,
-    TableRow,
-    Typography,
-} from "@mui/material";
+import { TableBody, TableCell, TableRow, Typography } from "@mui/material";
+import { alpha } from "@mui/material/styles";
 import { PodiumBronze, PodiumGold, PodiumSilver } from "mdi-material-ui";
-import { FC } from "react";
+import { FC, useContext } from "react";
 import { leaderboardHeadCells, LeaderboardItem } from "../types/leaderboard";
+import { UserContext } from "../user/UserProvider";
 
 interface LeaderboardTableBodyProps {
     leaderboardItems: readonly LeaderboardItem[];
 }
-
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
-    [`&.${tableCellClasses.head}`]: {
-        backgroundColor: theme.palette.common.black,
-        color: theme.palette.common.white,
-    },
-    [`&.${tableCellClasses.body}`]: {
-        fontSize: 14,
-    },
-}));
-
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
-    "&:nth-of-type(odd)": {
-        backgroundColor: theme.palette.action.hover,
-    },
-    // hide last border
-    "&:last-child td, &:last-child th": {
-        border: 0,
-    },
-}));
 
 const getPosition = (position: number) => {
     switch (position) {
@@ -50,13 +25,33 @@ const getPosition = (position: number) => {
 export const LeaderboardTableBody: FC<LeaderboardTableBodyProps> = ({
     leaderboardItems: rows,
 }) => {
+    const {
+        userState: { user },
+    } = useContext(UserContext);
+
     return (
         <TableBody>
-            {rows.map((row) => {
+            {rows.map((row, index) => {
                 return (
-                    <StyledTableRow key={row.username} id={row.username}>
+                    <TableRow
+                        key={row.username}
+                        id={row.username}
+                        sx={{
+                            ...(index % 2 === 0 && {
+                                backgroundColor: (theme) =>
+                                    theme.palette.action.hover,
+                            }),
+                            ...(row.username === user!.username && {
+                                backgroundColor: (theme) =>
+                                    alpha(
+                                        theme.palette.primary.main,
+                                        theme.palette.action.activatedOpacity
+                                    ),
+                            }),
+                        }}
+                    >
                         {leaderboardHeadCells.map((headCell) => (
-                            <StyledTableCell
+                            <TableCell
                                 key={headCell.id}
                                 align={headCell.align}
                                 padding={headCell.padding}
@@ -66,9 +61,9 @@ export const LeaderboardTableBody: FC<LeaderboardTableBodyProps> = ({
                                 ) : (
                                     <Typography>{row[headCell.id]}</Typography>
                                 )}
-                            </StyledTableCell>
+                            </TableCell>
                         ))}
-                    </StyledTableRow>
+                    </TableRow>
                 );
             })}
         </TableBody>

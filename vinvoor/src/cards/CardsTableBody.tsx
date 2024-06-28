@@ -63,6 +63,3 @@ export const CardsTableBody: FC<CardsTableBodyProps> = ({
         </TableBody>
     );
 };
-
-// TODO: Go over all mouse events
-// TODO: Move all components props

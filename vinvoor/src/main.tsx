@@ -6,6 +6,7 @@ import { CssBaseline } from "@mui/material";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import "react-tooltip/dist/react-tooltip.css";
 import { App } from "./App.tsx";
 import { Cards } from "./cards/Cards.tsx";
 import { ErrorPage } from "./errors/ErrorPage.tsx";

@@ -7,7 +7,7 @@ import { CardsTable } from "./CardsTable";
 
 export const Cards = () => {
     const [cards, setCards] = useState<readonly Card[]>([]);
-    const { loading, error: _ } = useFetch<readonly Card[]>("cards", setCards);
+    const { loading } = useFetch<readonly Card[]>("cards", setCards);
 
     return (
         <LoadingSkeleton loading={loading}>
