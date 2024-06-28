@@ -1,4 +1,4 @@
-import { Button, SxProps, Theme, Typography } from "@mui/material";
+import { Box, Button, SxProps, Theme, Typography } from "@mui/material";
 import { FC } from "react";
 import { UnstyledLink } from "../components/UnstyledLink";
 
@@ -8,25 +8,28 @@ interface NavBarLogoProps {
 
 export const NavBarLogo: FC<NavBarLogoProps> = ({ sx }) => {
     return (
-        <UnstyledLink to="/">
-            <Button
-                color="inherit"
-                sx={{
-                    ...sx,
-                    textTransform: "none",
-                    color: "white",
-                }}
-            >
-                <Typography
-                    variant="h6"
+        <Box display="flex">
+            <UnstyledLink to="/">
+                <Button
+                    color="inherit"
                     sx={{
-                        letterSpacing: ".3rem",
-                        fontWeight: 700,
+                        ...sx,
+                        textTransform: "none",
+                        color: "white",
                     }}
                 >
-                    ZeSS
-                </Typography>
-            </Button>
-        </UnstyledLink>
+                    <Typography
+                        variant="h6"
+                        sx={{
+                            letterSpacing: ".3rem",
+                            fontWeight: 700,
+                        }}
+                    >
+                        ZeSS
+                    </Typography>
+                </Button>
+            </UnstyledLink>
+            <Box sx={{ flexGrow: 1 }} />
+        </Box>
     );
 };
