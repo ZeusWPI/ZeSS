@@ -1,13 +1,13 @@
-
+$fn=50;
 enclosure_inner_length = 100;
-enclosure_inner_width = 45;
-enclosure_inner_depth = 30;
+enclosure_inner_width = 55;
+enclosure_inner_depth = 45;
 
 enclosure_thickness = 2;
 
 cover_thickness = 2;
 
-part = "both"; // [enclosure:Enclosure, cover:Cover, both:Enclosure and Cover]
+part = "enclosure"; // [enclosure:Enclosure, cover:Cover, both:Enclosure and Cover]
 
 print_part();
 
@@ -149,12 +149,38 @@ module lid2(in_x, in_y, in_z, shell, top_lip, top_thickness) {
 			[cxp-5, cym]]);
 	
 			screws(in_x, in_y, in_z, shell);
-            hole("lid", 6.5/2, [cxp - 10, 0]);
+            // hole for 8x1 neopixel array
+			translate([enclosure_inner_length/2 - 10 - 5, -49/2, 0]) cube([5, 49, 100]);
 	}
 }
 
 module box2(in_x, in_y, in_z, shell, top_lip, top_thickness) {
-	bottom(in_x, in_y, in_z, shell);
+	
+	// bottom plate, with 12 holes for magnets
+	difference() {
+		union() {
+			bottom(in_x, in_y, in_z, shell); // 2 mm bottom plate
+			for(x=[0, 1, 2, 3]) {
+				for (y=[-1, 0, 1]) {
+					translate([15*x-30+15/2, 15*y, 1]) {
+						cylinder(d=8.5+2*2, h=2.6);
+					}
+				}
+			}
+		}
+		union() {
+			for(x=[0, 1, 2, 3]) {
+				for (y=[-1, 0, 1]) {
+					translate([15*x-30+15/2, 15*y, 1]) {
+						cylinder(d=8.5, h=2);
+					}
+				}
+			}
+		}
+	}
+	
+
+
 	difference() {
         union() {
             sides(in_x, in_y, in_z, shell);
@@ -162,7 +188,10 @@ module box2(in_x, in_y, in_z, shell, top_lip, top_thickness) {
         }
 		
 		screws(in_x, in_y, in_z, shell);
+		// hole for antenna
 		hole("length_1", 6.5/2, [0, 10]);
+
+		// slit for USB cable
         offset = [0, enclosure_thickness+4.5/2];
         assign (
 			rotate = [90,0,270], 
