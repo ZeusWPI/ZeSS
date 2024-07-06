@@ -1,10 +1,10 @@
 // Exports
 
+import { MILLISECONDS_IN_ONE_DAY } from "../../util/util";
 import { HeatmapVariant } from "./Heatmap";
 
 // Constants
 
-export const MILLISECONDS_IN_ONE_DAY = 24 * 60 * 60 * 1000;
 export const DAYS_IN_WEEK = 7;
 export const WEEKS_IN_MONTH = 5;
 export const SQUARE_SIZE = 10;
@@ -91,12 +91,6 @@ export const getColumnCount = (
             (endDate.getMonth() - startDate.getMonth() + 1)
         );
     }
-};
-
-export const shiftDate = (date: Date, numDays: number) => {
-    const newDate = new Date(date);
-    newDate.setDate(newDate.getDate() + numDays);
-    return newDate;
 };
 
 // Local functions

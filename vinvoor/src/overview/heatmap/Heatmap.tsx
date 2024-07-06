@@ -1,4 +1,5 @@
 import { FC, useContext } from "react";
+import { MILLISECONDS_IN_ONE_DAY, shiftDate } from "../../util/util";
 import { ScanContext } from "../Overview";
 import "./heatmap.css";
 import {
@@ -13,9 +14,7 @@ import {
     getTransformForColumn,
     getTransformForMonthLabels,
     getWidth,
-    MILLISECONDS_IN_ONE_DAY,
     MONTH_LABELS,
-    shiftDate,
     SQUARE_SIZE,
 } from "./utils";
 

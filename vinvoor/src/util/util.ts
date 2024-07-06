@@ -2,6 +2,23 @@ export const randomInt = (lower: number = 0, upper: number = 10000): number => {
     return Math.floor(Math.random() * (upper - lower + 1) + lower);
 };
 
+// Date functions
+
+export const MILLISECONDS_IN_ONE_DAY = 24 * 60 * 60 * 1000;
+
+export const isTheSameDay = (date1: Date, date2: Date) =>
+    date1.getFullYear() === date2.getFullYear() &&
+    date1.getMonth() === date2.getMonth() &&
+    date1.getDate() === date2.getDate();
+
+export const shiftDate = (date: Date, numDays: number) => {
+    const newDate = new Date(date);
+    newDate.setDate(newDate.getDate() + numDays);
+    return newDate;
+};
+
+// Compare functions
+
 export const equal = (left: any, right: any): boolean => {
     if (typeof left !== typeof right) return false;
 

@@ -1,12 +1,8 @@
 import { Alert, AlertTitle } from "@mui/material";
 import { EmoticonExcitedOutline, EmoticonFrownOutline } from "mdi-material-ui";
 import { useContext } from "react";
+import { isTheSameDay } from "../../util/util";
 import { ScanContext } from "../Overview";
-
-const isTheSameDay = (date1: Date, date2: Date) =>
-    date1.getFullYear() === date2.getFullYear() &&
-    date1.getMonth() === date2.getMonth() &&
-    date1.getDate() === date2.getDate();
 
 export const CheckIn = () => {
     const { scans } = useContext(ScanContext);
