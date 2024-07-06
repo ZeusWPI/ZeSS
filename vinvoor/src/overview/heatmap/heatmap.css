@@ -1,0 +1,62 @@
+.heatmap text {
+    font-size: 10px;
+    fill: #aaa;
+}
+
+.heatmap rect:hover {
+    stroke: #555;
+    stroke-width: 1px;
+}
+
+/*
+    Gradients for months variant
+*/
+
+.heatmap .color-0 {
+    fill: #eeeeee;
+    stroke-width: 1px;
+    stroke: #fcce9f;
+}
+.heatmap .color-1 {
+    fill: #fcce9f;
+    stroke-width: 1px;
+    stroke: #fcbb79;
+}
+
+.heatmap .color-2 {
+    fill: #fcbb79;
+    stroke-width: 1px;
+    stroke: #fa922a;
+}
+.heatmap .color-3 {
+    fill: #fa922a;
+    stroke-width: 1px;
+    stroke: #ff7f00;
+}
+
+.heatmap .color-4 {
+    fill: #ff7f00;
+    stroke-width: 1px;
+    stroke: #ba5f02;
+}
+.heatmap .color-5 {
+    fill: #ba5f02;
+    stroke-width: 1px;
+    stroke: #ba5f02;
+}
+
+/*
+    Active or not active for days variant
+*/
+
+.heatmap .color-inactive {
+    fill: #eeeeee;
+    stroke-width: 1px;
+    stroke: #fcce9f;
+}
+
+.heatmap .color-active {
+    fill: #ff7f00;
+    stroke-width: 1px;
+    stroke: #ba5f02;
+}
