@@ -33,5 +33,5 @@ export const CardsHeadCells: readonly TableHeadCell<Card>[] = [
 ];
 
 export interface CardPostResponse {
-    is_current_user: boolean;
+    isCurrentUser: boolean;
 }

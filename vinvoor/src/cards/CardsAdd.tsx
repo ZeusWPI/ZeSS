@@ -80,7 +80,7 @@ export const CardsAdd = () => {
             .catch((error) => {
                 if (isResponseNot200Error(error)) {
                     error.response.json().then((response: CardPostResponse) => {
-                        if (response.is_current_user)
+                        if (response.isCurrentUser)
                             enqueueSnackbar(requestYou, { variant: "warning" });
                         else
                             enqueueSnackbar(requestOther, { variant: "error" });

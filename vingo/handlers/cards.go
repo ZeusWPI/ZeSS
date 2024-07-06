@@ -12,7 +12,7 @@ func StartCardRegisterAPI(c *fiber.Ctx) error {
 
 	if time.Now().Before(registering_end) {
 		// true if current user is already registering
-		return c.Status(503).JSON(map[string]bool{"is_current_user": registering_user == user.Id})
+		return c.Status(503).JSON(map[string]bool{"isCurrentUser": registering_user == user.Id})
 	}
 
 	registering_user = user.Id

@@ -1,7 +1,7 @@
 import { createContext, Dispatch, SetStateAction, useState } from "react";
 import { LoadingSkeleton } from "../components/LoadingSkeleton";
 import { useFetch } from "../hooks/useFetch";
-import { Card } from "../types/cards";
+import { Card, convertCardJSON } from "../types/cards";
 import { CardsEmpty } from "./CardsEmpty";
 import { CardsTable } from "./CardsTable";
 
@@ -17,7 +17,11 @@ export const CardContext = createContext<CardContextProps>({
 
 export const Cards = () => {
     const [cards, setCards] = useState<readonly Card[]>([]);
-    const { loading } = useFetch<readonly Card[]>("cards", setCards);
+    const { loading } = useFetch<readonly Card[]>(
+        "cards",
+        setCards,
+        convertCardJSON
+    );
 
     return (
         <LoadingSkeleton loading={loading}>

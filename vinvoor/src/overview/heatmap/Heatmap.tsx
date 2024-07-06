@@ -1,4 +1,5 @@
-import { FC } from "react";
+import { FC, useContext } from "react";
+import { ScanContext } from "../Overview";
 import "./heatmap.css";
 import {
     dateTimeFormat,
@@ -29,7 +30,6 @@ export enum HeatmapVariant {
 }
 
 interface HeatmapProps {
-    days: readonly Date[];
     startDate: Date;
     endDate: Date;
     variant: HeatmapVariant;
@@ -102,15 +102,12 @@ const getWeeksInMonth = (values: HeatmapItem[]): { [key: number]: number } => {
 
 const getClassNameForValue = (value: HeatmapItem, variant: HeatmapVariant) => {
     if (variant === HeatmapVariant.DAYS) {
-        if (value.count > 0) {
-            return `color-active`;
-        }
+        if (value.count > 0) return `color-active`;
 
         return `color-inactive`;
     } else {
-        if (value.count <= 5) {
-            return `color-${value.count}`;
-        }
+        if (value.count <= 5) return `color-${value.count}`;
+
         return "color-5";
     }
 };
@@ -118,34 +115,28 @@ const getClassNameForValue = (value: HeatmapItem, variant: HeatmapVariant) => {
 const getTooltipDataAttrsForDate = (
     value: HeatmapItem,
     variant: HeatmapVariant
-) => {
-    return {
-        "data-tooltip-id": "heatmap",
-        "data-tooltip-content":
-            variant === HeatmapVariant.DAYS
-                ? getTooltipDataAttrsForDays(value)
-                : getTooltipDataAttrsForMonths(value),
-    };
-};
+) => ({
+    "data-tooltip-id": "heatmap",
+    "data-tooltip-content":
+        variant === HeatmapVariant.DAYS
+            ? getTooltipDataAttrsForDays(value)
+            : getTooltipDataAttrsForMonths(value),
+});
 
-const getTooltipDataAttrsForDays = (value: HeatmapItem) => {
-    return `${
-        value.count > 0 ? "Present" : "Absent"
-    } on ${dateTimeFormat.format(value.date)}`;
-};
+const getTooltipDataAttrsForDays = (value: HeatmapItem) =>
+    `${value.count > 0 ? "Present" : "Absent"} on ${dateTimeFormat.format(
+        value.date
+    )}`;
 
-const getTooltipDataAttrsForMonths = (value: HeatmapItem) => {
-    return `${value.count} scan${
+const getTooltipDataAttrsForMonths = (value: HeatmapItem) =>
+    `${value.count} scan${
         value.count !== 1 ? "s" : ""
     } on the week of ${dateTimeFormat.format(value.date)}`;
-};
 
-export const Heatmap: FC<HeatmapProps> = ({
-    days,
-    startDate,
-    endDate,
-    variant,
-}) => {
+export const Heatmap: FC<HeatmapProps> = ({ startDate, endDate, variant }) => {
+    const { scans } = useContext(ScanContext);
+    const days = scans.map((scan) => scan.scanTime);
+
     days.forEach((date) => date.setHours(0, 0, 0, 0));
     startDate.setHours(0, 0, 0, 0);
     endDate.setHours(0, 0, 0, 0);
@@ -164,18 +155,12 @@ export const Heatmap: FC<HeatmapProps> = ({
 
     let valueIndex = 0;
     const renderSquare = (row: number, column: number) => {
-        if (column === 0 && row < emptyStart) {
-            return null;
-        }
+        if (column === 0 && row < emptyStart) return null;
 
-        if (variant === HeatmapVariant.DAYS) {
-            if (column === columns - 1 && row > emptyEnd) {
-                return null;
-            }
-        }
+        if (variant === HeatmapVariant.DAYS)
+            if (column === columns - 1 && row > emptyEnd) return null;
 
         const value = values[valueIndex++];
-        console.log(value);
 
         const [x, y] = getSquareCoordinates(row);
 
@@ -194,23 +179,20 @@ export const Heatmap: FC<HeatmapProps> = ({
         );
     };
 
-    const renderColumn = (column: number) => {
-        return (
-            <g key={column} transform={getTransformForColumn(column)}>
-                {[
-                    ...Array(
-                        variant === HeatmapVariant.DAYS
-                            ? DAYS_IN_WEEK
-                            : weeksInMonth[column]
-                    ).keys(),
-                ].map((row) => renderSquare(row, column))}
-            </g>
-        );
-    };
+    const renderColumn = (column: number) => (
+        <g key={column} transform={getTransformForColumn(column)}>
+            {[
+                ...Array(
+                    variant === HeatmapVariant.DAYS
+                        ? DAYS_IN_WEEK
+                        : weeksInMonth[column]
+                ).keys(),
+            ].map((row) => renderSquare(row, column))}
+        </g>
+    );
 
-    const renderColumns = () => {
-        return [...Array(columns).keys()].map((column) => renderColumn(column));
-    };
+    const renderColumns = () =>
+        [...Array(columns).keys()].map((column) => renderColumn(column));
 
     const renderMonthLabels = () => {
         if (variant === HeatmapVariant.DAYS) {
