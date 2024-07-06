@@ -1,33 +1,18 @@
 import { Paper, Table, TableContainer, TablePagination } from "@mui/material";
-import {
-    ChangeEvent,
-    Dispatch,
-    FC,
-    MouseEvent,
-    SetStateAction,
-    useMemo,
-    useState,
-} from "react";
+import { ChangeEvent, MouseEvent, useContext, useMemo, useState } from "react";
 import { Card } from "../types/cards";
 import { TableOrder } from "../types/table";
+import { CardContext } from "./Cards";
 import { CardsTableBody } from "./CardsTableBody";
 import { CardsTableHead } from "./CardsTableHead";
 import { CardsTableToolbar } from "./CardsTableToolbar";
 
-interface CardTableProps {
-    cards: readonly Card[];
-    setCards: Dispatch<SetStateAction<readonly Card[]>>;
-}
-
 const rowsPerPageOptions = [10, 25, 50];
 
 const descendingComparator = <T,>(a: T, b: T, orderBy: keyof T) => {
-    if (b[orderBy] < a[orderBy]) {
-        return -1;
-    }
-    if (b[orderBy] > a[orderBy]) {
-        return 1;
-    }
+    if (b[orderBy] < a[orderBy]) return -1;
+    if (b[orderBy] > a[orderBy]) return 1;
+
     return 0;
 };
 
@@ -47,18 +32,19 @@ const stableSort = <T,>(
     array: readonly T[],
     comparator: (a: T, b: T) => number
 ) => {
-    const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
-    stabilizedThis.sort((a, b) => {
+    const stabilized = array.map((el, index) => [el, index] as [T, number]);
+    stabilized.sort((a, b) => {
         const order = comparator(a[0], b[0]);
         if (order !== 0) {
             return order;
         }
         return a[1] - b[1];
     });
-    return stabilizedThis.map((el) => el[0]);
+    return stabilized.map((el) => el[0]);
 };
 
-export const CardsTable: FC<CardTableProps> = ({ cards, setCards }) => {
+export const CardsTable = () => {
+    const { cards } = useContext(CardContext);
     const [order, setOrder] = useState<TableOrder>("asc");
     const [orderBy, setOrderBy] = useState<keyof Card>("serial");
     const [selected, setSelected] = useState<readonly string[]>([]);
@@ -78,6 +64,7 @@ export const CardsTable: FC<CardTableProps> = ({ cards, setCards }) => {
         if (event.target.checked) {
             const newSelected = cards.map((n) => n.serial);
             setSelected(newSelected);
+
             return;
         }
 
@@ -114,9 +101,7 @@ export const CardsTable: FC<CardTableProps> = ({ cards, setCards }) => {
     const handleChangePage = (
         _: MouseEvent<HTMLButtonElement> | null,
         newPage: number
-    ) => {
-        setPage(newPage);
-    };
+    ) => setPage(newPage);
 
     const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) => {
         setRowsPerPage(parseInt(event.target.value, 10));
@@ -134,12 +119,12 @@ export const CardsTable: FC<CardTableProps> = ({ cards, setCards }) => {
                 page * rowsPerPage,
                 page * rowsPerPage + rowsPerPage
             ),
-        [order, orderBy, page, rowsPerPage]
+        [cards, order, orderBy, page, rowsPerPage]
     );
 
     return (
         <Paper elevation={4} sx={{ width: "100%", mb: 2 }}>
-            <CardsTableToolbar selected={selected} setCards={setCards} />
+            <CardsTableToolbar selected={selected} />
             <TableContainer>
                 <Table>
                     <CardsTableHead

@@ -45,7 +45,11 @@ export const CardsTableBody: FC<CardsTableBodyProps> = ({
                                 align={headCell.align}
                                 padding={headCell.padding}
                             >
-                                <Typography>{row[headCell.id]}</Typography>
+                                <Typography>
+                                    {headCell.convert
+                                        ? headCell.convert(row[headCell.id])
+                                        : (row[headCell.id] as string)}
+                                </Typography>
                             </TableCell>
                         ))}
                     </TableRow>
@@ -63,6 +67,3 @@ export const CardsTableBody: FC<CardsTableBodyProps> = ({
         </TableBody>
     );
 };
-
-// TODO: Go over all mouse events
-// TODO: Move all components props

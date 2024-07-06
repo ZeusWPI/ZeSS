@@ -3,6 +3,8 @@ import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 import { CssBaseline } from "@mui/material";
+import { ConfirmProvider } from "material-ui-confirm";
+import { SnackbarProvider } from "notistack";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
@@ -47,7 +49,16 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         <ThemeProvider>
             <CssBaseline enableColorScheme>
                 <UserProvider>
-                    <RouterProvider router={router} />
+                    <ConfirmProvider>
+                        <SnackbarProvider
+                            anchorOrigin={{
+                                horizontal: "center",
+                                vertical: "top",
+                            }}
+                        >
+                            <RouterProvider router={router} />
+                        </SnackbarProvider>
+                    </ConfirmProvider>
                 </UserProvider>
             </CssBaseline>
         </ThemeProvider>

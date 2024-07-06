@@ -8,4 +8,5 @@ export interface TableHeadCell<T> {
     label: string;
     align: TableAlignOptions;
     padding: TablePaddingOptions;
+    convert?: (value: any) => string;
 }

@@ -1,9 +1,20 @@
 import { TableHeadCell } from "./table";
 
-export interface Card {
+interface CardJSON {
     serial: string;
     createdAt: string;
 }
+
+export interface Card {
+    serial: string;
+    createdAt: Date;
+}
+
+export const convertCardJSON = (cardsJSON: CardJSON[]): Card[] =>
+    cardsJSON.map((CardJSON) => ({
+        serial: CardJSON.serial,
+        createdAt: new Date(CardJSON.createdAt),
+    }));
 
 export const CardsHeadCells: readonly TableHeadCell<Card>[] = [
     {
@@ -17,5 +28,10 @@ export const CardsHeadCells: readonly TableHeadCell<Card>[] = [
         label: "Created at",
         align: "right",
         padding: "normal",
+        convert: (value: Date) => value.toDateString(),
     },
 ];
+
+export interface CardPostResponse {
+    is_current_user: boolean;
+}

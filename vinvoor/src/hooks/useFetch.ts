@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { fetchApi } from "../util/fetch";
+import { getApi } from "../util/fetch";
 
 interface useFetchResult {
     loading: boolean;
@@ -8,13 +8,14 @@ interface useFetchResult {
 
 export const useFetch = <T>(
     endpoint: string,
-    setData: Dispatch<SetStateAction<T>>
+    setData: Dispatch<SetStateAction<T>>,
+    convertData?: (data: any) => T
 ): useFetchResult => {
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<Error | undefined>(undefined);
 
     useEffect(() => {
-        fetchApi(endpoint)
+        getApi<T>(endpoint, convertData)
             .then((data) => setData(data))
             .catch((error) => setError(error))
             .finally(() => setLoading(false));

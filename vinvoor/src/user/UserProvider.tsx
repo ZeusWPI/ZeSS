@@ -9,7 +9,7 @@ import {
     useState,
 } from "react";
 import { User } from "../types/user";
-import { fetchApi } from "../util/fetch";
+import { getApi } from "../util/fetch";
 
 interface UserProviderProps {
     children: ReactNode;
@@ -55,7 +55,7 @@ export const UserProvider: FC<UserProviderProps> = ({ children }) => {
 
         let newUserState = { ...userState };
 
-        fetchApi("user")
+        getApi<User>("user")
             .then((data) => (newUserState.user = data))
             .catch((error) => {
                 Cookies.remove("session_id");

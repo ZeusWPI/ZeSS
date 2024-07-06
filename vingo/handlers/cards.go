@@ -20,7 +20,7 @@ func StartCardRegisterAPI(c *fiber.Ctx) error {
 
 	logger.Println("Card registration started by user", registering_user)
 
-	return c.SendStatus(200)
+	return c.Status(200).JSON(map[string]bool{})
 }
 
 func StartCardRegister(c *fiber.Ctx) error {

@@ -29,5 +29,3 @@ export const App = () => {
         </>
     );
 };
-
-// TODO: Add link to the github repo
