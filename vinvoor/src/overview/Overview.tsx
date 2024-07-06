@@ -7,6 +7,7 @@ import { LoadingSkeleton } from "../components/LoadingSkeleton";
 import { useFetch } from "../hooks/useFetch";
 import { convertScanJSON, Scan } from "../types/scans";
 import { CheckIn } from "./checkin/CheckIn";
+import { Days } from "./days/Days";
 import { Heatmap, HeatmapVariant } from "./heatmap/Heatmap";
 import { Streak } from "./streak/Streak";
 
@@ -73,6 +74,11 @@ export const Overview = () => {
                                 }
                             />
                             <Tooltip id="heatmap" />
+                        </Paper>
+                    </Grid>
+                    <Grid item xs={12} md={4}>
+                        <Paper elevation={4}>
+                            <Days />
                         </Paper>
                     </Grid>
                 </Grid>

@@ -60,7 +60,7 @@ export const Streak = () => {
     const [isOnStreak, streak] = getStreak(scans);
 
     return isOnStreak ? (
-        <Box display="flex" alignItems="flex-end">
+        <Box display="flex" alignItems="flex-end" justifyContent="center">
             <Typography
                 variant="h2"
                 color="primary"
@@ -74,13 +74,7 @@ export const Streak = () => {
             </Typography>
         </Box>
     ) : (
-        <Box
-            display="flex"
-            alignItems="flex-end"
-            justifyItems="center"
-            justifyContent="center"
-            // sx={{ border: 1, borderColor: "primary.secondary" }}
-        >
+        <Box display="flex" alignItems="flex-end" justifyContent="center">
             <Typography
                 variant="h2"
                 color="error"
