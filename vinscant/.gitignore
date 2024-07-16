@@ -1,6 +1,6 @@
 # ESP-IDF default build directory name
-build
-.vscode
-.embuild
-target
-Cargo.lock
+/.vscode
+/.embuild
+/target
+/Cargo.lock
+cfg.toml
