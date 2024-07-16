@@ -8,6 +8,8 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+var register_timeout = time.Minute
+
 func StartCardRegister(c *fiber.Ctx) error {
 	user := getUserFromStore(c)
 
@@ -17,7 +19,7 @@ func StartCardRegister(c *fiber.Ctx) error {
 	}
 
 	registering_user = user.Id
-	registering_end = time.Now().Add(time.Minute)
+	registering_end = time.Now().Add(register_timeout)
 	registering_success = false
 
 	logger.Println("Card registration started by user", registering_user)
@@ -40,8 +42,9 @@ func CardRegisterStatus(c *fiber.Ctx) error {
 	user := getUserFromStore(c)
 	register_ongoing := time.Now().Before(registering_end)
 	is_current_user := registering_user == user.Id
-	return c.JSON(map[string]bool{"registering": register_ongoing, "isCurrentUser": is_current_user, "success": registering_success})
-
+	time_remaining := time.Until(registering_end).Seconds()
+	time_percentage := time_remaining / register_timeout.Seconds()
+	return c.JSON(map[string]interface{}{"registering": register_ongoing, "isCurrentUser": is_current_user, "success": registering_success, "time_remaining": time_remaining, "time_percentage": time_percentage})
 }
 
 func CardNameUpdate(c *fiber.Ctx) error {
