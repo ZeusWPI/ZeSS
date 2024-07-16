@@ -6,8 +6,20 @@ use embedded_svc::{
 };
 use esp_idf_svc::{
     eventloop::EspSystemEventLoop,
-    hal::prelude::Peripherals,
+    hal::{
+        gpio::{InputPin, OutputPin},
+        prelude::Peripherals,
+        spi::{
+            self, SpiSingleDeviceDriver
+            //config::{DriverConfig, Config},
+        },
+    },
     http::client::{Configuration, EspHttpConnection},
+};
+
+use mfrc522::{
+    comm::blocking::spi::SpiInterface,
+    Mfrc522,
 };
 
 use lib::wifi;
@@ -36,10 +48,33 @@ fn main() {
 
     log::info!("Hello, world!");
     log::info!("WiFi credentials: SSID: {}, passwd: {}", app_config.wifi_ssid, app_config.wifi_psk);
-    let wifi_thing = wifi::wifi(app_config.wifi_ssid, app_config.wifi_psk, peripherals.modem, sysloop);
+    let _wifi_thing = wifi::wifi(app_config.wifi_ssid, app_config.wifi_psk, peripherals.modem, sysloop);
     log::info!("Sending request to http://10.0.0.133:8080 now");
-    get("http://10.0.0.133:8080");
+    //let _ = get("http://10.0.0.133:8080");
     log::info!("Request sent");
+
+    let pins = peripherals.pins;
+
+    let scan_spi_device = SpiSingleDeviceDriver::new_single(
+        peripherals.spi2,
+        pins.gpio34.downgrade_output(), // SCK
+        pins.gpio35.downgrade_output(), // MOSI
+        Some(pins.gpio36.downgrade_input()), // MISO
+        Some(pins.gpio33.downgrade_output()), // CS/SDA
+        &spi::config::DriverConfig::new(),
+        &spi::config::Config::new()
+    ).unwrap();
+    let scan_interface = SpiInterface::new(scan_spi_device);
+    let mut scanner = Mfrc522::new(scan_interface).init().unwrap();
+
+    loop {
+        match scanner.new_card_present() {
+            Ok(answer) => {
+                log::info!("Card found");
+            },
+            Err(_) => ()
+        }
+    };
 }
 
 fn get(url: impl AsRef<str>) -> Result<()> {
