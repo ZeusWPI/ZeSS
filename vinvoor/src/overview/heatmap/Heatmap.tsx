@@ -1,3 +1,4 @@
+import { Box } from "@mui/material";
 import { FC, useContext } from "react";
 import { MILLISECONDS_IN_ONE_DAY, shiftDate } from "../../util/util";
 import { ScanContext } from "../Overview";
@@ -32,6 +33,7 @@ interface HeatmapProps {
     startDate: Date;
     endDate: Date;
     variant: HeatmapVariant;
+    maxHeight: number;
 }
 
 const getAllValues = (
@@ -64,7 +66,9 @@ const getAllValues = (
         );
     } else {
         return Array.from(
-            { length: getColumnCount(startDate, endDate, HeatmapVariant.DAYS) },
+            {
+                length: getColumnCount(startDate, endDate, HeatmapVariant.DAYS),
+            },
             (_, i) => {
                 const start = shiftDate(startDate, i * DAYS_IN_WEEK);
                 const count = Array.from({
@@ -83,17 +87,26 @@ const getAllValues = (
     }
 };
 
-const getWeeksInMonth = (values: HeatmapItem[]): { [key: number]: number } => {
+const getWeeksInMonth = (
+    values: HeatmapItem[],
+    startDate: Date
+): { [key: number]: number } => {
     const startYear = values[0].date.getFullYear();
     return values.reduce(
         (acc, value) => {
             const index =
                 (value.date.getFullYear() - startYear) * 12 +
-                value.date.getMonth();
+                value.date.getMonth() -
+                startDate.getMonth();
             acc[index] = (acc[index] || 0) + 1;
             return acc;
         },
-        { 0: getEmpty(values[0].date, HeatmapVariant.MONTHS) } as {
+        {
+            [startDate.getMonth()]: getEmpty(
+                values[0].date,
+                HeatmapVariant.MONTHS
+            ),
+        } as {
             [key: number]: number;
         }
     );
@@ -132,7 +145,12 @@ const getTooltipDataAttrsForMonths = (value: HeatmapItem) =>
         value.count !== 1 ? "s" : ""
     } on the week of ${dateTimeFormat.format(value.date)}`;
 
-export const Heatmap: FC<HeatmapProps> = ({ startDate, endDate, variant }) => {
+export const Heatmap: FC<HeatmapProps> = ({
+    startDate,
+    endDate,
+    variant,
+    maxHeight,
+}) => {
     const { scans } = useContext(ScanContext);
     const days = scans.map((scan) => scan.scanTime);
 
@@ -147,7 +165,10 @@ export const Heatmap: FC<HeatmapProps> = ({ startDate, endDate, variant }) => {
     )}`;
 
     const weeksInMonth =
-        variant === HeatmapVariant.MONTHS ? getWeeksInMonth(values) : {}; // Amount of weeks in each month
+        variant === HeatmapVariant.MONTHS
+            ? getWeeksInMonth(values, startDate)
+            : {}; // Amount of weeks in each month
+
     const columns = getColumnCount(startDate, endDate, variant); // Amount of columns of squares
     const emptyStart = getEmpty(startDate, variant); // Amount of empty squares at the start
     const emptyEnd = getEmpty(endDate, variant); // Amount of empty squares at the end
@@ -216,7 +237,7 @@ export const Heatmap: FC<HeatmapProps> = ({ startDate, endDate, variant }) => {
 
                 return (
                     <text key={column} x={x} y={y}>
-                        {MONTH_LABELS[column]}
+                        {MONTH_LABELS[startDate.getMonth() + column]}
                     </text>
                 );
             });
@@ -224,11 +245,13 @@ export const Heatmap: FC<HeatmapProps> = ({ startDate, endDate, variant }) => {
     };
 
     return (
-        <svg className="heatmap" viewBox={viewBox}>
-            <g transform={getTransformForMonthLabels()}>
-                {renderMonthLabels()}
-            </g>
-            <g transform={getTransformForAllWeeks()}>{renderColumns()}</g>
-        </svg>
+        <Box maxHeight={maxHeight} sx={{ display: "flex" }}>
+            <svg className="heatmap" viewBox={viewBox}>
+                <g transform={getTransformForMonthLabels()}>
+                    {renderMonthLabels()}
+                </g>
+                <g transform={getTransformForAllWeeks()}>{renderColumns()}</g>
+            </svg>
+        </Box>
     );
 };

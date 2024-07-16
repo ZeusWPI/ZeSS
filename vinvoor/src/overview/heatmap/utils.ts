@@ -96,6 +96,6 @@ export const getColumnCount = (
 // Local functions
 
 const GUTTERSIZE = 5;
-const MONTH_LABEL_GUTTER_SIZE = 4;
+const MONTH_LABEL_GUTTER_SIZE = 8;
 
 const getSquareSize = () => SQUARE_SIZE + GUTTERSIZE;

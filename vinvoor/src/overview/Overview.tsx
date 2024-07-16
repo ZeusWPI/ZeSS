@@ -1,6 +1,6 @@
 import { Box, Paper, Switch, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid";
-import { createContext, useState } from "react";
+import { createContext, useEffect, useRef, useState } from "react";
 import { BrowserView } from "react-device-detect";
 import { Tooltip } from "react-tooltip";
 import { LoadingSkeleton } from "../components/LoadingSkeleton";
@@ -26,11 +26,25 @@ export const Overview = () => {
         setScans,
         convertScanJSON
     );
-    const [checked, setChecked] = useState<boolean>(false);
+    const [checked, setChecked] = useState<boolean>(true);
+    const daysRef = useRef<HTMLDivElement>(null);
+    const heatmapSwitchRef = useRef<HTMLDivElement>(null);
+    const [heatmapSwitchHeight, setHeatmapSwitchHeight] = useState<number>(0);
+    const [paperHeight, setPaperHeight] = useState<number>(0);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setChecked(event.target.checked);
     };
+
+    useEffect(() => {
+        if (daysRef.current) {
+            setPaperHeight(daysRef.current.clientHeight);
+        }
+
+        if (heatmapSwitchRef.current) {
+            setHeatmapSwitchHeight(heatmapSwitchRef.current.clientHeight);
+        }
+    });
 
     return (
         <LoadingSkeleton loading={loading}>
@@ -38,23 +52,38 @@ export const Overview = () => {
                 <Grid
                     container
                     spacing={2}
-                    alignItems="center"
-                    justifyContent="space-around"
+                    alignItems="stretch"
+                    justifyContent="space-between"
                 >
-                    <Grid item xs={8} md={6}>
+                    <Grid item xs={8} md={4} lg={3}>
                         <CheckIn />
                     </Grid>
                     <Grid item xs={4}>
                         <Streak />
                     </Grid>
-                    <Grid item xs={12}>
-                        <Paper elevation={4} sx={{ padding: 2 }}>
+                    <Grid
+                        item
+                        xs={12}
+                        md={8}
+                        sx={{
+                            display: "flex",
+                        }}
+                    >
+                        <Paper
+                            elevation={4}
+                            sx={{
+                                padding: 1,
+                                width: "100%",
+                                height: paperHeight,
+                            }}
+                        >
                             <BrowserView>
                                 <Box
                                     sx={{
                                         display: "flex",
                                         justifyContent: "right",
                                     }}
+                                    ref={heatmapSwitchRef}
                                 >
                                     <Typography variant="h6">Months</Typography>
                                     <Switch
@@ -65,19 +94,26 @@ export const Overview = () => {
                                 </Box>
                             </BrowserView>
                             <Heatmap
-                                startDate={new Date("2024-01-01")}
+                                startDate={new Date("2024-04-01")}
                                 endDate={new Date("2024-12-31")}
                                 variant={
                                     checked
                                         ? HeatmapVariant.DAYS
                                         : HeatmapVariant.MONTHS
                                 }
+                                maxHeight={
+                                    paperHeight - heatmapSwitchHeight - 10
+                                }
                             />
                             <Tooltip id="heatmap" />
                         </Paper>
                     </Grid>
-                    <Grid item xs={12} md={4}>
-                        <Paper elevation={4}>
+                    <Grid item xs={12} md={4} sx={{ display: "flex" }}>
+                        <Paper
+                            elevation={4}
+                            sx={{ padding: 2, width: "100%" }}
+                            ref={daysRef}
+                        >
                             <Days />
                         </Paper>
                     </Grid>
@@ -86,3 +122,6 @@ export const Overview = () => {
         </LoadingSkeleton>
     );
 };
+
+// Current height of the heatmap is calculated using ref's and calculus
+// TODO: Change it as it us very very very very very very ugly ^^

@@ -19,10 +19,6 @@ const isWeekendBetween = (date1: Date, date2: Date) => {
 };
 
 const isStreakDay = (date1: Date, date2: Date) => {
-    console.log(date1, date2);
-    console.log(shiftDate(date2, 1));
-    console.log(isTheSameDay(date1, shiftDate(date2, 1)));
-
     if (isTheSameDay(date1, shiftDate(date2, 1))) return true;
 
     if (date1.getDay() === 5 && [1, 6, 7].includes(date2.getDay()))

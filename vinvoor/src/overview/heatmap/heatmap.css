@@ -4,8 +4,8 @@
 }
 
 .heatmap rect:hover {
-    stroke: #555;
     stroke-width: 1px;
+    stroke-opacity: 0;
 }
 
 /*
@@ -42,7 +42,7 @@
 .heatmap .color-5 {
     fill: #ba5f02;
     stroke-width: 1px;
-    stroke: #ba5f02;
+    stroke: #934b01;
 }
 
 /*
