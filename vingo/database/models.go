@@ -31,11 +31,35 @@ type Settings struct {
 
 type Card struct {
 	BaseModel
-	Serial string `json:"serial" gorm:"uniqueIndex"`
-	Name   string `json:"name"`
-	UserId int    `json:"-"`
-	User   User   `json:"-"`
-	Scans  []Scan `json:"-" gorm:"foreignKey:CardSerial;references:Serial"`
+	Serial string `gorm:"uniqueIndex"`
+	Name   string
+	UserId int
+	User   User
+	Scans  []Scan `gorm:"foreignKey:CardSerial;references:Serial"`
+}
+
+func Card_to_API(card Card) CardAPI {
+	var lastUsed time.Time = card.CreatedAt
+	if len(card.Scans) != 0 {
+		lastUsed = card.Scans[len(card.Scans)-1].ScanTime
+	}
+
+	return CardAPI{
+		Id:         card.Id,
+		Serial:     card.Serial,
+		Name:       card.Name,
+		LastUsed:   lastUsed,
+		AmountUsed: len(card.Scans),
+	}
+}
+
+type CardAPI struct {
+	Id         int       `json:"id"`
+	CreatedAt  time.Time `json:"createdAt"`
+	Serial     string    `json:"serial"`
+	Name       string    `json:"name"`
+	LastUsed   time.Time `json:"lastUsed"`
+	AmountUsed int       `json:"amountUsed"`
 }
 
 type Scan struct {

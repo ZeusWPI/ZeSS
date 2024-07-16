@@ -27,7 +27,7 @@ func StartCardRegister(c *fiber.Ctx) error {
 
 func Cards(c *fiber.Ctx) error {
 	user := getUserFromStore(c)
-	cards, err := database.GetCardsForUser(user.Id)
+	cards, err := database.GetCardsAndStatsForUser(user.Id)
 	if err != nil {
 		logger.Println("", err)
 		return c.Status(500).SendString("Error getting cards")
