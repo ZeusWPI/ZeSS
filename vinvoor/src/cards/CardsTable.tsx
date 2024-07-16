@@ -20,8 +20,8 @@ const getComparator = <Key extends keyof Card>(
     order: TableOrder,
     orderBy: Key
 ): ((
-    a: { [key in Key]: number | string },
-    b: { [key in Key]: number | string }
+    a: { [key in Key]: number | string | Date },
+    b: { [key in Key]: number | string | Date }
 ) => number) => {
     return order === "desc"
         ? (a, b) => descendingComparator(a, b, orderBy)
@@ -115,7 +115,7 @@ export const CardsTable = () => {
 
     const visibleRows = useMemo(
         () =>
-            stableSort(cards, getComparator(order, orderBy)).slice(
+            stableSort<Card>(cards, getComparator(order, orderBy)).slice(
                 page * rowsPerPage,
                 page * rowsPerPage + rowsPerPage
             ),

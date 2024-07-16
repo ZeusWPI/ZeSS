@@ -34,8 +34,9 @@ const isStreakDay = (date1: Date, date2: Date) => {
 const getStreak = (scans: readonly Scan[]): [boolean, number] => {
     let streak = 0;
     const isOnStreak =
-        isTheSameDay(scans[scans.length - 1].scanTime, new Date()) ||
-        isWeekendBetween(scans[scans.length - 1].scanTime, new Date());
+        scans.length > 0 &&
+        (isTheSameDay(scans[scans.length - 1].scanTime, new Date()) ||
+            isWeekendBetween(scans[scans.length - 1].scanTime, new Date()));
 
     if (isOnStreak) {
         let i = scans.length;
@@ -59,32 +60,21 @@ export const Streak = () => {
     const { scans } = useContext(ScanContext);
     const [isOnStreak, streak] = getStreak(scans);
 
-    return isOnStreak ? (
-        <Box display="flex" alignItems="flex-end" justifyContent="center">
+    const color = isOnStreak ? "primary" : "error";
+    const textEnd = isOnStreak ? "streak" : "absent";
+
+    return (
+        <Box display="flex" alignItems="flex-end" justifyContent="end">
             <Typography
                 variant="h2"
-                color="primary"
+                color={color}
                 fontWeight="bold"
                 sx={{ mr: 1 }}
             >
                 {streak}
             </Typography>
-            <Typography variant="body2" color="primary">
-                day{streak > 1 ? "s" : ""} streak
-            </Typography>
-        </Box>
-    ) : (
-        <Box display="flex" alignItems="flex-end" justifyContent="center">
-            <Typography
-                variant="h2"
-                color="error"
-                fontWeight="bold"
-                sx={{ mr: 1 }}
-            >
-                {streak}
-            </Typography>
-            <Typography variant="body2" color="error">
-                day{streak > 1 ? "s" : ""} absent
+            <Typography variant="body2" color={color}>
+                day{streak > 1 ? "s" : ""} {textEnd}
             </Typography>
         </Box>
     );

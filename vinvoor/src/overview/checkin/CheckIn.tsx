@@ -7,10 +7,9 @@ import { ScanContext } from "../Overview";
 export const CheckIn = () => {
     const { scans } = useContext(ScanContext);
 
-    const checkedIn = isTheSameDay(
-        scans[scans.length - 1].scanTime,
-        new Date()
-    );
+    const checkedIn =
+        scans.length > 0 &&
+        isTheSameDay(scans[scans.length - 1].scanTime, new Date());
 
     return checkedIn ? (
         <Alert
@@ -21,7 +20,7 @@ export const CheckIn = () => {
             }}
         >
             <AlertTitle>Checked in</AlertTitle>
-            Thank you for stopping by the kelder!
+            Nice of you to stop by!
         </Alert>
     ) : (
         <Alert
@@ -32,7 +31,7 @@ export const CheckIn = () => {
             }}
         >
             <AlertTitle>Not checked in</AlertTitle>
-            We miss you in the kelder!
+            We miss you!
         </Alert>
     );
 };
