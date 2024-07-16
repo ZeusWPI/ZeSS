@@ -18,6 +18,7 @@ func StartCardRegister(c *fiber.Ctx) error {
 
 	registering_user = user.Id
 	registering_end = time.Now().Add(time.Minute)
+	registering_success = false
 
 	logger.Println("Card registration started by user", registering_user)
 
@@ -39,7 +40,8 @@ func CardRegisterStatus(c *fiber.Ctx) error {
 	user := getUserFromStore(c)
 	register_ongoing := time.Now().Before(registering_end)
 	is_current_user := registering_user == user.Id
-	return c.JSON(map[string]bool{"registering": register_ongoing, "isCurrentUser": is_current_user})
+	return c.JSON(map[string]bool{"registering": register_ongoing, "isCurrentUser": is_current_user, "success": registering_success})
+
 }
 
 func CardNameUpdate(c *fiber.Ctx) error {

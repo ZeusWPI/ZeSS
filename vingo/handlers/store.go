@@ -15,8 +15,9 @@ var (
 	logger = log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lshortfile)
 
 	// State for registering a new card
-	registering_user = 0
-	registering_end  = time.Now()
+	registering_user    = 0
+	registering_end     = time.Now()
+	registering_success = false
 )
 
 const (
