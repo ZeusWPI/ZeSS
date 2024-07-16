@@ -6,7 +6,7 @@ ono
 - RFID-RC522
 
 Connect RFID-RC522 Rfid reader on these pins:
-
+TODO update pins
 ```
 SDA/CS: 34
 MOSI: 35
