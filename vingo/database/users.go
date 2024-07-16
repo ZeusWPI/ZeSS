@@ -1,44 +1,24 @@
 package database
 
-type User struct {
-	Id       int      `json:"id"`
-	Username string   `json:"username"`
-	Admin    bool     `json:"admin"`
-	Settings Settings `json:"settings"`
-}
+import "time"
 
 func CreateUserIfNew(user_id int, username string) error {
-	_, err := db.Exec("INSERT INTO users (id, username) VALUES ($1, $2) ON CONFLICT (id) DO UPDATE SET username = EXCLUDED.username;", user_id, username)
-	if err != nil {
-		return err
-	}
-
-	err = CreateSettings(user_id)
-	return err
+	var user = &User{Username: username, Settings: Settings{ScanInOut: false, Leaderboard: true, Public: false}}
+	user.Id = user_id
+	user.Settings.CreatedAt = time.Now()
+	user.Settings.UpdatedAt = time.Now()
+	result := gorm_db.FirstOrCreate(&user)
+	return result.Error
 }
 
 func GetUser(user_id int) (*User, error) {
-	return getUser("SELECT id, username, admin, scan_in_out, leaderboard, public FROM users JOIN settings on id = user_id WHERE id = $1;", user_id)
+	var user User
+	result := gorm_db.First(&user, user_id)
+	return &user, result.Error
 }
 
 func GetUserFromCard(card_serial string) (*User, error) {
-	row := db.QueryRow(`
-		SELECT users.id, users.username, users.admin
-		FROM users
-		JOIN cards ON users.id = cards.user_id
-		WHERE cards.serial = $1;
-	`, card_serial)
-	user := new(User)
-	err := row.Scan(&user.Id, &user.Username, &user.Admin)
-	return user, err
-}
-
-func getUser(query string, args ...interface{}) (*User, error) {
-	row := db.QueryRow(query, args...)
-	user := new(User)
-	settings := new(Settings)
-	err := row.Scan(&user.Id, &user.Username, &user.Admin, &settings.ScanInOut, &settings.Leaderboard, &settings.Public)
-
-	user.Settings = *settings
-	return user, err
+	var card Card
+	result := gorm_db.First(&card, "serial = ?", card_serial)
+	return &card.User, result.Error
 }

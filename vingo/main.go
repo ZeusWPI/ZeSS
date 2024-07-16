@@ -10,7 +10,6 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
-	"github.com/gofiber/template/html/v2"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 )
@@ -26,10 +25,7 @@ func main() {
 	db := database.Get()
 	defer db.Close()
 
-	engine := html.New("./layouts", ".html")
-	public := fiber.New(fiber.Config{
-		Views: engine,
-	})
+	public := fiber.New(fiber.Config{})
 
 	public.Use(cors.New(cors.Config{
 		AllowOrigins:     corsAllowOrigins,
@@ -38,30 +34,12 @@ func main() {
 	}))
 
 	// Public routes
-	public.Get("/", handlers.Index)
-
 	public.Get("/login", handlers.Login)
 	public.Get("/auth/callback", handlers.Callback)
 
 	public.Post("/scans", handlers.ScanRegister)
 
-	// Logged in routes
-	logged := public.Group("/", handlers.IsLoggedIn)
-	{
-		logged.Get("/logout", handlers.Logout)
-
-		logged.Get("/scans", handlers.ScansPage)
-
-		logged.Get("/cards", handlers.CardsPage)
-		logged.Post("/cards/register", handlers.StartCardRegister)
-
-		logged.Get("/leaderboard", handlers.LeaderboardPage)
-
-		logged.Get("/settings", handlers.Settings)
-		logged.Post("/settings", handlers.SettingsUpdate)
-	}
-
-	api := logged.Group("/api", handlers.IsLoggedInAPI)
+	api := public.Group("/api", handlers.IsLoggedIn)
 	{
 		api.Get("/user", handlers.User)
 		api.Get("/leaderboard", handlers.Leaderboard)
@@ -69,14 +47,12 @@ func main() {
 		api.Get("/cards", handlers.Cards)
 		api.Post("/cards/register", handlers.StartCardRegisterAPI)
 		api.Get("/settings", handlers.Settings)
-	}
 
-	// Admin routes
-	admin := logged.Group("/", handlers.IsAdmin)
-	{
-		admin.Get("/days", handlers.DaysPage)
-		admin.Post("/days", handlers.DaysRegister)
-		admin.Post("/days/:id", handlers.DaysDelete)
+		admin := api.Group("/admin", handlers.IsAdmin)
+		{
+			admin.Post("/days", handlers.DaysRegister)
+			admin.Post("/days/:id", handlers.DaysDelete)
+		}
 	}
 
 	log.Println(public.Listen(":4000"))

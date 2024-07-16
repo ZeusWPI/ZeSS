@@ -34,11 +34,5 @@ func SettingsUpdate(c *fiber.Ctx) error {
 
 func Settings(c *fiber.Ctx) error {
 	user := getUserFromStore(c)
-	settings, err := database.GetSettings(user.Id)
-	if err != nil {
-		logger.Println(err)
-		return c.Status(500).SendString("Error getting settings")
-	}
-
-	return c.JSON(settings)
+	return c.JSON(user.Settings)
 }

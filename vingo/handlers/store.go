@@ -34,12 +34,12 @@ func getUserFromStore(c *fiber.Ctx) *database.User {
 	}
 
 	user := sess.Get(STORE_USER)
-	logger.Println("User from store:", user)
 	if user == nil {
 		return nil
 	}
 
 	databaseUser := user.(database.User)
+	logger.Println("User from store:", databaseUser.Id)
 	return &databaseUser
 }
 

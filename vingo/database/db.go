@@ -4,46 +4,56 @@ import (
 	"database/sql"
 	"log"
 
-	"github.com/golang-migrate/migrate/v4"
-	"github.com/golang-migrate/migrate/v4/database/postgres"
-	_ "github.com/golang-migrate/migrate/v4/source/file"
-	_ "github.com/lib/pq"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 var (
-	db *sql.DB
+	db      *sql.DB
+	gorm_db *gorm.DB
 )
 
 func Get() *sql.DB {
 	return db
 }
 
-func OpenDatabase(conn string) {
-	new_db, err := sql.Open("postgres", conn)
+func OpenDatabase(db_string string) {
+	new_db, err := gorm.Open(postgres.Open(db_string), &gorm.Config{})
 	if err != nil {
 		log.Println("Error opening database connection")
 		log.Fatal(err)
 	}
 
-	driver, err := postgres.WithInstance(new_db, &postgres.Config{})
+	err = new_db.AutoMigrate(&Settings{})
 	if err != nil {
-		log.Println("Error creating migration driver")
+		log.Println("Error migrating database")
 		log.Fatal(err)
 	}
 
-	m, err := migrate.NewWithDatabaseInstance(
-		"file://database/migrations",
-		"postgres", driver)
+	err = new_db.AutoMigrate(&User{})
 	if err != nil {
-		log.Println("Error creating migration instance")
+		log.Println("Error migrating database")
 		log.Fatal(err)
 	}
 
-	err = m.Up()
-	if err != nil && err != migrate.ErrNoChange {
-		log.Println("Error running migrations")
+	err = new_db.AutoMigrate(&Card{})
+	if err != nil {
+		log.Println("Error migrating database")
 		log.Fatal(err)
 	}
 
-	db = new_db
+	err = new_db.AutoMigrate(&Scan{})
+	if err != nil {
+		log.Println("Error migrating database")
+		log.Fatal(err)
+	}
+
+	err = new_db.AutoMigrate(&Day{})
+	if err != nil {
+		log.Println("Error migrating database")
+		log.Fatal(err)
+	}
+
+	gorm_db = new_db
+	db, _ = new_db.DB()
 }

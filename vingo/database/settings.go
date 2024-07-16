@@ -1,21 +1,14 @@
 package database
 
-type Settings struct {
-	ScanInOut   bool `json:"scanInOut"`
-	Leaderboard bool `json:"leaderboard"`
-	Public      bool `json:"public"`
-}
-
 func CreateSettings(user_id int) error {
 	_, err := db.Exec("INSERT INTO settings (user_id) VALUES ($1) ON CONFLICT DO NOTHING;", user_id)
 	return err
 }
 
 func GetSettings(user_id int) (*Settings, error) {
-	row := db.QueryRow("SELECT scan_in_out, leaderboard, public FROM settings WHERE user_id = $1;", user_id)
-	settings := new(Settings)
-	err := row.Scan(&settings.ScanInOut, &settings.Leaderboard, &settings.Public)
-	return settings, err
+	var settings Settings
+	result := gorm_db.First(&settings, "user_id = ?", user_id)
+	return &settings, result.Error
 }
 
 func UpdateSettings(user_id int, settings Settings) error {

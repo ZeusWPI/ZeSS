@@ -4,11 +4,6 @@ import (
 	"time"
 )
 
-type Scan struct {
-	ScanTime time.Time `json:"scanTime"`
-	Card     string    `json:"card"`
-}
-
 type Present struct {
 	Date      time.Time
 	Present   bool
@@ -22,24 +17,19 @@ type LeaderboardItem struct {
 }
 
 func CreateScan(card_serial string) error {
-	_, err := db.Exec("INSERT INTO scans (card_serial) VALUES ($1);", card_serial)
-	return err
+	return gorm_db.Create(&Scan{ScanTime: time.Now(), CardSerial: card_serial}).Error
 }
 
 func GetScansForUser(user_id int) ([]Scan, error) {
-	scans_rows, err := db.Query("SELECT scan_time, card_serial FROM scans WHERE card_serial IN (SELECT serial FROM cards WHERE user_id = $1) ORDER BY scan_time DESC;", user_id)
-	if err != nil {
-		return nil, err
+	var user User
+	result := gorm_db.First(&user, user_id)
+
+	var scans []Scan
+	for _, card := range user.Cards {
+		scans = append(scans, card.Scans...)
 	}
 
-	scans := []Scan{}
-	for scans_rows.Next() {
-		var scan Scan
-		_ = scans_rows.Scan(&scan.ScanTime, &scan.Card)
-
-		scans = append(scans, scan)
-	}
-	return scans, nil
+	return scans, result.Error
 }
 
 func GetPresenceHistory(user_id int) ([]Present, error) {
