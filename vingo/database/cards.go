@@ -10,7 +10,6 @@ func GetCardsForUser(user_id int) ([]Card, error) {
 	return cards, result.Error
 }
 
-func SetCardName(id int, name string, user_id int) error {
-	err := gorm_db.Model(&Card{}).Where("id = ? AND user_id = ?", id, user_id).Update("name", name).Error
-	return err
+func UpdateCardName(id int, name string, user_id int) error {
+	return gorm_db.Model(&Card{}).Where("id = ? AND user_id = ?", id, user_id).Update("name", name).Error
 }

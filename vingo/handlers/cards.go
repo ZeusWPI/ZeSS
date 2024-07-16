@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"strconv"
 	"time"
 	"vingo/database"
 
@@ -39,4 +40,26 @@ func CardRegisterStatus(c *fiber.Ctx) error {
 	register_ongoing := time.Now().Before(registering_end)
 	is_current_user := registering_user == user.Id
 	return c.JSON(map[string]bool{"registering": register_ongoing, "isCurrentUser": is_current_user})
+}
+
+func CardNameUpdate(c *fiber.Ctx) error {
+	user := getUserFromStore(c)
+	card_id, err := strconv.Atoi(c.Params("id"))
+	if err != nil {
+		logger.Println(err)
+		return c.Status(400).SendString("Invalid card id")
+	}
+
+	payload := struct {
+		Name string `json:"name"`
+	}{}
+	c.BodyParser(&payload)
+
+	err = database.UpdateCardName(card_id, payload.Name, user.Id)
+	if err != nil {
+		logger.Println(err)
+		return c.Status(500).SendString("Error updating card name")
+	}
+
+	return c.SendString("Card name updated")
 }

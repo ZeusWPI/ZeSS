@@ -45,6 +45,7 @@ func main() {
 		api.Get("/leaderboard", handlers.Leaderboard)
 		api.Get("/scans", handlers.Scans)
 		api.Get("/cards", handlers.Cards)
+		api.Patch("/cards/:id", handlers.CardNameUpdate)
 		api.Get("/cards/register", handlers.CardRegisterStatus)
 		api.Post("/cards/register", handlers.StartCardRegister)
 		api.Get("/settings", handlers.Settings)
