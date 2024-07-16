@@ -41,12 +41,15 @@ const getStreak = (scans: readonly Scan[]): [boolean, number] => {
         while (i-- > 1 && isStreakDay(scans[i].scanTime, scans[i - 1].scanTime))
             streak++;
     } else {
-        streak = Math.floor(
-            (new Date().getTime() -
-                scans[scans.length - 1].scanTime.getTime()) /
-                MILLISECONDS_IN_ONE_DAY -
-                1
-        );
+        streak =
+            scans.length > 0
+                ? Math.floor(
+                      (new Date().getTime() -
+                          scans[scans.length - 1].scanTime.getTime()) /
+                          MILLISECONDS_IN_ONE_DAY -
+                          1
+                  )
+                : 0;
     }
 
     return [isOnStreak, streak];
