@@ -86,7 +86,3 @@ export const Overview = () => {
         </LoadingSkeleton>
     );
 };
-
-// TODO: Checked in today
-// TODO: Current streak
-// TODO: Pie chart

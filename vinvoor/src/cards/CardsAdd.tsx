@@ -47,7 +47,7 @@ const checkCardsChange = async (): Promise<
         await new Promise((r) => setTimeout(r, CHECK_INTERVAL));
     }
 
-    return [cardsNow !== null && cardsNow !== cardsStart, cardsNow];
+    return [cardsNow !== null && !equal(cardsNow, cardsStart), cardsNow];
 };
 
 export const CardsAdd = () => {
@@ -93,7 +93,9 @@ export const CardsAdd = () => {
             title: confirmTitle,
             description: confirmContent,
             confirmationText: "Register",
-        }).then(() => startRegistering());
+        })
+            .then(() => startRegistering())
+            .catch(() => {}); // Required otherwise the confirm dialog will throw an error in the console
     };
 
     return (
@@ -108,3 +110,5 @@ export const CardsAdd = () => {
         </Button>
     );
 };
+
+// TODO: Make plus sign a spinner when registering

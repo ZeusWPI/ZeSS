@@ -172,7 +172,7 @@ export const Heatmap: FC<HeatmapProps> = ({ startDate, endDate, variant }) => {
                 y={y}
                 rx={2}
                 ry={2}
-                className={getClassNameForValue(value, variant)}
+                className={`rect ${getClassNameForValue(value, variant)}`}
                 {...getTooltipDataAttrsForDate(value, variant)}
             />
         );
