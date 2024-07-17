@@ -6,7 +6,13 @@ import {
     Typography,
 } from "@mui/material";
 import { alpha } from "@mui/material/styles";
+import {
+    ArrowDownBoldHexagonOutline,
+    ArrowUpBoldHexagonOutline,
+    Minus,
+} from "mdi-material-ui";
 import { FC, useContext } from "react";
+import { TableHeadCell } from "../types/general";
 import { leaderboardHeadCells, LeaderboardItem } from "../types/leaderboard";
 import { UserContext } from "../user/UserProvider";
 import FirstPlaceIcon from "/first_place.svg";
@@ -16,6 +22,25 @@ import ThirdPlaceIcon from "/third_place.svg";
 interface LeaderboardTableBodyProps {
     leaderboardItems: readonly LeaderboardItem[];
 }
+
+const getPositionChange = (positionChange: number) => {
+    let icon: JSX.Element | null = null;
+
+    if (positionChange > 0) {
+        icon = <ArrowUpBoldHexagonOutline color="success" />;
+    } else if (positionChange < 0) {
+        icon = <ArrowDownBoldHexagonOutline color="error" />;
+    } else {
+        icon = <Minus />;
+    }
+
+    return (
+        <>
+            {icon}
+            <Typography>{positionChange}</Typography>
+        </>
+    );
+};
 
 const getPosition = (position: number) => {
     switch (position) {
@@ -40,6 +65,20 @@ const getPosition = (position: number) => {
             );
         default:
             return <Typography fontWeight="bold">{position}</Typography>;
+    }
+};
+
+const getCell = (
+    row: LeaderboardItem,
+    headCell: TableHeadCell<LeaderboardItem>
+) => {
+    switch (headCell.id) {
+        case "positionChange":
+            return getPositionChange(row[headCell.id]);
+        case "position":
+            return getPosition(row[headCell.id]);
+        default:
+            return <Typography>{row[headCell.id]}</Typography>;
     }
 };
 
@@ -77,11 +116,7 @@ export const LeaderboardTableBody: FC<LeaderboardTableBodyProps> = ({
                                 align={headCell.align}
                                 padding={headCell.padding}
                             >
-                                {headCell.id === "position" ? (
-                                    getPosition(row[headCell.id])
-                                ) : (
-                                    <Typography>{row[headCell.id]}</Typography>
-                                )}
+                                {getCell(row, headCell)}
                             </TableCell>
                         ))}
                     </TableRow>

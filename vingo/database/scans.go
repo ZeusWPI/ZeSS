@@ -15,7 +15,7 @@ type LeaderboardItem struct {
 	UserId         int    `json:"userId"`
 	Username       string `json:"username"`
 	TotalDays      int    `json:"totalDays"`
-	PositionChange int    `json:"poistionChange"`
+	PositionChange int    `json:"positionChange"`
 }
 
 func CreateScan(card_serial string) error {
