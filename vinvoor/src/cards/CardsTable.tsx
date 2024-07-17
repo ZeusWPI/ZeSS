@@ -1,7 +1,7 @@
 import { Paper, Table, TableContainer, TablePagination } from "@mui/material";
 import { ChangeEvent, MouseEvent, useContext, useMemo, useState } from "react";
 import { Card } from "../types/cards";
-import { TableOrder } from "../types/table";
+import { TableOrder } from "../types/general";
 import { CardContext } from "./Cards";
 import { CardsTableBody } from "./CardsTableBody";
 import { CardsTableHead } from "./CardsTableHead";
@@ -72,7 +72,7 @@ export const CardsTable = () => {
     };
 
     const handleRowClick = (
-        _: MouseEvent<HTMLTableRowElement>,
+        _: MouseEvent<HTMLTableCellElement>,
         serial: string
     ) => {
         const selectedIndex = selected.indexOf(serial);

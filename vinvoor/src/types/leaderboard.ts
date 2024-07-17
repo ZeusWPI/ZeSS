@@ -1,4 +1,4 @@
-import { TableHeadCell } from "./table";
+import { TableHeadCell } from "./general";
 
 export interface LeaderboardItem {
     position: number;

@@ -124,4 +124,4 @@ export const Overview = () => {
 };
 
 // Current height of the heatmap is calculated using ref's and calculus
-// TODO: Change it as it us very very very very very very ugly ^^
+// TODO: Change it as it is very very very very very very ugly ^^

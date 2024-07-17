@@ -44,7 +44,7 @@ func CardRegisterStatus(c *fiber.Ctx) error {
 	is_current_user := registering_user == user.Id
 	time_remaining := time.Until(registering_end).Seconds()
 	time_percentage := time_remaining / register_timeout.Seconds()
-	return c.JSON(map[string]interface{}{"registering": register_ongoing, "isCurrentUser": is_current_user, "success": registering_success, "time_remaining": time_remaining, "time_percentage": time_percentage})
+	return c.JSON(map[string]interface{}{"registering": register_ongoing, "isCurrentUser": is_current_user, "success": registering_success, "timeRemaining": time_remaining, "timePercentage": time_percentage})
 }
 
 func CardNameUpdate(c *fiber.Ctx) error {
@@ -66,5 +66,5 @@ func CardNameUpdate(c *fiber.Ctx) error {
 		return c.Status(500).SendString("Error updating card name")
 	}
 
-	return c.SendString("Card name updated")
+	return c.Status(200).JSON(map[string]bool{})
 }

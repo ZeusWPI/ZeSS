@@ -12,8 +12,20 @@ export const postApi = <T>(
     body: { [key: string]: string } = {}
 ) => {
     return _fetch<T>(`${URLS.API}/${endpoint}`, {
-        method: "post",
+        method: "POST",
         body: JSON.stringify(body),
+        headers: new Headers({ "content-type": "application/json" }),
+    });
+};
+
+export const patchApi = <T>(
+    endpoint: string,
+    body: { [key: string]: string } = {}
+) => {
+    return _fetch<T>(`${URLS.API}/${endpoint}`, {
+        method: "PATCH",
+        body: JSON.stringify(body),
+        headers: new Headers({ "content-type": "application/json" }),
     });
 };
 

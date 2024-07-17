@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import { ChangeEvent, FC, MouseEvent } from "react";
 import { Card, CardsHeadCells } from "../types/cards";
-import { TableOrder } from "../types/table";
+import { TableOrder } from "../types/general";
 
 interface CardTableHeadProps {
     numSelected: number;

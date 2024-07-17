@@ -1,3 +1,13 @@
+export interface BaseJSON {
+    id: number;
+    createdAt: string;
+}
+
+export interface Base {
+    id: number;
+    createdAt: Date;
+}
+
 export type TableOrder = "asc" | "desc";
 
 type TableAlignOptions = "right" | "left" | "center";

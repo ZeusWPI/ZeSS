@@ -2,14 +2,29 @@ import { Add } from "@mui/icons-material";
 import { Button, Typography } from "@mui/material";
 import { useConfirm } from "material-ui-confirm";
 import { useSnackbar } from "notistack";
-import { useContext, useState } from "react";
-import { Card, CardPostResponse, convertCardJSON } from "../types/cards";
+import { useContext, useEffect, useState } from "react";
+import {
+    Card,
+    CardGetRegisterResponse,
+    CardPostResponse,
+    convertCardJSON,
+} from "../types/cards";
 import { getApi, isResponseNot200Error, postApi } from "../util/fetch";
-import { equal, randomInt } from "../util/util";
+import { randomInt } from "../util/util";
 import { CardContext } from "./Cards";
+import {
+    CircularTimeProgress,
+    CircularTimeProgressProps,
+} from "./CircularTimeProgress";
 
 const CHECK_INTERVAL = 1000;
 const REGISTER_TIME = 60000;
+const REGISTER_ENDPOINT = "cards/register";
+
+const defaultProgressProps: CircularTimeProgressProps = {
+    time: REGISTER_TIME,
+    percentage: 1,
+};
 
 const confirmTitle = "Register a new card";
 const confirmContent = `
@@ -27,66 +42,88 @@ const requestFail =
 const registerSucces = "Card registered successfully";
 const registerFail = "Failed to register card";
 
-const getCards = () =>
-    getApi<readonly Card[]>("cards", convertCardJSON).catch((_) => null);
-
-const checkCardsChange = async (): Promise<
-    [boolean, readonly Card[] | null]
-> => {
-    const startTime = Date.now();
-    const cardsStart = await getCards();
-
-    if (!cardsStart) return [false, null];
-
-    let cardsNow: readonly Card[] | null = null;
-    while (Date.now() - startTime < REGISTER_TIME) {
-        cardsNow = await getCards();
-
-        if (!equal(cardsStart, cardsNow)) break;
-
-        await new Promise((r) => setTimeout(r, CHECK_INTERVAL));
-    }
-
-    return [cardsNow !== null && !equal(cardsNow, cardsStart), cardsNow];
-};
-
 export const CardsAdd = () => {
     const { setCards } = useContext(CardContext);
-    const [disabled, setDisabled] = useState<boolean>(false);
+    const [registering, setRegistering] = useState<boolean>(false);
+    const [progressProps, setProgressProps] =
+        useState<CircularTimeProgressProps>(defaultProgressProps);
     const confirm = useConfirm();
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
-    const startRegistering = () =>
-        postApi<Card[]>("cards/register")
-            .then(() => {
-                const id = randomInt().toString();
-                enqueueSnackbar(requestSuccess, {
-                    variant: "info",
-                    persist: true,
-                    key: id,
-                });
-                setDisabled(true);
-
-                checkCardsChange().then((result) => {
-                    closeSnackbar(id);
-                    setDisabled(false);
-
-                    if (result[0] && result[1] !== null) {
-                        enqueueSnackbar(registerSucces, { variant: "success" });
-                        setCards(result[1]);
-                    } else enqueueSnackbar(registerFail, { variant: "error" });
-                });
-            })
-            .catch((error) => {
-                if (isResponseNot200Error(error)) {
-                    error.response.json().then((response: CardPostResponse) => {
-                        if (response.isCurrentUser)
-                            enqueueSnackbar(requestYou, { variant: "warning" });
-                        else
-                            enqueueSnackbar(requestOther, { variant: "error" });
-                    });
-                } else enqueueSnackbar(requestFail, { variant: "error" });
+    const checkCardsChange = async (): Promise<boolean> => {
+        let status: CardGetRegisterResponse =
+            await getApi<CardGetRegisterResponse>(REGISTER_ENDPOINT);
+        while (status.registering && status.isCurrentUser) {
+            setProgressProps({
+                time: status.timeRemaining,
+                percentage: status.timePercentage,
             });
+            status = await getApi<CardGetRegisterResponse>(REGISTER_ENDPOINT);
+            await new Promise((r) => setTimeout(r, CHECK_INTERVAL));
+        }
+
+        return status.success;
+    };
+
+    const handleRegister = (start: boolean) => {
+        getApi<CardGetRegisterResponse>(REGISTER_ENDPOINT)
+            .then(async (response) => {
+                let started = false;
+                if (!response.registering && start) {
+                    await postApi<CardPostResponse>(REGISTER_ENDPOINT)
+                        .then(() => (started = true))
+                        .catch((error) => {
+                            if (isResponseNot200Error(error))
+                                error.response
+                                    .json()
+                                    .then((response: CardPostResponse) => {
+                                        if (response.isCurrentUser)
+                                            enqueueSnackbar(requestYou, {
+                                                variant: "warning",
+                                            });
+                                        else
+                                            enqueueSnackbar(requestOther, {
+                                                variant: "error",
+                                            });
+                                    });
+                            else throw new Error(error);
+                        });
+                }
+
+                if (response.registering && response.isCurrentUser)
+                    started = true;
+
+                if (started) {
+                    setRegistering(true);
+                    const id = randomInt().toString();
+                    enqueueSnackbar(requestSuccess, {
+                        variant: "info",
+                        persist: true,
+                        key: id,
+                    });
+
+                    checkCardsChange()
+                        .then((scanned) => {
+                            closeSnackbar(id);
+                            setRegistering(false);
+                            if (scanned) {
+                                enqueueSnackbar(registerSucces, {
+                                    variant: "success",
+                                });
+                                getApi<readonly Card[]>(
+                                    "cards",
+                                    convertCardJSON
+                                ).then((cards) => setCards(cards));
+                            } else
+                                enqueueSnackbar(registerFail, {
+                                    variant: "error",
+                                });
+                        })
+                        .finally(() => setProgressProps(defaultProgressProps));
+                }
+            })
+            .catch(() => enqueueSnackbar(requestFail, { variant: "error" }));
+    };
 
     const handleClick = () => {
         confirm({
@@ -94,21 +131,27 @@ export const CardsAdd = () => {
             description: confirmContent,
             confirmationText: "Register",
         })
-            .then(() => startRegistering())
+            .then(() => handleRegister(true))
             .catch(() => {}); // Required otherwise the confirm dialog will throw an error in the console
     };
+
+    useEffect(() => {
+        handleRegister(false);
+    }, []);
 
     return (
         <Button
             onClick={handleClick}
             variant="contained"
             sx={{ my: "1%" }}
-            disabled={disabled}
+            disabled={registering}
         >
-            <Add />
+            {registering ? (
+                <CircularTimeProgress {...progressProps} />
+            ) : (
+                <Add />
+            )}
             <Typography>Register new card</Typography>
         </Button>
     );
 };
-
-// TODO: Make plus sign a spinner when registering

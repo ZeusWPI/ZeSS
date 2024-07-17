@@ -1,22 +1,32 @@
+import { EditOutlined } from "@mui/icons-material";
 import {
     Checkbox,
+    IconButton,
     TableBody,
     TableCell,
     TableRow,
+    TextField,
     Typography,
 } from "@mui/material";
-import { FC, MouseEvent } from "react";
-import { Card, CardsHeadCells } from "../types/cards";
+import { useConfirm } from "material-ui-confirm";
+import { useSnackbar } from "notistack";
+import { ChangeEvent, FC, MouseEvent, useContext } from "react";
+import { Card, CardsHeadCells, convertCardJSON } from "../types/cards";
+import { getApi, patchApi } from "../util/fetch";
+import { CardContext } from "./Cards";
 
 interface CardsTableBodyProps {
     rows: readonly Card[];
     isRowSelected: (serial: string) => boolean;
     handleClick: (
-        event: MouseEvent<HTMLTableRowElement>,
+        event: MouseEvent<HTMLTableCellElement>,
         serial: string
     ) => void;
     emptyRows: number;
 }
+
+const nameSaveSuccess = "New name saved successfully";
+const nameSaveFailure = "Unable to save new name";
 
 export const CardsTableBody: FC<CardsTableBodyProps> = ({
     rows,
@@ -24,19 +34,65 @@ export const CardsTableBody: FC<CardsTableBodyProps> = ({
     handleClick,
     emptyRows,
 }) => {
+    const { setCards } = useContext(CardContext);
+    const confirm = useConfirm();
+    const { enqueueSnackbar } = useSnackbar();
+
+    const handleEditClick = (id: number, name: string) => {
+        let newName = name;
+        confirm({
+            title: "Enter new name",
+            content: (
+                <TextField
+                    variant="standard"
+                    defaultValue={name}
+                    onChange={(event: ChangeEvent<HTMLInputElement>) =>
+                        (newName = event.target.value)
+                    }
+                ></TextField>
+            ),
+            confirmationText: "Save",
+        })
+            .then(() => {
+                if (newName === name) {
+                    enqueueSnackbar(nameSaveSuccess, { variant: "success" });
+                    return;
+                }
+
+                patchApi(`cards/${id}`, { name: newName })
+                    .then(() => {
+                        enqueueSnackbar(nameSaveSuccess, {
+                            variant: "success",
+                        });
+                        getApi<readonly Card[]>("cards", convertCardJSON).then(
+                            (cards) => setCards(cards)
+                        );
+                    })
+                    .catch((error) => {
+                        enqueueSnackbar(nameSaveFailure, { variant: "error" });
+                        console.log(error);
+                    });
+            })
+            .catch(() => {}); // Required otherwise the confirm dialog will throw an error in the console
+    };
+
+    const editButton = (id: number, name: string) => (
+        <IconButton onClick={() => handleEditClick(id, name)}>
+            <EditOutlined />
+        </IconButton>
+    );
+
     return (
         <TableBody>
             {rows.map((row) => {
                 const isSelected = isRowSelected(row.serial);
 
                 return (
-                    <TableRow
-                        key={row.serial}
-                        selected={isSelected}
-                        onClick={(event) => handleClick(event, row.serial)}
-                        sx={{ cursor: "pointer" }}
-                    >
-                        <TableCell padding="checkbox">
+                    <TableRow key={row.serial} selected={isSelected}>
+                        <TableCell
+                            onClick={(event) => handleClick(event, row.serial)}
+                            padding="checkbox"
+                        >
                             <Checkbox checked={isSelected} />
                         </TableCell>
                         {CardsHeadCells.map((headCell) => (
@@ -45,11 +101,13 @@ export const CardsTableBody: FC<CardsTableBodyProps> = ({
                                 align={headCell.align}
                                 padding={headCell.padding}
                             >
-                                <Typography>
+                                <Typography display="inline">
                                     {headCell.convert
                                         ? headCell.convert(row[headCell.id])
                                         : (row[headCell.id] as string)}
                                 </Typography>
+                                {headCell.id === "name" &&
+                                    editButton(row.id, row[headCell.id])}
                             </TableCell>
                         ))}
                     </TableRow>
