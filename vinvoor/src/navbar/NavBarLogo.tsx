@@ -1,4 +1,5 @@
 import { Box, Button, SxProps, Theme, Typography } from "@mui/material";
+import { HexagonSlice6 } from "mdi-material-ui";
 import { FC } from "react";
 import { UnstyledLink } from "../components/UnstyledLink";
 
@@ -18,6 +19,7 @@ export const NavBarLogo: FC<NavBarLogoProps> = ({ sx }) => {
                         color: "white",
                     }}
                 >
+                    <HexagonSlice6 sx={{ mr: ".3rem" }} />
                     <Typography
                         variant="h6"
                         sx={{

@@ -2,7 +2,7 @@ import { GitHub } from "@mui/icons-material";
 import { Box, Button, Typography } from "@mui/material";
 import { ShakerOutline } from "mdi-material-ui";
 import { TypographyG } from "./components/TypographyG";
-import { UnstyledLink } from "./components/UnstyledLink";
+import { Login } from "./user/Login";
 
 declare module "@mui/material/Button" {
     interface ButtonPropsColorOverrides {
@@ -29,12 +29,10 @@ export const WelcomePage = () => {
         >
             <TypographyG variant="h3">Welcome to Vinvoor!</TypographyG>
             <TypographyG variant="h4">Log in to start scanning</TypographyG>
-            <UnstyledLink to="/login">
-                <Button variant="contained">
-                    <Typography>Log in with Zauth</Typography>
-                    <ShakerOutline sx={{ ml: 1 }} />
-                </Button>
-            </UnstyledLink>
+            <Login variant="contained">
+                <Typography>Log in with Zauth</Typography>
+                <ShakerOutline sx={{ ml: 1 }} />
+            </Login>
             <Button
                 variant="contained"
                 color="github"
@@ -47,3 +45,10 @@ export const WelcomePage = () => {
         </Box>
     );
 };
+
+// <UnstyledLink to="/login">
+//     <Button variant="contained">
+//         <Typography>Log in with Zauth</Typography>
+//         <ShakerOutline sx={{ ml: 1 }} />
+//     </Button>
+// </UnstyledLink>

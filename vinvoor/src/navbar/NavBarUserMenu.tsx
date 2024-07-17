@@ -1,14 +1,18 @@
 import { AccountCircle } from "@mui/icons-material";
 import { Button, Menu, MenuItem, Typography } from "@mui/material";
+import ExitRun from "mdi-material-ui/ExitRun";
 import { FC, MouseEvent, useContext, useState } from "react";
 import { UnstyledLink } from "../components/UnstyledLink";
+import { Login } from "../user/Login";
+import { Logout } from "../user/Logout";
 import { UserContext } from "../user/UserProvider";
+import { PageIcon } from "./NavBar";
 
 interface NavBarUserMenuProps {
-    settings: readonly string[];
+    pageIcons: readonly PageIcon[];
 }
 
-export const NavBarUserMenu: FC<NavBarUserMenuProps> = ({ settings }) => {
+export const NavBarUserMenu: FC<NavBarUserMenuProps> = ({ pageIcons }) => {
     const {
         userState: { user },
     } = useContext(UserContext);
@@ -29,7 +33,6 @@ export const NavBarUserMenu: FC<NavBarUserMenuProps> = ({ settings }) => {
             {user ? (
                 <>
                     <Button
-                        color="inherit"
                         onClick={handleOpenUserMenu}
                         sx={{
                             textTransform: "none",
@@ -37,9 +40,7 @@ export const NavBarUserMenu: FC<NavBarUserMenuProps> = ({ settings }) => {
                         }}
                     >
                         <AccountCircle sx={{ mr: "3px" }} />
-                        <Typography variant="h6" sx={{ color: "white" }}>
-                            {user.username}
-                        </Typography>
+                        <Typography variant="h6">{user.username}</Typography>
                     </Button>
                     <Menu
                         sx={{ mt: "45px" }}
@@ -56,31 +57,26 @@ export const NavBarUserMenu: FC<NavBarUserMenuProps> = ({ settings }) => {
                         open={Boolean(anchorElUser)}
                         onClose={handleCloseUserMenu}
                     >
-                        {settings.map((setting) => (
-                            <UnstyledLink
-                                key={setting}
-                                to={setting.toLowerCase()}
-                            >
+                        {pageIcons.map(({ page, icon }) => (
+                            <UnstyledLink key={page} to={page.toLowerCase()}>
                                 <MenuItem onClick={handleCloseUserMenu}>
-                                    <Typography>{setting}</Typography>
+                                    {icon}
+                                    <Typography>{page}</Typography>
                                 </MenuItem>
                             </UnstyledLink>
                         ))}
+                        <MenuItem>
+                            <Logout>
+                                <ExitRun sx={{ mr: ".3rem" }} />
+                                <Typography>Logout</Typography>
+                            </Logout>
+                        </MenuItem>
                     </Menu>
                 </>
             ) : (
-                <UnstyledLink to="login">
-                    <Button
-                        color="inherit"
-                        size="large"
-                        sx={{
-                            textTransform: "none",
-                            color: "white",
-                        }}
-                    >
-                        <Typography>Login</Typography>
-                    </Button>
-                </UnstyledLink>
+                <Login sx={{ color: "inherit", size: "large" }}>
+                    <Typography>Login</Typography>
+                </Login>
             )}
         </>
     );

@@ -1,11 +1,16 @@
-import { useEffect } from "react";
+import { Button, ButtonProps } from "@mui/material";
+import { FC } from "react";
 
-export const Login = () => {
+export const Login: FC<ButtonProps> = (props) => {
     const baseUrl = import.meta.env.VITE_BASE_URL;
 
-    useEffect(() => {
-        window.location.replace(`${baseUrl}/login`);
-    }, []);
+    const handleClick = () => {
+        const form = document.createElement("form");
+        form.method = "POST";
+        form.action = `${baseUrl}/login`;
+        document.body.appendChild(form);
+        form.submit();
+    };
 
-    return <></>;
+    return <Button onClick={handleClick} {...props} />;
 };
