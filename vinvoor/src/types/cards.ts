@@ -24,7 +24,7 @@ export const convertCardJSON = (cardsJSON: CardJSON[]): Card[] =>
         createdAt: new Date(CardJSON.createdAt),
     }));
 
-export const CardsHeadCells: readonly TableHeadCell<Card>[] = [
+export const cardsHeadCells: readonly TableHeadCell<Card>[] = [
     {
         id: "name",
         label: "Name",

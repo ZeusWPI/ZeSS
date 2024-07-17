@@ -1,6 +1,9 @@
 import LeaderboardIcon from "@mui/icons-material/Leaderboard";
 import { AppBar, Box, Container, Toolbar } from "@mui/material";
-import { CreditCardMultipleOutline } from "mdi-material-ui";
+import {
+    CreditCardMultipleOutline,
+    CreditCardScanOutline,
+} from "mdi-material-ui";
 import { useContext } from "react";
 import { DarkModeToggle } from "../components/DarkModeToggle";
 import { UserContext } from "../user/UserProvider";
@@ -15,6 +18,7 @@ export interface PageIcon {
 }
 
 const navBarPages: PageIcon[] = [
+    { page: "Scans", icon: <CreditCardScanOutline sx={{ mr: ".3rem" }} /> },
     { page: "Cards", icon: <CreditCardMultipleOutline sx={{ mr: ".3rem" }} /> },
     { page: "Leaderboard", icon: <LeaderboardIcon sx={{ mr: ".3rem" }} /> },
 ];

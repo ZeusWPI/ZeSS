@@ -11,7 +11,7 @@ import {
 import { useConfirm } from "material-ui-confirm";
 import { useSnackbar } from "notistack";
 import { ChangeEvent, FC, MouseEvent, useContext } from "react";
-import { Card, CardsHeadCells, convertCardJSON } from "../types/cards";
+import { Card, cardsHeadCells, convertCardJSON } from "../types/cards";
 import { getApi, patchApi } from "../util/fetch";
 import { CardContext } from "./Cards";
 
@@ -95,7 +95,7 @@ export const CardsTableBody: FC<CardsTableBodyProps> = ({
                         >
                             <Checkbox checked={isSelected} />
                         </TableCell>
-                        {CardsHeadCells.map((headCell) => (
+                        {cardsHeadCells.map((headCell) => (
                             <TableCell
                                 key={headCell.id}
                                 align={headCell.align}

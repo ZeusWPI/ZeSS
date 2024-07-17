@@ -7,7 +7,7 @@ import {
     Typography,
 } from "@mui/material";
 import { ChangeEvent, FC, MouseEvent } from "react";
-import { Card, CardsHeadCells } from "../types/cards";
+import { Card, cardsHeadCells } from "../types/cards";
 import { TableOrder } from "../types/general";
 
 interface CardTableHeadProps {
@@ -46,7 +46,7 @@ export const CardsTableHead: FC<CardTableHeadProps> = ({
                         onChange={onSelectAllClick}
                     />
                 </TableCell>
-                {CardsHeadCells.map((headCell) => (
+                {cardsHeadCells.map((headCell) => (
                     <TableCell
                         key={headCell.id}
                         align={headCell.align}

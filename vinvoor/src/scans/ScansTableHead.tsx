@@ -1,11 +1,11 @@
 import { TableCell, TableHead, TableRow, Typography } from "@mui/material";
-import { leaderboardHeadCells } from "../types/leaderboard";
+import { scanCardHeadCells } from "../types/scans";
 
-export const LeaderboardTableHead = () => {
+export const ScansTableHead = () => {
     return (
         <TableHead>
             <TableRow>
-                {leaderboardHeadCells.map((headCell) => (
+                {scanCardHeadCells.map((headCell) => (
                     <TableCell key={headCell.id} align={headCell.align}>
                         <Typography>{headCell.label}</Typography>
                     </TableCell>
