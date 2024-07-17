@@ -11,9 +11,11 @@ type Present struct {
 }
 
 type LeaderboardItem struct {
-	Position  int    `json:"position"`
-	Username  string `json:"username"`
-	TotalDays int    `json:"totalDays"`
+	Position       int    `json:"position"`
+	UserId         int    `json:"userId"`
+	Username       string `json:"username"`
+	TotalDays      int    `json:"totalDays"`
+	PositionChange int    `json:"poistionChange"`
 }
 
 func CreateScan(card_serial string) error {
@@ -69,15 +71,16 @@ func GetPresenceHistory(user_id int) ([]Present, error) {
 	return presences, nil
 }
 
-func TotalDaysPerUser() ([]LeaderboardItem, error) {
+func TotalDaysPerUser(before_time time.Time) ([]LeaderboardItem, error) {
 	rows, err := db.Query(`
-	SELECT count, username, RANK() OVER (ORDER BY count desc) AS position
-	FROM (SELECT COUNT(DISTINCT ((scan_time - INTERVAL '4 hours') AT TIME ZONE 'Europe/Brussels')::date), username
+	SELECT user_id, count, username, RANK() OVER (ORDER BY count desc) AS position
+	FROM (SELECT COUNT(DISTINCT ((scan_time - INTERVAL '4 hours') AT TIME ZONE 'Europe/Brussels')::date), username, users.id as user_id
 		FROM scans
 			LEFT JOIN cards ON card_serial = serial
 			LEFT JOIN users ON user_id = users.id
-			GROUP BY username);
-	`)
+			WHERE scan_time < $1
+			GROUP BY username, users.id);
+	`, before_time)
 
 	if err != nil {
 		return nil, err
@@ -86,7 +89,7 @@ func TotalDaysPerUser() ([]LeaderboardItem, error) {
 	leaderboard := []LeaderboardItem{}
 	for rows.Next() {
 		var item LeaderboardItem
-		_ = rows.Scan(&item.TotalDays, &item.Username, &item.Position)
+		_ = rows.Scan(&item.UserId, &item.TotalDays, &item.Username, &item.Position)
 
 		leaderboard = append(leaderboard, item)
 	}
