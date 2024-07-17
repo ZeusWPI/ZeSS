@@ -34,13 +34,14 @@ func main() {
 	}))
 
 	// Public routes
-	public.Get("/login", handlers.Login)
+	public.Post("/login", handlers.Login)
 	public.Get("/auth/callback", handlers.Callback)
 
 	public.Post("/scans", handlers.ScanRegister)
 
 	api := public.Group("/api", handlers.IsLoggedIn)
 	{
+		api.Post("/logout", handlers.Logout)
 		api.Get("/user", handlers.User)
 		api.Get("/leaderboard", handlers.Leaderboard)
 		api.Get("/scans", handlers.Scans)
