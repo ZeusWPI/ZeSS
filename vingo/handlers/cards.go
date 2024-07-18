@@ -10,7 +10,9 @@ import (
 
 var register_timeout = time.Minute
 
-func StartCardRegister(c *fiber.Ctx) error {
+type Cards struct{}
+
+func (Cards) StartRegister(c *fiber.Ctx) error {
 	user := getUserFromStore(c)
 
 	if time.Now().Before(registering_end) {
@@ -27,7 +29,7 @@ func StartCardRegister(c *fiber.Ctx) error {
 	return c.Status(200).JSON(map[string]bool{})
 }
 
-func Cards(c *fiber.Ctx) error {
+func (Cards) Get(c *fiber.Ctx) error {
 	user := getUserFromStore(c)
 	cards, err := database.GetCardsAndStatsForUser(user.Id)
 	if err != nil {
@@ -38,7 +40,7 @@ func Cards(c *fiber.Ctx) error {
 	return c.JSON(cards)
 }
 
-func CardRegisterStatus(c *fiber.Ctx) error {
+func (Cards) RegisterStatus(c *fiber.Ctx) error {
 	user := getUserFromStore(c)
 	register_ongoing := time.Now().Before(registering_end)
 	is_current_user := registering_user == user.Id
@@ -47,7 +49,7 @@ func CardRegisterStatus(c *fiber.Ctx) error {
 	return c.JSON(map[string]interface{}{"registering": register_ongoing, "isCurrentUser": is_current_user, "success": registering_success, "timeRemaining": time_remaining, "timePercentage": time_percentage})
 }
 
-func CardNameUpdate(c *fiber.Ctx) error {
+func (Cards) Update(c *fiber.Ctx) error {
 	user := getUserFromStore(c)
 	card_id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
