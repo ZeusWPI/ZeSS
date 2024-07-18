@@ -2,11 +2,6 @@ package database
 
 import "time"
 
-type Day struct {
-	Id   int
-	Date time.Time
-}
-
 func CreateDays(first_day time.Time, last_day time.Time) error {
 	tx, err := db.Begin()
 	if err != nil {
@@ -34,15 +29,15 @@ func CreateDays(first_day time.Time, last_day time.Time) error {
 	return nil
 }
 
-func GetDays() ([]Day, error) {
+func GetDays() ([]StreakDay, error) {
 	rows, err := db.Query("SELECT id, date FROM days ORDER BY date;")
 	if err != nil {
 		return nil, err
 	}
 
-	days := make([]Day, 0)
+	days := make([]StreakDay, 0)
 	for rows.Next() {
-		var day Day
+		var day StreakDay
 		rows.Scan(&day.Id, &day.Date)
 		days = append(days, day)
 	}
