@@ -4,7 +4,6 @@ import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 import { CssBaseline } from "@mui/material";
 import { ConfirmProvider } from "material-ui-confirm";
-import { SnackbarProvider } from "notistack";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
@@ -13,12 +12,13 @@ import { App } from "./App.tsx";
 import { Cards } from "./cards/Cards.tsx";
 import { ErrorPage } from "./errors/ErrorPage.tsx";
 import { Leaderboard } from "./leaderboard/Leaderboard.tsx";
+import { CustomSnackbarProvider } from "./providers/CustomSnackbarProvider.tsx";
+import { ThemeProvider } from "./providers/ThemeProvider.tsx";
+import { UserProvider } from "./providers/UserProvider.tsx";
 import { Scans } from "./scans/Scans.tsx";
 import { SettingsOverview } from "./settings/SettingsOverview.tsx";
-import { ThemeProvider } from "./theme/ThemeProvider";
 import { Login } from "./user/Login.tsx";
 import { Logout } from "./user/Logout.tsx";
-import { UserProvider } from "./user/UserProvider.tsx";
 
 const router = createBrowserRouter([
     {
@@ -60,14 +60,9 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
             <CssBaseline enableColorScheme>
                 <UserProvider>
                     <ConfirmProvider>
-                        <SnackbarProvider
-                            anchorOrigin={{
-                                horizontal: "center",
-                                vertical: "top",
-                            }}
-                        >
+                        <CustomSnackbarProvider>
                             <RouterProvider router={router} />
-                        </SnackbarProvider>
+                        </CustomSnackbarProvider>
                     </ConfirmProvider>
                 </UserProvider>
             </CssBaseline>

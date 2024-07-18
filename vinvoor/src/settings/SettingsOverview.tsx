@@ -37,7 +37,7 @@ const handleDeleteContent = (
         <Typography gutterBottom>
             Are you sure you want to delete all your data?
         </Typography>
-        <Typography variant="h5" color="error" mb={5}>
+        <Typography variant="h5" color="error.dark" mb={5}>
             This is irreversible!
         </Typography>
     </Box>
@@ -111,7 +111,10 @@ export const SettingsOverview = () => {
                                         />
                                     }
                                     label={
-                                        <Box display="flex">
+                                        <Box
+                                            display="flex"
+                                            color="primary.contrastText"
+                                        >
                                             <Typography>
                                                 {setting.name}
                                             </Typography>
@@ -156,7 +159,7 @@ export const SettingsOverview = () => {
                 </Grid>
                 <Grid item xs={12}>
                     <Button
-                        variant="outlined"
+                        variant="contained"
                         fullWidth
                         color="error"
                         onClick={handleDelete}

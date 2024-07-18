@@ -5,16 +5,11 @@ import {
     TableRow,
     Typography,
 } from "@mui/material";
-import { alpha } from "@mui/material/styles";
-import {
-    ArrowDownBoldHexagonOutline,
-    ArrowUpBoldHexagonOutline,
-    Minus,
-} from "mdi-material-ui";
+import { alpha, Theme, useTheme } from "@mui/material/styles";
 import { FC, useContext } from "react";
+import { UserContext } from "../providers/UserProvider";
 import { TableHeadCell } from "../types/general";
 import { leaderboardHeadCells, LeaderboardItem } from "../types/leaderboard";
-import { UserContext } from "../user/UserProvider";
 import FirstPlaceIcon from "/first_place.svg";
 import SecondPlaceIcon from "/second_place.svg";
 import ThirdPlaceIcon from "/third_place.svg";
@@ -23,22 +18,41 @@ interface LeaderboardTableBodyProps {
     leaderboardItems: readonly LeaderboardItem[];
 }
 
+const leaderboardColors = [
+    (theme: Theme) => theme.leaderboard.first,
+    (theme: Theme) => theme.leaderboard.second,
+    (theme: Theme) => theme.leaderboard.third,
+];
+
+const leaderboardText = [
+    { fontSize: "30px", fontWeight: "bold" },
+    { fontSize: "25px", fontWeight: "bold" },
+    { fontSize: "18px", fontWeight: "bold" },
+];
+
+const getLeaderboardColor = (index: number, theme: Theme) =>
+    leaderboardColors[index]
+        ? { backgroundColor: leaderboardColors[index](theme) }
+        : {};
+
+const getLeaderboardText = (index: number) => leaderboardText[index] || {};
+
 const getPositionChange = (positionChange: number) => {
-    let icon: JSX.Element | null = null;
+    let color = "text.primary";
+    let prefix = "";
 
     if (positionChange > 0) {
-        icon = <ArrowUpBoldHexagonOutline color="success" />;
+        color = "success.light";
+        prefix = "+";
     } else if (positionChange < 0) {
-        icon = <ArrowDownBoldHexagonOutline color="error" />;
-    } else {
-        icon = <Minus />;
+        color = "error.light";
     }
 
     return (
-        <>
-            {icon}
-            <Typography>{positionChange}</Typography>
-        </>
+        <Typography color={color} fontWeight="bold">
+            {prefix}
+            {positionChange !== 0 && positionChange}
+        </Typography>
     );
 };
 
@@ -46,19 +60,19 @@ const getPosition = (position: number) => {
     switch (position) {
         case 1:
             return (
-                <Icon>
+                <Icon sx={{ fontSize: "40px", overflow: "visible" }}>
                     <img src={FirstPlaceIcon} />
                 </Icon>
             );
         case 2:
             return (
-                <Icon>
+                <Icon sx={{ fontSize: "35px", overflow: "visible" }}>
                     <img src={SecondPlaceIcon} />
                 </Icon>
             );
         case 3:
             return (
-                <Icon>
+                <Icon sx={{ fontSize: "30px", overflow: "visible" }}>
                     <img src={ThirdPlaceIcon} />
                 </Icon>
             );
@@ -77,13 +91,22 @@ const getCell = (
         case "position":
             return getPosition(row[headCell.id]);
         default:
-            return <Typography>{row[headCell.id]}</Typography>;
+            return (
+                <Typography
+                    sx={{
+                        ...getLeaderboardText(row.position - 1),
+                    }}
+                >
+                    {row[headCell.id]}
+                </Typography>
+            );
     }
 };
 
 export const LeaderboardTableBody: FC<LeaderboardTableBodyProps> = ({
     leaderboardItems: rows,
 }) => {
+    const theme = useTheme();
     const {
         userState: { user },
     } = useContext(UserContext);
@@ -107,6 +130,7 @@ export const LeaderboardTableBody: FC<LeaderboardTableBodyProps> = ({
                                         theme.palette.action.activatedOpacity
                                     ),
                             }),
+                            ...getLeaderboardColor(index, theme),
                         }}
                     >
                         {leaderboardHeadCells.map((headCell) => (

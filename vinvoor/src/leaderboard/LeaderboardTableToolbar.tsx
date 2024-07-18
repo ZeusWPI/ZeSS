@@ -2,7 +2,7 @@ import { MoveDown } from "@mui/icons-material";
 import { Button, Toolbar, Typography } from "@mui/material";
 import { FC, useContext } from "react";
 import { HashLink } from "react-router-hash-link";
-import { UserContext } from "../user/UserProvider";
+import { UserContext } from "../providers/UserProvider";
 
 interface LeaderboardTableToolbarProps {}
 

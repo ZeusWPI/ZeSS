@@ -33,7 +33,7 @@ export const cardsHeadCells: readonly TableHeadCell<Card>[] = [
     },
     {
         id: "amountUsed",
-        label: "Amount of uses",
+        label: "Uses",
         align: "right",
         padding: "none",
     },
