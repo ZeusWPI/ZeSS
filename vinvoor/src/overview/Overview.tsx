@@ -26,7 +26,7 @@ export const Overview = () => {
         setScans,
         convertScanJSON
     );
-    const [checked, setChecked] = useState<boolean>(true);
+    const [checked, setChecked] = useState<boolean>(false);
     const daysRef = useRef<HTMLDivElement>(null);
     const heatmapSwitchRef = useRef<HTMLDivElement>(null);
     const [heatmapSwitchHeight, setHeatmapSwitchHeight] = useState<number>(0);

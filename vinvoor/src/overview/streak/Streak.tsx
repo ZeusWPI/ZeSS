@@ -28,24 +28,38 @@ const isStreakDay = (date1: Date, date2: Date) => {
 };
 
 const getStreak = (scans: readonly Scan[]): [boolean, number] => {
+    const dates = scans
+        .map((scan) => {
+            scan.scanTime.setHours(0, 0, 0, 0);
+            return scan.scanTime;
+        })
+        .filter((value, index, array) => {
+            return (
+                array.findIndex(
+                    (date) => date.getTime() === value.getTime()
+                ) === index
+            );
+        });
+    dates.sort((a, b) => a.getTime() - b.getTime());
+
     let streak = 0;
+
     const isOnStreak =
-        scans.length > 0 &&
-        (isTheSameDay(scans[scans.length - 1].scanTime, new Date()) ||
-            isWeekendBetween(scans[scans.length - 1].scanTime, new Date()));
+        dates.length > 0 &&
+        (isTheSameDay(dates[dates.length - 1], new Date()) ||
+            isWeekendBetween(dates[dates.length - 1], new Date()));
 
     if (isOnStreak) {
-        let i = scans.length;
+        let i = dates.length;
         streak++;
 
-        while (i-- > 1 && isStreakDay(scans[i].scanTime, scans[i - 1].scanTime))
-            streak++;
+        while (i-- > 1 && isStreakDay(dates[i], dates[i - 1])) streak++;
     } else {
         streak =
-            scans.length > 0
+            dates.length > 0
                 ? Math.floor(
                       (new Date().getTime() -
-                          scans[scans.length - 1].scanTime.getTime()) /
+                          dates[dates.length - 1].getTime()) /
                           MILLISECONDS_IN_ONE_DAY -
                           1
                   )
@@ -57,7 +71,7 @@ const getStreak = (scans: readonly Scan[]): [boolean, number] => {
 
 export const Streak = () => {
     const { scans } = useContext(ScanContext);
-    const [isOnStreak, streak] = getStreak(scans);
+    let [isOnStreak, streak] = getStreak(scans);
 
     const color = isOnStreak ? "primary" : "error";
     const textEnd = isOnStreak ? "streak" : "absent";

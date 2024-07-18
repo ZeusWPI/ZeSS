@@ -3,12 +3,12 @@ import { TableHeadCell } from "./general";
 
 interface ScanJSON {
     scanTime: string;
-    card: string;
+    cardSerial: string;
 }
 
 export interface Scan {
     scanTime: Date;
-    card: string;
+    cardSerial: string;
 }
 
 export interface ScanCard {
@@ -20,7 +20,7 @@ export const convertScanJSON = (scansJSON: ScanJSON[]): Scan[] =>
     scansJSON
         .map((scanJSON) => ({
             scanTime: new Date(scanJSON.scanTime),
-            card: scanJSON.card,
+            cardSerial: scanJSON.cardSerial,
         }))
         .sort((a, b) => a.scanTime.getTime() - b.scanTime.getTime());
 
@@ -30,23 +30,23 @@ export const mergeScansCards = (
 ): readonly ScanCard[] =>
     scans.map((scan) => ({
         scanTime: scan.scanTime,
-        card: cards.find((card) => card.serial === scan.card),
+        card: cards.find((card) => card.serial === scan.cardSerial),
     }));
 
 export const scanCardHeadCells: readonly TableHeadCell<ScanCard>[] = [
     {
-        id: "card",
-        label: "Card",
-        align: "left",
-        padding: "normal",
-        convert: (value: Card | undefined) =>
-            value?.name ?? value?.serial ?? "Unknown",
-    },
-    {
         id: "scanTime",
         label: "Scan time",
-        align: "right",
+        align: "left",
         padding: "normal",
         convert: (value: Date) => value.toDateString(),
+    },
+    {
+        id: "card",
+        label: "Card",
+        align: "right",
+        padding: "normal",
+        convert: (value: Card | undefined) =>
+            value?.name || (value?.serial ?? "Unknown"),
     },
 ];

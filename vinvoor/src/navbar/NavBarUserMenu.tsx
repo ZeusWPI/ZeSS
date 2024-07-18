@@ -66,7 +66,7 @@ export const NavBarUserMenu: FC<NavBarUserMenuProps> = ({ pageIcons }) => {
                             </UnstyledLink>
                         ))}
                         <MenuItem>
-                            <Logout>
+                            <Logout sx={{ color: "inherit" }}>
                                 <ExitRun sx={{ mr: ".3rem" }} />
                                 <Typography>Logout</Typography>
                             </Logout>

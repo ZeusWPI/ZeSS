@@ -1,5 +1,4 @@
-import { TableBody, TableCell, Typography } from "@mui/material";
-import { TableRow } from "mdi-material-ui";
+import { TableBody, TableCell, TableRow, Typography } from "@mui/material";
 import { FC, useEffect, useState } from "react";
 import { Card } from "../types/cards";
 import {
@@ -23,8 +22,8 @@ export const ScansTableBody: FC<ScansTableBodyProps> = ({ scans, cards }) => {
 
     return (
         <TableBody>
-            {scanCards.map((scanCard) => (
-                <TableRow key={scanCard.scanTime.toString()}>
+            {scanCards.map((scanCard, index) => (
+                <TableRow key={index}>
                     {scanCardHeadCells.map((headCell) => (
                         <TableCell
                             key={headCell.id}
