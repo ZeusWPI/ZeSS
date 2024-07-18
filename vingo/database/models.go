@@ -74,3 +74,8 @@ type Season struct {
 	StartDate time.Time `json:"startDate"`
 	EndDate   time.Time `json:"endDate"`
 }
+
+type StreakDay struct {
+	BaseModel
+	Date time.Time
+}
