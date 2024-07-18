@@ -68,3 +68,9 @@ type Scan struct {
 	CardSerial string    `json:"cardSerial" gorm:"index"`
 	Card       Card      `json:"-" gorm:"foreignKey:CardSerial;references:Serial"`
 }
+
+type Season struct {
+	BaseModel
+	StartDate time.Time `json:"startDate"`
+	EndDate   time.Time `json:"endDate"`
+}
