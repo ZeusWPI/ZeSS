@@ -24,31 +24,13 @@ func OpenDatabase(db_string string) {
 		log.Fatal(err)
 	}
 
-	err = new_db.AutoMigrate(&Settings{})
+	err = new_db.AutoMigrate()
 	if err != nil {
 		log.Println("Error migrating database")
 		log.Fatal(err)
 	}
 
-	err = new_db.AutoMigrate(&User{})
-	if err != nil {
-		log.Println("Error migrating database")
-		log.Fatal(err)
-	}
-
-	err = new_db.AutoMigrate(&Card{})
-	if err != nil {
-		log.Println("Error migrating database")
-		log.Fatal(err)
-	}
-
-	err = new_db.AutoMigrate(&Scan{})
-	if err != nil {
-		log.Println("Error migrating database")
-		log.Fatal(err)
-	}
-
-	err = new_db.AutoMigrate(&Day{})
+	err = new_db.AutoMigrate(&User{}, &Card{}, &Scan{}, &Day{}, &Settings{}, &Season{})
 	if err != nil {
 		log.Println("Error migrating database")
 		log.Fatal(err)

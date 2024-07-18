@@ -1,6 +1,8 @@
 package database
 
-import "time"
+import (
+	"time"
+)
 
 func CreateUserIfNew(user_id int, username string) error {
 	var user = &User{Username: username, Settings: Settings{ScanInOut: false, Leaderboard: true, Public: false}}
