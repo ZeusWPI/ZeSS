@@ -7,7 +7,7 @@ export const ScansTableHead = () => {
             <TableRow>
                 {scanCardHeadCells.map((headCell) => (
                     <TableCell key={headCell.id} align={headCell.align}>
-                        <Typography>{headCell.label}</Typography>
+                        <Typography variant="h6">{headCell.label}</Typography>
                     </TableCell>
                 ))}
             </TableRow>

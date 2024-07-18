@@ -77,7 +77,7 @@ export const CardsTableBody: FC<CardsTableBodyProps> = ({
 
     const editButton = (id: number, name: string) => (
         <IconButton onClick={() => handleEditClick(id, name)}>
-            <EditOutlined />
+            <EditOutlined fontSize="small" />
         </IconButton>
     );
 

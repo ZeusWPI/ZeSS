@@ -32,7 +32,10 @@ export const NavBarSandwich: FC<NavBarSandwichProps> = ({ pageIcons, sx }) => {
 
     return (
         <Box sx={{ ...sx }}>
-            <IconButton onClick={handleOpenNavMenu} sx={{ color: "white" }}>
+            <IconButton
+                onClick={handleOpenNavMenu}
+                sx={{ color: "secondary.contrastText" }}
+            >
                 <MenuIcon />
             </IconButton>
             <Menu

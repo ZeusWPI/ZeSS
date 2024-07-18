@@ -1,4 +1,5 @@
 import { Box } from "@mui/material";
+import { Theme, useTheme } from "@mui/material/styles";
 import { FC, useContext } from "react";
 import { MILLISECONDS_IN_ONE_DAY, shiftDate } from "../../util/util";
 import { ScanContext } from "../Overview";
@@ -17,6 +18,7 @@ import {
     getWidth,
     MONTH_LABELS,
     SQUARE_SIZE,
+    styleMonth,
 } from "./utils";
 
 export interface HeatmapItem {
@@ -90,7 +92,7 @@ const getAllValues = (
 const getWeeksInMonth = (
     values: HeatmapItem[],
     startDate: Date
-): { [key: number]: number } => {
+): Record<number, number> => {
     const startYear = values[0].date.getFullYear();
     return values.reduce(
         (acc, value) => {
@@ -112,16 +114,22 @@ const getWeeksInMonth = (
     );
 };
 
-const getClassNameForValue = (value: HeatmapItem, variant: HeatmapVariant) => {
-    if (variant === HeatmapVariant.DAYS) {
-        if (value.count > 0) return `color-active`;
+const getRectStyling = (
+    theme: Theme,
+    value: HeatmapItem,
+    variant: HeatmapVariant
+) => {
+    if (variant === HeatmapVariant.DAYS)
+        if (value.count > 0) return theme.heatmap.colorActive;
+        else return theme.heatmap.colorInActive;
+    else return styleMonth[Math.min(value.count, 5)](theme);
+};
 
-        return `color-inactive`;
-    } else {
-        if (value.count <= 5) return `color-${value.count}`;
-
-        return "color-5";
-    }
+const getTextStyling = (theme: Theme, variant: HeatmapVariant) => {
+    return {
+        fill: theme.palette.primary.contrastText,
+        fontSize: variant === HeatmapVariant.DAYS ? "1.8rem" : "0.8rem",
+    };
 };
 
 const getTooltipDataAttrsForDate = (
@@ -143,7 +151,7 @@ const getTooltipDataAttrsForDays = (value: HeatmapItem) =>
 const getTooltipDataAttrsForMonths = (value: HeatmapItem) =>
     `${value.count} scan${
         value.count !== 1 ? "s" : ""
-    } on the week of ${dateTimeFormat.format(value.date)}`;
+    } in the week of ${dateTimeFormat.format(value.date)}`;
 
 export const Heatmap: FC<HeatmapProps> = ({
     startDate,
@@ -151,7 +159,9 @@ export const Heatmap: FC<HeatmapProps> = ({
     variant,
     maxHeight,
 }) => {
+    const theme = useTheme();
     const { scans } = useContext(ScanContext);
+
     const days = scans.map((scan) => scan.scanTime);
 
     days.forEach((date) => date.setHours(0, 0, 0, 0));
@@ -193,8 +203,9 @@ export const Heatmap: FC<HeatmapProps> = ({
                 y={y}
                 rx={2}
                 ry={2}
-                className={`rect ${getClassNameForValue(value, variant)}`}
+                {...getRectStyling(theme, value, variant)}
                 {...getTooltipDataAttrsForDate(value, variant)}
+                className="rect"
             />
         );
     };
@@ -218,11 +229,16 @@ export const Heatmap: FC<HeatmapProps> = ({
         if (variant === HeatmapVariant.DAYS) {
             return [...Array(columns).keys()].map((column) => {
                 const endOfWeek = shiftDate(startDate, column * DAYS_IN_WEEK);
-                const [x, y] = getMonthLabelCoordinates(column);
+                const [x, y] = getMonthLabelCoordinates(variant, column);
 
                 return endOfWeek.getDate() >= 1 &&
                     endOfWeek.getDate() <= DAYS_IN_WEEK ? (
-                    <text key={column} x={x} y={y}>
+                    <text
+                        key={column}
+                        x={x}
+                        y={y}
+                        {...getTextStyling(theme, variant)}
+                    >
                         {MONTH_LABELS[endOfWeek.getMonth()]}
                     </text>
                 ) : null;
@@ -233,10 +249,15 @@ export const Heatmap: FC<HeatmapProps> = ({
                     return null;
                 }
 
-                const [x, y] = getMonthLabelCoordinates(column);
+                const [x, y] = getMonthLabelCoordinates(variant, column);
 
                 return (
-                    <text key={column} x={x} y={y}>
+                    <text
+                        key={column}
+                        x={x}
+                        y={y}
+                        {...getTextStyling(theme, variant)}
+                    >
                         {MONTH_LABELS[startDate.getMonth() + column]}
                     </text>
                 );
@@ -250,7 +271,9 @@ export const Heatmap: FC<HeatmapProps> = ({
                 <g transform={getTransformForMonthLabels()}>
                     {renderMonthLabels()}
                 </g>
-                <g transform={getTransformForAllWeeks()}>{renderColumns()}</g>
+                <g transform={getTransformForAllWeeks(variant)}>
+                    {renderColumns()}
+                </g>
             </svg>
         </Box>
     );

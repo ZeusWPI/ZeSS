@@ -12,7 +12,7 @@ export const leaderboardHeadCells: readonly TableHeadCell<LeaderboardItem>[] = [
     {
         id: "positionChange",
         label: "Change",
-        align: "left",
+        align: "right",
         padding: "checkbox",
     },
     {

@@ -1,3 +1,4 @@
+import { useTheme } from "@mui/material";
 import { ApexOptions } from "apexcharts";
 import { useContext } from "react";
 import Chart from "react-apexcharts";
@@ -13,13 +14,30 @@ const getDayCount = (scans: readonly Scan[]) => {
 };
 
 export const Days = () => {
+    const theme = useTheme();
     const { scans } = useContext(ScanContext);
 
     const state = {
         options: {
             labels: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+            colors: [
+                theme.days.color0,
+                theme.days.color1,
+                theme.days.color2,
+                theme.days.color3,
+                theme.days.color4,
+            ],
             fill: {
-                opacity: 1,
+                opacity: 0.9,
+                type: "gradient",
+                gradient: {
+                    shade: "dark",
+                    type: "vertical",
+                    shadeIntensity: 0.2,
+                },
+            },
+            stroke: {
+                show: false,
             },
             yaxis: {
                 show: false,
@@ -38,14 +56,6 @@ export const Days = () => {
                     spokes: {
                         strokeWidth: 0,
                     },
-                },
-            },
-            theme: {
-                monochrome: {
-                    enabled: true,
-                    color: "#ff7f00",
-                    shadeTo: "light",
-                    shadeIntensity: 1,
                 },
             },
         } as ApexOptions,

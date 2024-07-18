@@ -1,5 +1,6 @@
 // Exports
 
+import { Theme } from "@mui/material/styles";
 import { MILLISECONDS_IN_ONE_DAY } from "../../util/util";
 import { HeatmapVariant } from "./Heatmap";
 
@@ -31,11 +32,17 @@ export const dateTimeFormat = new Intl.DateTimeFormat("en-GB", {
 
 // Labels
 
-export const getMonthLabelSize = () => SQUARE_SIZE + MONTH_LABEL_GUTTER_SIZE;
+export const getMonthLabelSize = (variant: HeatmapVariant) =>
+    SQUARE_SIZE +
+    MONTH_LABEL_GUTTER_SIZE(variant) +
+    MONTH_LABEL_OFFSET(variant);
 
-export const getMonthLabelCoordinates = (column: number) => [
+export const getMonthLabelCoordinates = (
+    variant: HeatmapVariant,
+    column: number
+) => [
     column * getSquareSize(),
-    getMonthLabelSize() - MONTH_LABEL_GUTTER_SIZE,
+    getMonthLabelSize(variant) - MONTH_LABEL_GUTTER_SIZE(variant),
 ];
 
 // Transforms
@@ -43,8 +50,8 @@ export const getMonthLabelCoordinates = (column: number) => [
 export const getTransformForColumn = (column: number) =>
     `translate(${column * getSquareSize() + GUTTERSIZE}, 0)`;
 
-export const getTransformForAllWeeks = () =>
-    `translate(0, ${getMonthLabelSize()})`;
+export const getTransformForAllWeeks = (variant: HeatmapVariant) =>
+    `translate(0, ${getMonthLabelSize(variant)})`;
 
 export const getTransformForMonthLabels = () => `translate(0, 0)`;
 
@@ -56,8 +63,8 @@ export const getWidth = (
 
 export const getHeight = (variant: HeatmapVariant) => {
     if (variant === HeatmapVariant.DAYS)
-        return DAYS_IN_WEEK * getSquareSize() + getMonthLabelSize();
-    else return WEEKS_IN_MONTH * getSquareSize() + getMonthLabelSize();
+        return DAYS_IN_WEEK * getSquareSize() + getMonthLabelSize(variant);
+    else return WEEKS_IN_MONTH * getSquareSize() + getMonthLabelSize(variant);
 };
 
 // Coordinate
@@ -93,9 +100,21 @@ export const getColumnCount = (
     }
 };
 
+export const styleMonth = [
+    (theme: Theme) => theme.heatmap.color0,
+    (theme: Theme) => theme.heatmap.color1,
+    (theme: Theme) => theme.heatmap.color2,
+    (theme: Theme) => theme.heatmap.color3,
+    (theme: Theme) => theme.heatmap.color4,
+    (theme: Theme) => theme.heatmap.color5,
+];
+
 // Local functions
 
 const GUTTERSIZE = 5;
-const MONTH_LABEL_GUTTER_SIZE = 8;
+const MONTH_LABEL_GUTTER_SIZE = (variant: HeatmapVariant) =>
+    variant === HeatmapVariant.DAYS ? 15 : 8;
+const MONTH_LABEL_OFFSET = (variant: HeatmapVariant) =>
+    variant === HeatmapVariant.DAYS ? 15 : 0;
 
 const getSquareSize = () => SQUARE_SIZE + GUTTERSIZE;

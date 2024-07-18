@@ -1,11 +1,11 @@
 import { AccountCircle } from "@mui/icons-material";
-import { Button, Menu, MenuItem, Typography } from "@mui/material";
-import ExitRun from "mdi-material-ui/ExitRun";
+import { Button, Divider, Menu, MenuItem, Typography } from "@mui/material";
+import { ExitRun } from "mdi-material-ui";
 import { FC, MouseEvent, useContext, useState } from "react";
 import { UnstyledLink } from "../components/UnstyledLink";
+import { UserContext } from "../providers/UserProvider";
 import { Login } from "../user/Login";
 import { Logout } from "../user/Logout";
-import { UserContext } from "../user/UserProvider";
 import { PageIcon } from "./NavBar";
 
 interface NavBarUserMenuProps {
@@ -36,7 +36,7 @@ export const NavBarUserMenu: FC<NavBarUserMenuProps> = ({ pageIcons }) => {
                         onClick={handleOpenUserMenu}
                         sx={{
                             textTransform: "none",
-                            color: "white",
+                            color: "secondary.contrastText",
                         }}
                     >
                         <AccountCircle sx={{ mr: "3px" }} />
@@ -65,9 +65,26 @@ export const NavBarUserMenu: FC<NavBarUserMenuProps> = ({ pageIcons }) => {
                                 </MenuItem>
                             </UnstyledLink>
                         ))}
-                        <MenuItem>
-                            <Logout sx={{ color: "inherit" }}>
-                                <ExitRun sx={{ mr: ".3rem" }} />
+                        <Divider />
+                        <MenuItem
+                            onClick={handleCloseUserMenu}
+                            sx={{
+                                paddingX: "0",
+                                justifyContent: "center",
+                            }}
+                        >
+                            <Logout
+                                sx={{
+                                    color: "inherit",
+                                    textTransform: "none",
+                                    width: "100%",
+                                    "&:hover": {
+                                        backgroundColor: "transparent",
+                                    },
+                                }}
+                            >
+                                <ExitRun sx={{ mr: ".3rem", ml: "-9px" }} />
+                                {/* Hacky way to center it with the other icons */}
                                 <Typography>Logout</Typography>
                             </Logout>
                         </MenuItem>

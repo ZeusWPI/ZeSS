@@ -1,64 +1,10 @@
-.heatmap text {
-    font-size: 10px;
-    fill: #aaa;
-}
-
 .heatmap rect:hover {
-    stroke-width: 1px;
     stroke-opacity: 0;
 }
 
-/*
-    Gradients for months variant
-*/
-
-.heatmap .color-0 {
-    fill: #eeeeee;
+.rect {
+    animation: createBox 1s;
     stroke-width: 1px;
-    stroke: #fcce9f;
-}
-.heatmap .color-1 {
-    fill: #fcce9f;
-    stroke-width: 1px;
-    stroke: #fcbb79;
-}
-
-.heatmap .color-2 {
-    fill: #fcbb79;
-    stroke-width: 1px;
-    stroke: #fa922a;
-}
-.heatmap .color-3 {
-    fill: #fa922a;
-    stroke-width: 1px;
-    stroke: #ff7f00;
-}
-
-.heatmap .color-4 {
-    fill: #ff7f00;
-    stroke-width: 1px;
-    stroke: #ba5f02;
-}
-.heatmap .color-5 {
-    fill: #ba5f02;
-    stroke-width: 1px;
-    stroke: #934b01;
-}
-
-/*
-    Active or not active for days variant
-*/
-
-.heatmap .color-inactive {
-    fill: #eeeeee;
-    stroke-width: 1px;
-    stroke: #fcce9f;
-}
-
-.heatmap .color-active {
-    fill: #ff7f00;
-    stroke-width: 1px;
-    stroke: #ba5f02;
 }
 
 @keyframes createBox {
@@ -69,8 +15,4 @@
     to {
         transform: scale(1);
     }
-}
-
-.rect {
-    animation: createBox 1s;
 }
