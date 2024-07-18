@@ -45,11 +45,14 @@ func main() {
 		api.Get("/user", handlers.User)
 		api.Get("/leaderboard", handlers.Leaderboard)
 		api.Get("/scans", handlers.Scans)
+
 		api.Get("/cards", handlers.Cards{}.Get)
 		api.Patch("/cards/:id", handlers.Cards{}.Update)
 		api.Get("/cards/register", handlers.Cards{}.RegisterStatus)
 		api.Post("/cards/register", handlers.Cards{}.StartRegister)
-		api.Get("/settings", handlers.Settings)
+
+		api.Get("/settings", handlers.Settings{}.Get)
+		api.Patch("/settings", handlers.Settings{}.Update)
 
 		admin := api.Group("/admin", handlers.IsAdmin)
 		{
