@@ -14,6 +14,7 @@ import { Cards } from "./cards/Cards.tsx";
 import { ErrorPage } from "./errors/ErrorPage.tsx";
 import { Leaderboard } from "./leaderboard/Leaderboard.tsx";
 import { Scans } from "./scans/Scans.tsx";
+import { SettingsOverview } from "./settings/SettingsOverview.tsx";
 import { ThemeProvider } from "./theme/ThemeProvider";
 import { Login } from "./user/Login.tsx";
 import { Logout } from "./user/Logout.tsx";
@@ -47,8 +48,8 @@ const router = createBrowserRouter([
             },
             {
                 path: "settings",
-                
-            }
+                element: <SettingsOverview />,
+            },
         ],
     },
 ]);

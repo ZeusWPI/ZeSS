@@ -9,7 +9,7 @@ export const getApi = <T>(endpoint: string, convertData?: (data: any) => T) => {
 
 export const postApi = <T>(
     endpoint: string,
-    body: { [key: string]: string } = {}
+    body: { [key: string]: string | number | boolean } = {}
 ) => {
     return _fetch<T>(`${URLS.API}/${endpoint}`, {
         method: "POST",
@@ -20,7 +20,7 @@ export const postApi = <T>(
 
 export const patchApi = <T>(
     endpoint: string,
-    body: { [key: string]: string } = {}
+    body: { [key: string]: string | number | boolean } = {}
 ) => {
     return _fetch<T>(`${URLS.API}/${endpoint}`, {
         method: "PATCH",

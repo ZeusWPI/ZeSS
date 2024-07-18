@@ -45,7 +45,6 @@ const getPositionChange = (positionChange: number) => {
 const getPosition = (position: number) => {
     switch (position) {
         case 1:
-            // return <PodiumGold htmlColor="#FFD700" />;
             return (
                 <Icon>
                     <img src={FirstPlaceIcon} />

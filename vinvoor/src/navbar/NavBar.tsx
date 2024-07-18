@@ -1,6 +1,7 @@
-import LeaderboardIcon from "@mui/icons-material/Leaderboard";
+import { LeaderboardOutlined } from "@mui/icons-material";
 import { AppBar, Box, Container, Toolbar } from "@mui/material";
 import {
+    CogOutline,
     CreditCardMultipleOutline,
     CreditCardScanOutline,
 } from "mdi-material-ui";
@@ -20,10 +21,12 @@ export interface PageIcon {
 const navBarPages: PageIcon[] = [
     { page: "Scans", icon: <CreditCardScanOutline sx={{ mr: ".3rem" }} /> },
     { page: "Cards", icon: <CreditCardMultipleOutline sx={{ mr: ".3rem" }} /> },
-    { page: "Leaderboard", icon: <LeaderboardIcon sx={{ mr: ".3rem" }} /> },
+    { page: "Leaderboard", icon: <LeaderboardOutlined sx={{ mr: ".3rem" }} /> },
 ];
 
-const userMenuPages: PageIcon[] = [];
+const userMenuPages: PageIcon[] = [
+    { page: "Settings", icon: <CogOutline sx={{ mr: ".3rem" }} /> },
+];
 
 export const NavBar = () => {
     const {
