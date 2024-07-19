@@ -1,8 +1,8 @@
 import { Box, Paper, Stack, Switch, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import { createContext, useEffect, useRef, useState } from "react";
-import { BrowserView } from "react-device-detect";
 import { Tooltip } from "react-tooltip";
+import { BrowserView } from "../components/BrowserView";
 import { LoadingSkeleton } from "../components/LoadingSkeleton";
 import { useFetch } from "../hooks/useFetch";
 import { convertScanJSON, Scan } from "../types/scans";

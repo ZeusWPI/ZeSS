@@ -1,6 +1,5 @@
-import { AccountCircle } from "@mui/icons-material";
 import { Button, Divider, Menu, MenuItem, Typography } from "@mui/material";
-import { ExitRun } from "mdi-material-ui";
+import { Cow, ExitRun, ShieldAccountOutline } from "mdi-material-ui";
 import { FC, MouseEvent, useContext, useState } from "react";
 import { UnstyledLink } from "../components/UnstyledLink";
 import { UserContext } from "../providers/UserProvider";
@@ -39,7 +38,7 @@ export const NavBarUserMenu: FC<NavBarUserMenuProps> = ({ pageIcons }) => {
                             color: "secondary.contrastText",
                         }}
                     >
-                        <AccountCircle sx={{ mr: "3px" }} />
+                        <ShieldAccountOutline sx={{ mr: "3px" }} />
                         <Typography variant="h6">{user.username}</Typography>
                     </Button>
                     <Menu
@@ -66,6 +65,24 @@ export const NavBarUserMenu: FC<NavBarUserMenuProps> = ({ pageIcons }) => {
                             </UnstyledLink>
                         ))}
                         <Divider />
+                        {user.admin && (
+                            <UnstyledLink to="admin">
+                                <MenuItem
+                                    onClick={handleCloseUserMenu}
+                                    sx={{
+                                        paddingX: "0",
+                                        justifyContent: "center",
+                                        backgroundColor: "error.dark",
+                                        "&:hover": {
+                                            backgroundColor: "error.light",
+                                        },
+                                    }}
+                                >
+                                    <Cow sx={{ mr: ".3rem", ml: "-12px" }} />
+                                    <Typography>Admin</Typography>
+                                </MenuItem>
+                            </UnstyledLink>
+                        )}
                         <MenuItem
                             onClick={handleCloseUserMenu}
                             sx={{
