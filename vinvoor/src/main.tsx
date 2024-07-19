@@ -16,6 +16,7 @@ import { CustomSnackbarProvider } from "./providers/CustomSnackbarProvider.tsx";
 import { ThemeProvider } from "./providers/ThemeProvider.tsx";
 import { UserProvider } from "./providers/UserProvider.tsx";
 import { Scans } from "./scans/Scans.tsx";
+import { Admin } from "./settings/admin/Admin.tsx";
 import { SettingsOverview } from "./settings/SettingsOverview.tsx";
 import { Login } from "./user/Login.tsx";
 import { Logout } from "./user/Logout.tsx";
@@ -49,6 +50,10 @@ const router = createBrowserRouter([
             {
                 path: "settings",
                 element: <SettingsOverview />,
+            },
+            {
+                path: "admin",
+                element: <Admin />,
             },
         ],
     },
