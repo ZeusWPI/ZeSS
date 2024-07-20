@@ -56,8 +56,8 @@ func main() {
 
 		admin := api.Group("/admin", handlers.IsAdmin)
 		{
-			admin.Post("/days", handlers.DaysRegister)
-			admin.Post("/days/:id", handlers.DaysDelete)
+			admin.Post("/days", handlers.Days{}.CreateMultiple)
+			admin.Delete("/days/:id", handlers.Days{}.Delete)
 		}
 	}
 
