@@ -1,14 +1,17 @@
 package database
 
+import "log"
+
 func CreateSettings(user_id int) error {
 	_, err := db.Exec("INSERT INTO settings (user_id) VALUES ($1) ON CONFLICT DO NOTHING;", user_id)
 	return err
 }
 
 func GetSettings(user_id int) (*Settings, error) {
-	var settings Settings
-	result := gorm_db.First(&settings, "user_id = ?", user_id)
-	return &settings, result.Error
+	var user User
+	result := gorm_db.Preload("Settings").First(&user, user_id)
+	log.Println(user)
+	return &user.Settings, result.Error
 }
 
 func UpdateSettings(user_id int, settings Settings) error {

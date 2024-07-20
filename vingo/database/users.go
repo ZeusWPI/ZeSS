@@ -15,7 +15,7 @@ func CreateUserIfNew(user_id int, username string) error {
 
 func GetUser(user_id int) (*User, error) {
 	var user User
-	result := gorm_db.First(&user, user_id)
+	result := gorm_db.Preload("Settings").First(&user, user_id)
 	return &user, result.Error
 }
 
