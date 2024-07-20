@@ -1,4 +1,9 @@
+import LeaderboardIcon from "@mui/icons-material/Leaderboard";
 import { AppBar, Box, Container, Toolbar } from "@mui/material";
+import {
+    CreditCardMultipleOutline,
+    CreditCardScanOutline,
+} from "mdi-material-ui";
 import { useContext } from "react";
 import { DarkModeToggle } from "../components/DarkModeToggle";
 import { UserContext } from "../user/UserProvider";
@@ -7,8 +12,18 @@ import { NavBarPages } from "./NavBarPages";
 import { NavBarSandwich } from "./NavBarSandwich";
 import { NavBarUserMenu } from "./NavBarUserMenu";
 
-const pages = ["Cards", "Leaderboard"];
-const settings = ["Logout"];
+export interface PageIcon {
+    page: string;
+    icon: JSX.Element;
+}
+
+const navBarPages: PageIcon[] = [
+    { page: "Scans", icon: <CreditCardScanOutline sx={{ mr: ".3rem" }} /> },
+    { page: "Cards", icon: <CreditCardMultipleOutline sx={{ mr: ".3rem" }} /> },
+    { page: "Leaderboard", icon: <LeaderboardIcon sx={{ mr: ".3rem" }} /> },
+];
+
+const userMenuPages: PageIcon[] = [];
 
 export const NavBar = () => {
     const {
@@ -21,7 +36,13 @@ export const NavBar = () => {
     };
 
     return (
-        <AppBar position="static">
+        <AppBar
+            position="static"
+            sx={{
+                background:
+                    "rgb(255,164,0) linear-gradient(45deg, rgba(255,164,0,1) 0%, rgba(255,127,0,1) 100%)",
+            }}
+        >
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
                     {/* Display either the ZeSS logo or a sandwich menu */}
@@ -31,7 +52,7 @@ export const NavBar = () => {
 
                         {user && (
                             <NavBarSandwich
-                                pages={pages}
+                                pageIcons={navBarPages}
                                 sx={{ display: screenSize.mobile }}
                             />
                         )}
@@ -42,7 +63,7 @@ export const NavBar = () => {
                     <Box sx={{ flexGrow: 1 }}>
                         {user && (
                             <NavBarPages
-                                pages={pages}
+                                pageIcons={navBarPages}
                                 sx={{ display: screenSize.desktop }}
                             />
                         )}
@@ -54,7 +75,7 @@ export const NavBar = () => {
 
                     <Box sx={{ flexGrow: 0 }}>
                         <DarkModeToggle />
-                        <NavBarUserMenu settings={settings} />
+                        <NavBarUserMenu pageIcons={userMenuPages} />
                     </Box>
                 </Toolbar>
             </Container>

@@ -1,3 +1,13 @@
+export interface BaseJSON {
+    id: number;
+    createdAt: string;
+}
+
+export interface Base {
+    id: number;
+    createdAt: Date;
+}
+
 export type TableOrder = "asc" | "desc";
 
 type TableAlignOptions = "right" | "left" | "center";
@@ -8,4 +18,5 @@ export interface TableHeadCell<T> {
     label: string;
     align: TableAlignOptions;
     padding: TablePaddingOptions;
+    convert?: (value: any) => string;
 }

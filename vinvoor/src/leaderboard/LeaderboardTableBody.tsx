@@ -1,74 +1,125 @@
 import {
-    styled,
+    Icon,
     TableBody,
     TableCell,
-    tableCellClasses,
     TableRow,
     Typography,
 } from "@mui/material";
-import { PodiumBronze, PodiumGold, PodiumSilver } from "mdi-material-ui";
-import { FC } from "react";
+import { alpha } from "@mui/material/styles";
+import {
+    ArrowDownBoldHexagonOutline,
+    ArrowUpBoldHexagonOutline,
+    Minus,
+} from "mdi-material-ui";
+import { FC, useContext } from "react";
+import { TableHeadCell } from "../types/general";
 import { leaderboardHeadCells, LeaderboardItem } from "../types/leaderboard";
+import { UserContext } from "../user/UserProvider";
+import FirstPlaceIcon from "/first_place.svg";
+import SecondPlaceIcon from "/second_place.svg";
+import ThirdPlaceIcon from "/third_place.svg";
 
 interface LeaderboardTableBodyProps {
     leaderboardItems: readonly LeaderboardItem[];
 }
 
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
-    [`&.${tableCellClasses.head}`]: {
-        backgroundColor: theme.palette.common.black,
-        color: theme.palette.common.white,
-    },
-    [`&.${tableCellClasses.body}`]: {
-        fontSize: 14,
-    },
-}));
+const getPositionChange = (positionChange: number) => {
+    let icon: JSX.Element | null = null;
 
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
-    "&:nth-of-type(odd)": {
-        backgroundColor: theme.palette.action.hover,
-    },
-    // hide last border
-    "&:last-child td, &:last-child th": {
-        border: 0,
-    },
-}));
+    if (positionChange > 0) {
+        icon = <ArrowUpBoldHexagonOutline color="success" />;
+    } else if (positionChange < 0) {
+        icon = <ArrowDownBoldHexagonOutline color="error" />;
+    } else {
+        icon = <Minus />;
+    }
+
+    return (
+        <>
+            {icon}
+            <Typography>{positionChange}</Typography>
+        </>
+    );
+};
 
 const getPosition = (position: number) => {
     switch (position) {
         case 1:
-            return <PodiumGold htmlColor="#FFD700" />;
+            // return <PodiumGold htmlColor="#FFD700" />;
+            return (
+                <Icon>
+                    <img src={FirstPlaceIcon} />
+                </Icon>
+            );
         case 2:
-            return <PodiumSilver htmlColor="#C0C0C0" />;
+            return (
+                <Icon>
+                    <img src={SecondPlaceIcon} />
+                </Icon>
+            );
         case 3:
-            return <PodiumBronze htmlColor="#CD7F32" />;
+            return (
+                <Icon>
+                    <img src={ThirdPlaceIcon} />
+                </Icon>
+            );
         default:
             return <Typography fontWeight="bold">{position}</Typography>;
+    }
+};
+
+const getCell = (
+    row: LeaderboardItem,
+    headCell: TableHeadCell<LeaderboardItem>
+) => {
+    switch (headCell.id) {
+        case "positionChange":
+            return getPositionChange(row[headCell.id]);
+        case "position":
+            return getPosition(row[headCell.id]);
+        default:
+            return <Typography>{row[headCell.id]}</Typography>;
     }
 };
 
 export const LeaderboardTableBody: FC<LeaderboardTableBodyProps> = ({
     leaderboardItems: rows,
 }) => {
+    const {
+        userState: { user },
+    } = useContext(UserContext);
+
     return (
         <TableBody>
-            {rows.map((row) => {
+            {rows.map((row, index) => {
                 return (
-                    <StyledTableRow key={row.username} id={row.username}>
+                    <TableRow
+                        key={row.username}
+                        id={row.username}
+                        sx={{
+                            ...(index % 2 === 0 && {
+                                backgroundColor: (theme) =>
+                                    theme.palette.action.hover,
+                            }),
+                            ...(row.username === user!.username && {
+                                backgroundColor: (theme) =>
+                                    alpha(
+                                        theme.palette.primary.main,
+                                        theme.palette.action.activatedOpacity
+                                    ),
+                            }),
+                        }}
+                    >
                         {leaderboardHeadCells.map((headCell) => (
-                            <StyledTableCell
+                            <TableCell
                                 key={headCell.id}
                                 align={headCell.align}
                                 padding={headCell.padding}
                             >
-                                {headCell.id === "position" ? (
-                                    getPosition(row[headCell.id])
-                                ) : (
-                                    <Typography>{row[headCell.id]}</Typography>
-                                )}
-                            </StyledTableCell>
+                                {getCell(row, headCell)}
+                            </TableCell>
                         ))}
-                    </StyledTableRow>
+                    </TableRow>
                 );
             })}
         </TableBody>

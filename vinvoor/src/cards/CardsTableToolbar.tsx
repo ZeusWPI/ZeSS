@@ -1,19 +1,14 @@
 import { Toolbar, Typography } from "@mui/material";
 import { alpha } from "@mui/material/styles";
-import { Dispatch, FC, SetStateAction } from "react";
-import { Card } from "../types/cards";
+import { FC } from "react";
 import { CardsAdd } from "./CardsAdd";
 import { CardsDelete } from "./CardsDelete";
 
 interface CardTableToolbarProps {
     selected: readonly string[];
-    setCards: Dispatch<SetStateAction<readonly Card[]>>;
 }
 
-export const CardsTableToolbar: FC<CardTableToolbarProps> = ({
-    selected,
-    setCards,
-}) => {
+export const CardsTableToolbar: FC<CardTableToolbarProps> = ({ selected }) => {
     const numSelected = selected.length;
 
     return (
@@ -38,7 +33,7 @@ export const CardsTableToolbar: FC<CardTableToolbarProps> = ({
                     >
                         {numSelected} selected
                     </Typography>
-                    <CardsDelete selected={selected} setCards={setCards} />
+                    <CardsDelete selected={selected} />
                 </>
             ) : (
                 <>

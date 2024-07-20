@@ -10,7 +10,7 @@ export const Leaderboard = () => {
     const [leaderboardItems, setLeaderboardItems] = useState<
         readonly LeaderboardItem[]
     >([]);
-    const { loading, error: _ } = useFetch<readonly LeaderboardItem[]>(
+    const { loading } = useFetch<readonly LeaderboardItem[]>(
         "leaderboard",
         setLeaderboardItems
     );
@@ -24,7 +24,6 @@ export const Leaderboard = () => {
                 />
                 <TableContainer>
                     <Table>
-                        {/* <LeaderboardTableHead /> */}
                         <LeaderboardTableBody
                             leaderboardItems={leaderboardItems}
                         />

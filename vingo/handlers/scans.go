@@ -43,6 +43,7 @@ func ScanRegister(c *fiber.Ctx) error {
 			logger.Println(err)
 			return c.Status(500).SendString("Error registering card")
 		}
+		registering_success = true
 		return c.SendString("Card registered")
 	}
 

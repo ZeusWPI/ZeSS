@@ -10,13 +10,14 @@ import {
 } from "@mui/material";
 import { FC, MouseEvent, useState } from "react";
 import { UnstyledLink } from "../components/UnstyledLink";
+import { PageIcon } from "./NavBar";
 
 interface NavBarSandwichProps {
-    pages: readonly string[];
+    pageIcons: readonly PageIcon[];
     sx?: SxProps<Theme>;
 }
 
-export const NavBarSandwich: FC<NavBarSandwichProps> = ({ pages, sx }) => {
+export const NavBarSandwich: FC<NavBarSandwichProps> = ({ pageIcons, sx }) => {
     const [anchorElNav, setAnchorElNav] = useState<undefined | HTMLElement>(
         undefined
     );
@@ -48,9 +49,10 @@ export const NavBarSandwich: FC<NavBarSandwichProps> = ({ pages, sx }) => {
                 open={Boolean(anchorElNav)}
                 onClose={handleCloseNavMenu}
             >
-                {pages.map((page) => (
+                {pageIcons.map(({ page, icon }) => (
                     <UnstyledLink key={page} to={page.toLowerCase()}>
                         <MenuItem onClick={handleCloseNavMenu}>
+                            {icon}
                             <Typography>{page}</Typography>
                         </MenuItem>
                     </UnstyledLink>

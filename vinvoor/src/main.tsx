@@ -3,13 +3,17 @@ import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 import { CssBaseline } from "@mui/material";
+import { ConfirmProvider } from "material-ui-confirm";
+import { SnackbarProvider } from "notistack";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import "react-tooltip/dist/react-tooltip.css";
 import { App } from "./App.tsx";
 import { Cards } from "./cards/Cards.tsx";
 import { ErrorPage } from "./errors/ErrorPage.tsx";
 import { Leaderboard } from "./leaderboard/Leaderboard.tsx";
+import { Scans } from "./scans/Scans.tsx";
 import { ThemeProvider } from "./theme/ThemeProvider";
 import { Login } from "./user/Login.tsx";
 import { Logout } from "./user/Logout.tsx";
@@ -22,8 +26,16 @@ const router = createBrowserRouter([
         errorElement: <ErrorPage />,
         children: [
             {
+                path: "login",
+                element: <Login />,
+            },
+            {
                 path: "logout",
                 element: <Logout />,
+            },
+            {
+                path: "scans",
+                element: <Scans />,
             },
             {
                 path: "cards",
@@ -33,12 +45,11 @@ const router = createBrowserRouter([
                 path: "leaderboard",
                 element: <Leaderboard />,
             },
+            {
+                path: "settings",
+                
+            }
         ],
-    },
-    {
-        path: "/login",
-        element: <Login />,
-        errorElement: <ErrorPage />,
     },
 ]);
 
@@ -47,7 +58,16 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         <ThemeProvider>
             <CssBaseline enableColorScheme>
                 <UserProvider>
-                    <RouterProvider router={router} />
+                    <ConfirmProvider>
+                        <SnackbarProvider
+                            anchorOrigin={{
+                                horizontal: "center",
+                                vertical: "top",
+                            }}
+                        >
+                            <RouterProvider router={router} />
+                        </SnackbarProvider>
+                    </ConfirmProvider>
                 </UserProvider>
             </CssBaseline>
         </ThemeProvider>

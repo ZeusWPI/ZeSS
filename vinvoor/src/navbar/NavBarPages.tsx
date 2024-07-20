@@ -1,23 +1,25 @@
 import { Box, Button, SxProps, Theme, Typography } from "@mui/material";
 import { FC } from "react";
 import { UnstyledLink } from "../components/UnstyledLink";
+import { PageIcon } from "./NavBar";
 
 interface NavBarPagesProps {
-    pages: readonly string[];
+    pageIcons: readonly PageIcon[];
     sx?: SxProps<Theme>;
 }
 
-export const NavBarPages: FC<NavBarPagesProps> = ({ pages, sx }) => {
+export const NavBarPages: FC<NavBarPagesProps> = ({ pageIcons, sx }) => {
     return (
         <Box sx={{ ...sx }}>
-            {pages.map((page) => (
+            {pageIcons.map(({ page, icon }) => (
                 <UnstyledLink key={page} to={page.toLowerCase()}>
                     <Button
-                        color="inherit"
                         sx={{
                             color: "white",
                         }}
                     >
+                        {icon}
+
                         <Typography>{page}</Typography>
                     </Button>
                 </UnstyledLink>

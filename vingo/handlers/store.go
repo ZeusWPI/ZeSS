@@ -15,8 +15,9 @@ var (
 	logger = log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lshortfile)
 
 	// State for registering a new card
-	registering_user = 0
-	registering_end  = time.Now()
+	registering_user    = 0
+	registering_end     = time.Now()
+	registering_success = false
 )
 
 const (
@@ -34,12 +35,12 @@ func getUserFromStore(c *fiber.Ctx) *database.User {
 	}
 
 	user := sess.Get(STORE_USER)
-	logger.Println("User from store:", user)
 	if user == nil {
 		return nil
 	}
 
 	databaseUser := user.(database.User)
+	logger.Println("User from store:", databaseUser.Id)
 	return &databaseUser
 }
 

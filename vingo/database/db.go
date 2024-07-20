@@ -3,34 +3,39 @@ package database
 import (
 	"database/sql"
 	"log"
+
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 var (
-	db *sql.DB
+	db      *sql.DB
+	gorm_db *gorm.DB
 )
-
-func createTables() {
-	// Tables to create
-	createStmts := []string{usersCreateStmt, settingsCreateStmt, cardsCreateStmt, scansCreateStmt, daysCreateStmt}
-	for _, stmt := range createStmts {
-		_, err := db.Exec(stmt)
-		if err != nil {
-			log.Println("Error creating table with query: \n", stmt)
-			log.Fatal(err)
-		}
-	}
-}
 
 func Get() *sql.DB {
 	return db
 }
 
-func OpenDatabase(conn string) {
-	new_db, err := sql.Open("postgres", conn)
+func OpenDatabase(db_string string) {
+	new_db, err := gorm.Open(postgres.Open(db_string), &gorm.Config{})
 	if err != nil {
-		log.Panicln("Error opening database connection")
+		log.Println("Error opening database connection")
 		log.Fatal(err)
 	}
-	db = new_db
-	createTables()
+
+	err = new_db.AutoMigrate()
+	if err != nil {
+		log.Println("Error migrating database")
+		log.Fatal(err)
+	}
+
+	err = new_db.AutoMigrate(&User{}, &Card{}, &Scan{}, &Day{}, &Settings{}, &Season{})
+	if err != nil {
+		log.Println("Error migrating database")
+		log.Fatal(err)
+	}
+
+	gorm_db = new_db
+	db, _ = new_db.DB()
 }
