@@ -6,6 +6,7 @@ import {
     FormControlLabel,
     Grid,
     Paper,
+    Stack,
     Tooltip,
     Typography,
 } from "@mui/material";
@@ -139,17 +140,17 @@ export const SettingsOverview = () => {
                 </Grid>
                 <Grid item xs={6}>
                     <Paper elevation={4} sx={{ p: "10px", height: "100%" }}>
-                        <Box
+                        <Stack
                             display="flex"
                             alignItems="center"
                             justifyContent="center"
                             height="100%"
-                            width="100%"
                         >
                             <Typography variant="body2">
                                 More settings coming soon!
                             </Typography>
-                        </Box>
+                            <Typography variant="body2">...yay?</Typography>
+                        </Stack>
                     </Paper>
                 </Grid>
                 <Grid item xs={12} sx={{ mt: "1rem" }}>

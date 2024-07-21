@@ -2,11 +2,6 @@
     stroke-opacity: 0;
 }
 
-.rect {
-    animation: createBox 1s;
-    stroke-width: 1px;
-}
-
 @keyframes createBox {
     from {
         width: 0;
@@ -15,4 +10,9 @@
     to {
         transform: scale(1);
     }
+}
+
+.rect {
+    /* animation: createBox 1s; */
+    stroke-width: 1px;
 }

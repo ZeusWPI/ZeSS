@@ -50,12 +50,7 @@ export const Overview = () => {
         <LoadingSkeleton loading={loading}>
             <ScanContext.Provider value={{ scans }}>
                 {scans.length > 0 ? (
-                    <Grid
-                        container
-                        spacing={2}
-                        alignItems="stretch"
-                        justifyContent="space-between"
-                    >
+                    <Grid container spacing={2} justifyContent="space-between">
                         <Grid item xs={8} md={4} lg={3}>
                             <CheckIn />
                         </Grid>
@@ -88,8 +83,8 @@ export const Overview = () => {
                                     </Stack>
                                 </BrowserView>
                                 <Heatmap
-                                    startDate={new Date("2024-01-01")}
-                                    endDate={new Date("2024-12-31")}
+                                    startDate={new Date("2024-05-01")}
+                                    endDate={new Date("2024-09-30")}
                                     variant={
                                         checked
                                             ? HeatmapVariant.DAYS
@@ -131,7 +126,3 @@ export const Overview = () => {
         </LoadingSkeleton>
     );
 };
-
-// Current height of the heatmap is calculated using ref's and calculus
-// TODO: Change it as it is very very very very very very ugly ^^
-// Add a grid item underneath and see what happens
