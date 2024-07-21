@@ -24,7 +24,7 @@ export const CustomSnackbarProvider: FC<SnackbarProviderProps> = ({
         <SnackbarProvider
             anchorOrigin={{
                 horizontal: "center",
-                vertical: "top",
+                vertical: "bottom",
             }}
             Components={{
                 success: StyledMaterialDesignContent,

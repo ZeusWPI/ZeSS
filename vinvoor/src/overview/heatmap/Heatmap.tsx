@@ -271,7 +271,9 @@ export const Heatmap: FC<HeatmapProps> = ({
                 <g transform={getTransformForMonthLabels()}>
                     {renderMonthLabels()}
                 </g>
-                <g transform={getTransformForAllWeeks(variant)}>
+                <g
+                    transform={getTransformForAllWeeks(variant)}
+                >
                     {renderColumns()}
                 </g>
             </svg>

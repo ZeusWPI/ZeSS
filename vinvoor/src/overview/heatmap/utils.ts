@@ -88,8 +88,16 @@ export const getColumnCount = (
     variant: HeatmapVariant
 ) => {
     if (variant === HeatmapVariant.DAYS) {
+        const startOfWeek = new Date(startDate);
+        startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
+
+        const endOfWeek = new Date(endDate);
+        if (endOfWeek.getDay() === 0)
+            endOfWeek.setDate(endOfWeek.getDate() - endOfWeek.getDay());
+        else endOfWeek.setDate(endOfWeek.getDate() - endOfWeek.getDay() + 6);
+
         return Math.ceil(
-            (endDate.getTime() - startDate.getTime()) /
+            (endOfWeek.getTime() - startOfWeek.getTime()) /
                 (DAYS_IN_WEEK * MILLISECONDS_IN_ONE_DAY)
         );
     } else {
