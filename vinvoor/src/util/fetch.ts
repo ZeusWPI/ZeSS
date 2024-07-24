@@ -46,15 +46,19 @@ const _fetch = async <T>(
 ): Promise<T> => {
     return fetch(url, { credentials: "include", ...options })
         .then((response) => {
-            if (!response.ok) {
-                const error = new Error(
-                    "Fetch failed with status: " + response.status
-                ) as ResponseNot200Error;
-                error.response = response;
-                throw error;
-            }
+            const contentType = response.headers.get("content-type");
 
-            return response.json();
+            if (contentType && contentType.includes("application/json")) {
+                if (!response.ok) {
+                    const error = new Error(
+                        "Fetch failed with status: " + response.status
+                    ) as ResponseNot200Error;
+                    error.response = response;
+                    throw error;
+                }
+
+                return response.json();
+            } else return response;
         })
         .then((data) => (convertData ? convertData(data) : data));
 };
