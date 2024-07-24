@@ -27,7 +27,7 @@ func (Days) CreateMultiple(c *fiber.Ctx) error {
 		return c.Status(500).SendString("Error creating days")
 	}
 
-	return c.Redirect("/days")
+	return c.SendStatus(200)
 }
 
 func (Days) Delete(c *fiber.Ctx) error {
@@ -38,5 +38,5 @@ func (Days) Delete(c *fiber.Ctx) error {
 		return c.Status(500).SendString("Error deleting day")
 	}
 
-	return c.Redirect("/days")
+	return c.SendStatus(200)
 }

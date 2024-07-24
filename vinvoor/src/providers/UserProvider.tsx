@@ -62,8 +62,8 @@ export const UserProvider: FC<UserProviderProps> = ({ children }) => {
                 newUserState.error = error;
             })
             .finally(() => {
-                newUserState.loading = false;
                 setUserState(newUserState);
+                newUserState.loading = false;
             });
     }, []);
 
