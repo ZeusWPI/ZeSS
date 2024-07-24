@@ -26,7 +26,7 @@ func (Cards) StartRegister(c *fiber.Ctx) error {
 
 	logger.Println("Card registration started by user", registering_user)
 
-	return c.Status(200).JSON(map[string]bool{})
+	return c.SendStatus(200)
 }
 
 func (Cards) Get(c *fiber.Ctx) error {
@@ -68,5 +68,5 @@ func (Cards) Update(c *fiber.Ctx) error {
 		return c.Status(500).SendString("Error updating card name")
 	}
 
-	return c.Status(200).JSON(map[string]bool{})
+	return c.SendStatus(200)
 }

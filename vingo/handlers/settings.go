@@ -29,7 +29,7 @@ func (Settings) Update(c *fiber.Ctx) error {
 	sess.Set(STORE_USER, &user)
 	sess.Save()
 
-	return c.Status(200).JSON(map[string]bool{})
+	return c.SendStatus(200)
 }
 
 func (Settings) Get(c *fiber.Ctx) error {
