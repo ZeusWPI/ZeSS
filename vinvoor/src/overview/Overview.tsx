@@ -9,6 +9,7 @@ import { convertScanJSON, Scan } from "../types/scans";
 import { CheckIn } from "./checkin/CheckIn";
 import { Days } from "./days/Days";
 import { Heatmap, HeatmapVariant } from "./heatmap/Heatmap";
+import { HeatmapNew } from "./heatmap/HeatmapNew";
 import { Streak } from "./streak/Streak";
 
 interface ScanContextProps {
@@ -104,6 +105,22 @@ export const Overview = () => {
                                 ref={daysRef}
                             >
                                 <Days />
+                            </Paper>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Paper
+                                elevation={4}
+                                sx={{ padding: 2, width: "100%" }}
+                            >
+                                <HeatmapNew
+                                    startDate={new Date("2024-05-01")}
+                                    endDate={new Date("2024-09-30")}
+                                    variant={
+                                        checked
+                                            ? HeatmapVariant.DAYS
+                                            : HeatmapVariant.MONTHS
+                                    }
+                                />
                             </Paper>
                         </Grid>
                     </Grid>
