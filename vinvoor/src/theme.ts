@@ -80,6 +80,7 @@ export const hiddenTheme = createTheme({
         },
         background: {
             default: "#FED8B1",
+            paper: "#ECB176",
         },
         success: {
             main: "#355E3B",
@@ -115,13 +116,6 @@ export const hiddenTheme = createTheme({
         color4: "#381b06",
     },
     components: {
-        MuiPaper: {
-            styleOverrides: {
-                root: {
-                    backgroundColor: "#ECB176",
-                },
-            },
-        },
         MuiDivider: {
             styleOverrides: {
                 root: {
