@@ -10,7 +10,7 @@ const getDayCount = (scans: readonly Scan[]) => {
     scans.forEach((scan) => {
         days[scan.scanTime.getDay() - 1]++;
     });
-    return days.slice(0, -2);
+    return days.slice(0, -2) as ApexNonAxisChartSeries;
 };
 
 export const Days = () => {
