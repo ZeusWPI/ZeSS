@@ -1,6 +1,6 @@
 import { Box, Paper, Stack, Switch, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid";
-import { createContext, useEffect, useRef, useState } from "react";
+import { createContext, useLayoutEffect, useRef, useState } from "react";
 import { Tooltip } from "react-tooltip";
 import { BrowserView } from "../components/BrowserView";
 import { LoadingSkeleton } from "../components/LoadingSkeleton";
@@ -8,7 +8,8 @@ import { useFetch } from "../hooks/useFetch";
 import { convertScanJSON, Scan } from "../types/scans";
 import { CheckIn } from "./checkin/CheckIn";
 import { Days } from "./days/Days";
-import { Heatmap, HeatmapVariant } from "./heatmap/Heatmap";
+import { Heatmap } from "./heatmap/Heatmap";
+import { HeatmapVariant } from "./heatmap/types";
 import { Streak } from "./streak/Streak";
 
 interface ScanContextProps {
@@ -28,22 +29,15 @@ export const Overview = () => {
     );
     const [checked, setChecked] = useState<boolean>(false);
     const daysRef = useRef<HTMLDivElement>(null);
-    const heatmapSwitchRef = useRef<HTMLDivElement>(null);
-    const [heatmapSwitchHeight, setHeatmapSwitchHeight] = useState<number>(0);
     const [paperHeight, setPaperHeight] = useState<number>(0);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setChecked(event.target.checked);
     };
 
-    useEffect(() => {
-        if (daysRef.current) {
-            setPaperHeight(daysRef.current.clientHeight);
-        }
-
-        if (heatmapSwitchRef.current) {
-            setHeatmapSwitchHeight(heatmapSwitchRef.current.clientHeight);
-        }
+    useLayoutEffect(() => {
+        if (daysRef.current)
+            setPaperHeight(daysRef.current.getBoundingClientRect().height);
     });
 
     return (
@@ -61,40 +55,47 @@ export const Overview = () => {
                             <Paper
                                 elevation={4}
                                 sx={{
-                                    padding: 1,
+                                    padding: 2,
                                     width: "100%",
                                     height: { xs: "auto", lg: paperHeight },
+                                    display: "flex",
+                                    justifyContent: "center",
                                 }}
                             >
-                                <BrowserView>
-                                    <Stack
-                                        direction="row"
-                                        spacing={1}
-                                        alignItems="center"
-                                        justifyContent="flex-end"
-                                        ref={heatmapSwitchRef}
+                                <Stack
+                                    direction="column"
+                                    sx={{}}
+                                    width="100%"
+                                    height="100%"
+                                >
+                                    <BrowserView
+                                        onMobileView={() => setChecked(false)}
                                     >
-                                        <Typography>Months</Typography>
-                                        <Switch
-                                            checked={checked}
-                                            onChange={handleChange}
-                                        />
-                                        <Typography>Days</Typography>
-                                    </Stack>
-                                </BrowserView>
-                                <Heatmap
-                                    startDate={new Date("2024-05-01")}
-                                    endDate={new Date("2024-09-30")}
-                                    variant={
-                                        checked
-                                            ? HeatmapVariant.DAYS
-                                            : HeatmapVariant.MONTHS
-                                    }
-                                    maxHeight={
-                                        paperHeight - heatmapSwitchHeight - 10
-                                    }
-                                />
-                                <Tooltip id="heatmap" />
+                                        <Stack
+                                            direction="row"
+                                            spacing={1}
+                                            alignItems="center"
+                                            justifyContent="flex-end"
+                                        >
+                                            <Typography>Months</Typography>
+                                            <Switch
+                                                checked={checked}
+                                                onChange={handleChange}
+                                            />
+                                            <Typography>Days</Typography>
+                                        </Stack>
+                                    </BrowserView>
+                                    <Heatmap
+                                        startDate={new Date("2024-05-01")}
+                                        endDate={new Date("2024-09-30")}
+                                        variant={
+                                            checked
+                                                ? HeatmapVariant.DAYS
+                                                : HeatmapVariant.MONTHS
+                                        }
+                                    />
+                                    <Tooltip id="heatmap" />
+                                </Stack>
                             </Paper>
                         </Grid>
                         <Grid item xs={12} md={4} sx={{ display: "flex" }}>

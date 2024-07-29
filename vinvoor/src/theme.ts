@@ -163,7 +163,7 @@ export const hiddenTheme = createTheme({
     },
 });
 
-interface HeatmapRectStyle {
+export interface HeatmapRectStyle {
     fill: string;
     stroke: string;
 }
