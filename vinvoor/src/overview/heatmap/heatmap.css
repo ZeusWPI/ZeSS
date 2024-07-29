@@ -1,7 +1,3 @@
-.heatmap rect:hover {
-    stroke-opacity: 0;
-}
-
 @keyframes createBox {
     from {
         width: 0;
@@ -12,7 +8,6 @@
     }
 }
 
-.rect {
-    /* animation: createBox 1s; */
-    stroke-width: 1px;
+.rect:hover {
+    stroke-opacity: 0;
 }

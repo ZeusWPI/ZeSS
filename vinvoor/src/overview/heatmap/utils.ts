@@ -1,14 +1,71 @@
-// Exports
+import { Theme } from "@mui/material";
+import { Scan } from "../../types/scans";
+import { HeatmapValue, HeatmapVariant } from "./types";
 
-import { Theme } from "@mui/material/styles";
-import { MILLISECONDS_IN_ONE_DAY } from "../../util/util";
-import { HeatmapVariant } from "./Heatmap";
+export const getColumnCountDays = (startDate: Date, endDate: Date) => {
+    const startOfWeek = new Date(startDate);
+    startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
+
+    const endOfWeek = new Date(endDate);
+    if (endOfWeek.getDay() === 0)
+        endOfWeek.setDate(endOfWeek.getDate() - endOfWeek.getDay());
+    else endOfWeek.setDate(endOfWeek.getDate() - endOfWeek.getDay() + 6);
+
+    return Math.ceil(
+        (endOfWeek.getTime() - startOfWeek.getTime()) /
+            (DAYS_IN_WEEK * MILLISECONDS_IN_DAY)
+    );
+};
+
+export const getColumnCountMonths = (startDate: Date, endDate: Date) => {
+    return (
+        (endDate.getFullYear() - startDate.getFullYear()) * 12 +
+        endDate.getMonth() -
+        startDate.getMonth() +
+        1
+    );
+};
+
+export const getMondayIndexedDay = (date: Date) => (date.getDay() + 6) % 7;
+
+export const formatData = (scans: Scan[]) => {
+    const result: Record<number, HeatmapValue> = {};
+    scans.forEach((scan) => {
+        result[scan.scanTime.getTime()] = {
+            date: scan.scanTime,
+            count: 1,
+        };
+    });
+
+    return result;
+};
+
+export const isDayVariant = (variant: HeatmapVariant) =>
+    variant === HeatmapVariant.DAYS;
+
+export const styleMonth = [
+    (theme: Theme) => theme.heatmap.color0,
+    (theme: Theme) => theme.heatmap.color1,
+    (theme: Theme) => theme.heatmap.color2,
+    (theme: Theme) => theme.heatmap.color3,
+    (theme: Theme) => theme.heatmap.color4,
+    (theme: Theme) => theme.heatmap.color5,
+];
 
 // Constants
 
-export const DAYS_IN_WEEK = 7;
-export const WEEKS_IN_MONTH = 5;
-export const SQUARE_SIZE = 10;
+// Size
+
+export const RECT_SIZE = (isSmallView: boolean) => (isSmallView ? 5 : 20);
+export const RECT_RADIUS = (isSmallView: boolean) => (isSmallView ? 1 : 4);
+export const RECT_STROKE = (isSmallView: boolean) => (isSmallView ? 1 : 2);
+export const SPACE = (isSmallView: boolean) => (isSmallView ? 2 : 10);
+export const TOP_PAD = (isSmallView: boolean) => (isSmallView ? 8 : 25);
+export const LEFT_PAD = (isSmallView: boolean) => (isSmallView ? 2 : 5);
+export const MONTH_RECT_Y = (isSmallView: boolean) => (isSmallView ? 5 : 15);
+export const FONT_SIZE = (isSmallView: boolean) => (isSmallView ? 4 : 15);
+
+// Month labels
 
 export const MONTH_LABELS = [
     "Jan",
@@ -24,105 +81,17 @@ export const MONTH_LABELS = [
     "Nov",
     "Dec",
 ];
-export const dateTimeFormat = new Intl.DateTimeFormat("en-GB", {
+
+// Formatter
+
+export const DATE_FORMATTER = new Intl.DateTimeFormat("en-GB", {
     year: "2-digit",
     month: "short",
     day: "numeric",
 });
 
-// Labels
+// Consts
 
-export const getMonthLabelSize = (variant: HeatmapVariant) =>
-    SQUARE_SIZE +
-    MONTH_LABEL_GUTTER_SIZE(variant) +
-    MONTH_LABEL_OFFSET(variant);
-
-export const getMonthLabelCoordinates = (
-    variant: HeatmapVariant,
-    column: number
-) => [
-    column * getSquareSize(),
-    getMonthLabelSize(variant) - MONTH_LABEL_GUTTER_SIZE(variant),
-];
-
-// Transforms
-
-export const getTransformForColumn = (column: number) =>
-    `translate(${column * getSquareSize() + GUTTERSIZE}, 0)`;
-
-export const getTransformForAllWeeks = (variant: HeatmapVariant) =>
-    `translate(0, ${getMonthLabelSize(variant)})`;
-
-export const getTransformForMonthLabels = () => `translate(0, 0)`;
-
-export const getWidth = (
-    startDate: Date,
-    endDate: Date,
-    variant: HeatmapVariant
-) => getColumnCount(startDate, endDate, variant) * getSquareSize() + GUTTERSIZE;
-
-export const getHeight = (variant: HeatmapVariant) => {
-    if (variant === HeatmapVariant.DAYS)
-        return DAYS_IN_WEEK * getSquareSize() + getMonthLabelSize(variant);
-    else return WEEKS_IN_MONTH * getSquareSize() + getMonthLabelSize(variant);
-};
-
-// Coordinate
-
-export const getSquareCoordinates = (dayIndex: number) => [
-    0,
-    dayIndex * getSquareSize(),
-];
-
-// Utils
-
-export const getEmpty = (date: Date, variant: HeatmapVariant) => {
-    if (variant === HeatmapVariant.DAYS)
-        return (date.getDay() + DAYS_IN_WEEK - 1) % DAYS_IN_WEEK;
-    else return Math.floor((date.getDate() - 1) / DAYS_IN_WEEK);
-};
-
-export const getColumnCount = (
-    startDate: Date,
-    endDate: Date,
-    variant: HeatmapVariant
-) => {
-    if (variant === HeatmapVariant.DAYS) {
-        const startOfWeek = new Date(startDate);
-        startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
-
-        const endOfWeek = new Date(endDate);
-        if (endOfWeek.getDay() === 0)
-            endOfWeek.setDate(endOfWeek.getDate() - endOfWeek.getDay());
-        else endOfWeek.setDate(endOfWeek.getDate() - endOfWeek.getDay() + 6);
-
-        return Math.ceil(
-            (endOfWeek.getTime() - startOfWeek.getTime()) /
-                (DAYS_IN_WEEK * MILLISECONDS_IN_ONE_DAY)
-        );
-    } else {
-        return (
-            (endDate.getFullYear() - startDate.getFullYear()) * 12 +
-            (endDate.getMonth() - startDate.getMonth() + 1)
-        );
-    }
-};
-
-export const styleMonth = [
-    (theme: Theme) => theme.heatmap.color0,
-    (theme: Theme) => theme.heatmap.color1,
-    (theme: Theme) => theme.heatmap.color2,
-    (theme: Theme) => theme.heatmap.color3,
-    (theme: Theme) => theme.heatmap.color4,
-    (theme: Theme) => theme.heatmap.color5,
-];
-
-// Local functions
-
-const GUTTERSIZE = 5;
-const MONTH_LABEL_GUTTER_SIZE = (variant: HeatmapVariant) =>
-    variant === HeatmapVariant.DAYS ? 15 : 8;
-const MONTH_LABEL_OFFSET = (variant: HeatmapVariant) =>
-    variant === HeatmapVariant.DAYS ? 15 : 0;
-
-const getSquareSize = () => SQUARE_SIZE + GUTTERSIZE;
+export const DAYS_IN_WEEK = 7;
+export const WEEKS_IN_MONTH = 5;
+export const MILLISECONDS_IN_DAY = 1000 * 60 * 60 * 24;
