@@ -9,7 +9,7 @@ interface NavBarLogoProps {
 }
 
 const CLICK_AMOUNT = 10;
-const CLICK_TIME_MS = 900;
+const CLICK_TIME_MS = 1000;
 
 let pressedAmount = 0;
 let startTimePress = 0;
