@@ -56,6 +56,7 @@ func main() {
 
 		admin := api.Group("/admin", handlers.IsAdmin)
 		{
+			admin.Get("/days", handlers.Days{}.All)
 			admin.Post("/days", handlers.Days{}.CreateMultiple)
 			admin.Delete("/days/:id", handlers.Days{}.Delete)
 		}
