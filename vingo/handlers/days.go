@@ -40,3 +40,13 @@ func (Days) Delete(c *fiber.Ctx) error {
 
 	return c.SendStatus(200)
 }
+
+func (Days) All(c *fiber.Ctx) error {
+	days, err := database.GetDays()
+	if err != nil {
+		logger.Println("Error getting days:", err)
+		return c.Status(500).SendString("Error getting days")
+	}
+
+	return c.JSON(days)
+}
