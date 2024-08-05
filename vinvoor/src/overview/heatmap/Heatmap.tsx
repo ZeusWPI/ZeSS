@@ -34,7 +34,6 @@ export const Heatmap: FC<HeatmapProps> = ({ startDate, endDate, variant }) => {
 
     return (
         <svg
-            style={{ border: "1px solid black" }}
             viewBox={`0 0 ${
                 columnCount * (RECT_SIZE(isSmallView) + SPACE(isSmallView)) +
                 LEFT_PAD(isSmallView)
