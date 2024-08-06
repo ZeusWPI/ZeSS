@@ -3,31 +3,38 @@ const URLS: Record<string, string> = {
     API: import.meta.env.VITE_API_URL,
 };
 
-export const getApi = <T>(endpoint: string, convertData?: (data: any) => T) => {
-    return _fetch<T>(`${URLS.API}/${endpoint}`, {}, convertData);
-};
+export const getApi = <T>(endpoint: string, convertData?: (data: any) => T) =>
+    _fetch<T>(`${URLS.API}/${endpoint}`, {}, convertData);
 
 export const postApi = <T>(
     endpoint: string,
     body: Record<string, string | number | boolean> = {}
-) => {
-    return _fetch<T>(`${URLS.API}/${endpoint}`, {
+) =>
+    _fetch<T>(`${URLS.API}/${endpoint}`, {
         method: "POST",
         body: JSON.stringify(body),
         headers: new Headers({ "content-type": "application/json" }),
     });
-};
 
 export const patchApi = <T>(
     endpoint: string,
     body: Record<string, string | number | boolean> = {}
-) => {
-    return _fetch<T>(`${URLS.API}/${endpoint}`, {
+) =>
+    _fetch<T>(`${URLS.API}/${endpoint}`, {
         method: "PATCH",
         body: JSON.stringify(body),
         headers: new Headers({ "content-type": "application/json" }),
     });
-};
+
+export const deleteAPI = <T>(
+    endpoint: string,
+    body: Record<string, string | number | boolean> = {}
+) =>
+    _fetch<T>(`${URLS.API}/${endpoint}`, {
+        method: "DELETE",
+        body: JSON.stringify(body),
+        headers: new Headers({ "content-type": "application/json" }),
+    });
 
 interface ResponseNot200Error extends Error {
     response: Response;
@@ -35,16 +42,15 @@ interface ResponseNot200Error extends Error {
 
 export const isResponseNot200Error = (
     error: any
-): error is ResponseNot200Error => {
-    return (error as ResponseNot200Error).response !== undefined;
-};
+): error is ResponseNot200Error =>
+    (error as ResponseNot200Error).response !== undefined;
 
 const _fetch = async <T>(
     url: string,
     options: RequestInit = {},
     convertData?: (data: any) => T
-): Promise<T> => {
-    return fetch(url, { credentials: "include", ...options })
+): Promise<T> =>
+    fetch(url, { credentials: "include", ...options })
         .then((response) => {
             if (!response.ok) {
                 const error = new Error(
@@ -61,4 +67,3 @@ const _fetch = async <T>(
                 : response.text();
         })
         .then((data) => (convertData ? convertData(data) : data));
-};
