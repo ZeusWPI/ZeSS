@@ -73,6 +73,7 @@ export const DaysTableToolbar: FC<DaysTableToolbarProps> = ({
                 display="flex"
                 alignItems="center"
                 spacing={2}
+                paddingX={{ xs: 1, md: 0 }}
             >
                 <Checkbox onChange={handleClickDate} />
                 <Typography>Filter date</Typography>
@@ -98,6 +99,7 @@ export const DaysTableToolbar: FC<DaysTableToolbarProps> = ({
                 display="flex"
                 alignItems="center"
                 spacing={2}
+                paddingX={{ xs: 1, md: 0 }}
             >
                 <Checkbox
                     checked={weekdaysFilter}
@@ -112,6 +114,7 @@ export const DaysTableToolbar: FC<DaysTableToolbarProps> = ({
                 display="flex"
                 alignItems="center"
                 spacing={2}
+                paddingX={{ xs: 1, md: 0 }}
             >
                 <Checkbox
                     checked={weekendsFilter}

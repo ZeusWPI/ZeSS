@@ -54,7 +54,7 @@ export const DaysAdd = () => {
                 spacing={4}
             >
                 <TypographyG variant="h4">Add days</TypographyG>
-                <Stack direction="row" spacing={2}>
+                <Stack direction="row" spacing={2} paddingX={{ xs: 1, md: 0 }}>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DatePicker
                             label="Start Date"
@@ -76,7 +76,7 @@ export const DaysAdd = () => {
                     display="flex"
                     justifyContent="end"
                     width="100%"
-                    sx={{ pr: 2 }}
+                    sx={{ pr: { xs: 1, md: 2 } }}
                 >
                     <Button variant="outlined" onClick={handleOnClick}>
                         Add
