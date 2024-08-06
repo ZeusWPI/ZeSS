@@ -1,12 +1,13 @@
-import LeaderboardIcon from "@mui/icons-material/Leaderboard";
+import { LeaderboardOutlined } from "@mui/icons-material";
 import { AppBar, Box, Container, Toolbar } from "@mui/material";
 import {
+    CogOutline,
     CreditCardMultipleOutline,
     CreditCardScanOutline,
 } from "mdi-material-ui";
 import { useContext } from "react";
 import { DarkModeToggle } from "../components/DarkModeToggle";
-import { UserContext } from "../user/UserProvider";
+import { UserContext } from "../providers/UserProvider";
 import { NavBarLogo } from "./NavBarLogo";
 import { NavBarPages } from "./NavBarPages";
 import { NavBarSandwich } from "./NavBarSandwich";
@@ -20,10 +21,12 @@ export interface PageIcon {
 const navBarPages: PageIcon[] = [
     { page: "Scans", icon: <CreditCardScanOutline sx={{ mr: ".3rem" }} /> },
     { page: "Cards", icon: <CreditCardMultipleOutline sx={{ mr: ".3rem" }} /> },
-    { page: "Leaderboard", icon: <LeaderboardIcon sx={{ mr: ".3rem" }} /> },
+    { page: "Leaderboard", icon: <LeaderboardOutlined sx={{ mr: ".3rem" }} /> },
 ];
 
-const userMenuPages: PageIcon[] = [];
+const userMenuPages: PageIcon[] = [
+    { page: "Settings", icon: <CogOutline sx={{ mr: ".3rem" }} /> },
+];
 
 export const NavBar = () => {
     const {
@@ -36,13 +39,7 @@ export const NavBar = () => {
     };
 
     return (
-        <AppBar
-            position="static"
-            sx={{
-                background:
-                    "rgb(255,164,0) linear-gradient(45deg, rgba(255,164,0,1) 0%, rgba(255,127,0,1) 100%)",
-            }}
-        >
+        <AppBar position="static">
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
                     {/* Display either the ZeSS logo or a sandwich menu */}

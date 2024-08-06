@@ -45,9 +45,8 @@ const getStreak = (scans: readonly Scan[]): [boolean, number] => {
     let streak = 0;
 
     const isOnStreak =
-        dates.length > 0 &&
-        (isTheSameDay(dates[dates.length - 1], new Date()) ||
-            isWeekendBetween(dates[dates.length - 1], new Date()));
+        isTheSameDay(dates[dates.length - 1], new Date()) ||
+        isWeekendBetween(dates[dates.length - 1], new Date());
 
     if (isOnStreak) {
         let i = dates.length;
@@ -71,12 +70,27 @@ const getStreak = (scans: readonly Scan[]): [boolean, number] => {
 
 export const Streak = () => {
     const { scans } = useContext(ScanContext);
+
     let [isOnStreak, streak] = getStreak(scans);
 
     const color = isOnStreak ? "primary" : "error";
     const textEnd = isOnStreak ? "streak" : "absent";
 
-    return (
+    return streak === 0 ? (
+        <Box
+            display="flex"
+            justifyContent="center"
+            textAlign="center"
+            alignItems="center"
+            height="100%"
+            borderTop={(theme) => `1px solid ${theme.palette.primary.main}`}
+            borderBottom={(theme) => `1px solid ${theme.palette.primary.main}`}
+        >
+            <Typography variant="h6" color="primary">
+                Scan to retain streak
+            </Typography>
+        </Box>
+    ) : (
         <Box display="flex" alignItems="flex-end" justifyContent="end">
             <Typography
                 variant="h2"

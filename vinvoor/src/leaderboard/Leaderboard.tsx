@@ -20,7 +20,7 @@ export const Leaderboard = () => {
             <Paper elevation={4}>
                 <LeaderboardTableToolbar />
                 <Divider
-                    sx={{ bgcolor: "primary.main", borderBottomWidth: 3 }}
+                    sx={{ borderColor: "primary.main", borderBottomWidth: 3 }}
                 />
                 <TableContainer>
                     <Table>

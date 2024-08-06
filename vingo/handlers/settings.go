@@ -18,8 +18,13 @@ func (Settings) Update(c *fiber.Ctx) error {
 		return c.Status(400).SendString("Invalid payload")
 	}
 
+	err = database.UpdateSettings(user.Id, settings)
+	if err != nil {
+		logger.Println(err)
+		return c.Status(500).SendString("Error updating settings")
+	}
+
 	sess, _ := store.Get(c)
-	database.UpdateSettings(user.Id, settings)
 	user, _ = database.GetUser(user.Id)
 	sess.Set(STORE_USER, &user)
 	sess.Save()

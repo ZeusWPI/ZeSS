@@ -1,14 +1,13 @@
 import { DarkModeOutlined, LightModeOutlined } from "@mui/icons-material";
 import { IconButton, Tooltip } from "@mui/material";
 import { useContext } from "react";
-import { ThemeContext } from "../theme/ThemeProvider";
+import { ThemeContext } from "../providers/ThemeProvider";
 
 export const DarkModeToggle = () => {
-    const { themeMode, toggleTheme } = useContext(ThemeContext);
+    const { themeMode, setTheme } = useContext(ThemeContext);
 
-    const handleThemeChange = () => {
-        toggleTheme();
-    };
+    const handleThemeChange = () =>
+        setTheme(themeMode === "light" ? "dark" : "light");
 
     return (
         <Tooltip
@@ -25,3 +24,4 @@ export const DarkModeToggle = () => {
         </Tooltip>
     );
 };
+``

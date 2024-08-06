@@ -4,7 +4,7 @@ import { LoadingSkeleton } from "../components/LoadingSkeleton";
 import { useFetch } from "../hooks/useFetch";
 import { Card, convertCardJSON } from "../types/cards";
 import { convertScanJSON, Scan } from "../types/scans";
-import { ScansTableBody } from "./ScansBody";
+import { ScansTableBody } from "./ScansTableBody";
 import { ScansTableHead } from "./ScansTableHead";
 
 export const Scans = () => {

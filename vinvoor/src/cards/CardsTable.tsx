@@ -20,8 +20,8 @@ const getComparator = <Key extends keyof Card>(
     order: TableOrder,
     orderBy: Key
 ): ((
-    a: { [key in Key]: number | string | Date },
-    b: { [key in Key]: number | string | Date }
+    a: Record<Key, number | string | Date>,
+    b: Record<Key, number | string | Date>
 ) => number) => {
     return order === "desc"
         ? (a, b) => descendingComparator(a, b, orderBy)

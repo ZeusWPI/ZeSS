@@ -37,7 +37,11 @@ export const CardsTableToolbar: FC<CardTableToolbarProps> = ({ selected }) => {
                 </>
             ) : (
                 <>
-                    <Typography sx={{ flex: "1" }} variant="h6">
+                    <Typography
+                        sx={{ flex: "1" }}
+                        variant="h5"
+                        fontWeight="bold"
+                    >
                         Cards
                     </Typography>
                     <CardsAdd />

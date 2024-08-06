@@ -15,7 +15,7 @@ export const NavBarPages: FC<NavBarPagesProps> = ({ pageIcons, sx }) => {
                 <UnstyledLink key={page} to={page.toLowerCase()}>
                     <Button
                         sx={{
-                            color: "white",
+                            color: "secondary.contrastText",
                         }}
                     >
                         {icon}

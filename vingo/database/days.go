@@ -1,57 +1,43 @@
 package database
 
-import "time"
+import (
+	"time"
 
-type Day struct {
-	Id   int
-	Date time.Time
-}
+	"gorm.io/gorm"
+)
 
 func CreateDays(first_day time.Time, last_day time.Time) error {
-	tx, err := db.Begin()
+	err := gorm_db.Transaction(func(tx *gorm.DB) error {
+		for d := first_day; !d.After(last_day); d = d.AddDate(0, 0, 1) {
+			// Ignore weekends
+			if d.Weekday() == time.Saturday || d.Weekday() == time.Sunday {
+				continue
+			}
+
+			if err := tx.Create(&StreakDay{Date: d}).Error; err != nil {
+				return err
+			}
+		}
+
+		return nil
+	})
+
 	if err != nil {
-		return err
-	}
-
-	defer tx.Rollback()
-
-	for d := first_day; !d.After(last_day); d = d.AddDate(0, 0, 1) {
-		// Ignore weekends
-		if d.Weekday() == time.Saturday || d.Weekday() == time.Sunday {
-			continue
-		}
-
-		_, err := db.Exec("INSERT INTO days (date) VALUES ($1);", d)
-		if err != nil {
-			return err
-		}
-	}
-
-	if err = tx.Commit(); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func GetDays() ([]Day, error) {
-	rows, err := db.Query("SELECT id, date FROM days ORDER BY date;")
-	if err != nil {
-		return nil, err
-	}
+func GetDays() ([]StreakDay, error) {
+	var days []StreakDay
+	err := gorm_db.Find(&days).Error
 
-	days := make([]Day, 0)
-	for rows.Next() {
-		var day Day
-		rows.Scan(&day.Id, &day.Date)
-		days = append(days, day)
-	}
-
-	return days, nil
+	return days, err
 }
 
 func DeleteDay(dayId string) error {
-	_, err := db.Exec("DELETE FROM days WHERE id = $1;", dayId)
+	_, err := db.Exec("DELETE FROM streak_days WHERE id = $1;", dayId)
 	if err != nil {
 		return err
 	}

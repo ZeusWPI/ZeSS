@@ -68,17 +68,16 @@ export const CardsTableBody: FC<CardsTableBodyProps> = ({
                             (cards) => setCards(cards)
                         );
                     })
-                    .catch((error) => {
-                        enqueueSnackbar(nameSaveFailure, { variant: "error" });
-                        console.log(error);
-                    });
+                    .catch(() =>
+                        enqueueSnackbar(nameSaveFailure, { variant: "error" })
+                    );
             })
             .catch(() => {}); // Required otherwise the confirm dialog will throw an error in the console
     };
 
     const editButton = (id: number, name: string) => (
         <IconButton onClick={() => handleEditClick(id, name)}>
-            <EditOutlined />
+            <EditOutlined fontSize="small" />
         </IconButton>
     );
 

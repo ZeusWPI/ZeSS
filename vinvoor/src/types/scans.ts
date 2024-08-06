@@ -39,7 +39,7 @@ export const scanCardHeadCells: readonly TableHeadCell<ScanCard>[] = [
         label: "Scan time",
         align: "left",
         padding: "normal",
-        convert: (value: Date) => value.toDateString(),
+        convert: (value: Date) => dateTimeFormat.format(value),
     },
     {
         id: "card",
@@ -50,3 +50,11 @@ export const scanCardHeadCells: readonly TableHeadCell<ScanCard>[] = [
             value?.name || (value?.serial ?? "Unknown"),
     },
 ];
+
+const dateTimeFormat = new Intl.DateTimeFormat("en-GB", {
+    year: "2-digit",
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+});

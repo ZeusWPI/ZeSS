@@ -30,7 +30,7 @@ func OpenDatabase(db_string string) {
 		log.Fatal(err)
 	}
 
-	err = new_db.AutoMigrate(&User{}, &Card{}, &Scan{}, &Day{}, &Settings{}, &Season{})
+	err = new_db.AutoMigrate(&User{}, &Card{}, &Scan{}, &StreakDay{}, &Settings{}, &Season{})
 	if err != nil {
 		log.Println("Error migrating database")
 		log.Fatal(err)

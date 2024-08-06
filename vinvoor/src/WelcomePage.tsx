@@ -29,26 +29,21 @@ export const WelcomePage = () => {
         >
             <TypographyG variant="h3">Welcome to Vinvoor!</TypographyG>
             <TypographyG variant="h4">Log in to start scanning</TypographyG>
-            <Login variant="contained">
-                <Typography>Log in with Zauth</Typography>
-                <ShakerOutline sx={{ ml: 1 }} />
-            </Login>
-            <Button
-                variant="contained"
-                color="github"
-                onClick={handleClick}
-                sx={{ mt: 3 }}
-            >
-                <GitHub sx={{ mr: 1 }} />
-                <Typography>Github Repository</Typography>
-            </Button>
+            <Box mt={2}>
+                <Login variant="contained" fullWidth>
+                    <Typography>Log in with Zauth</Typography>
+                    <ShakerOutline sx={{ ml: 1 }} />
+                </Login>
+                <Button
+                    variant="outlined"
+                    onClick={handleClick}
+                    fullWidth
+                    sx={{ mt: 1 }}
+                >
+                    <GitHub sx={{ mr: 1 }} />
+                    <Typography>Github Repository</Typography>
+                </Button>
+            </Box>
         </Box>
     );
 };
-
-// <UnstyledLink to="/login">
-//     <Button variant="contained">
-//         <Typography>Log in with Zauth</Typography>
-//         <ShakerOutline sx={{ ml: 1 }} />
-//     </Button>
-// </UnstyledLink>

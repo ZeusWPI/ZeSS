@@ -57,7 +57,9 @@ export const CardsTableHead: FC<CardTableHeadProps> = ({
                             direction={orderBy === headCell.id ? order : "asc"}
                             onClick={createSortHandler(headCell.id)}
                         >
-                            <Typography>{headCell.label}</Typography>
+                            <Typography variant="h6">
+                                {headCell.label}
+                            </Typography>
                         </TableSortLabel>
                     </TableCell>
                 ))}

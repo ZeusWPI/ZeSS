@@ -1,9 +1,7 @@
 import { ThemeProvider as MUIThemeProvider } from "@mui/material";
 import Cookies from "js-cookie";
 import { createContext, FC, ReactNode, useEffect, useState } from "react";
-import { darkTheme, lightTheme } from "./theme";
-
-type ThemeMode = "light" | "dark";
+import { ThemeMode, themeModes } from "../theme";
 
 interface ThemeProviderProps {
     children: ReactNode;
@@ -11,12 +9,12 @@ interface ThemeProviderProps {
 
 interface ThemeContextProps {
     themeMode: ThemeMode;
-    toggleTheme: () => void;
+    setTheme: (theme: ThemeMode) => void;
 }
 
 export const ThemeContext = createContext<ThemeContextProps>({
     themeMode: "light",
-    toggleTheme: () => {},
+    setTheme: () => {},
 });
 
 export const ThemeProvider: FC<ThemeProviderProps> = ({ children }) => {
@@ -24,14 +22,12 @@ export const ThemeProvider: FC<ThemeProviderProps> = ({ children }) => {
         (import.meta.env.VITE_DEFAULT_THEME_MODE as ThemeMode) || "light"
     );
 
-    const toggleTheme = () => {
-        setThemeMode((prevMode) => (prevMode === "light" ? "dark" : "light"));
-        Cookies.set("theme", themeMode === "light" ? "dark" : "light", {
+    const setTheme = (theme: ThemeMode) => {
+        setThemeMode(theme);
+        Cookies.set("theme", theme as string, {
             sameSite: "Lax",
         });
     };
-
-    const theme = themeMode === "light" ? lightTheme : darkTheme;
 
     useEffect(() => {
         const storedTheme = Cookies.get("theme");
@@ -42,8 +38,10 @@ export const ThemeProvider: FC<ThemeProviderProps> = ({ children }) => {
     }, []);
 
     return (
-        <ThemeContext.Provider value={{ themeMode, toggleTheme }}>
-            <MUIThemeProvider theme={theme}>{children}</MUIThemeProvider>
+        <ThemeContext.Provider value={{ themeMode, setTheme }}>
+            <MUIThemeProvider theme={themeModes[themeMode]}>
+                {children}
+            </MUIThemeProvider>
         </ThemeContext.Provider>
     );
 };

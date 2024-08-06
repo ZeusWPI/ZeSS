@@ -73,7 +73,7 @@ export const CardsAdd = () => {
                     await postApi<CardPostResponse>(REGISTER_ENDPOINT)
                         .then(() => (started = true))
                         .catch((error) => {
-                            if (isResponseNot200Error(error))
+                            if (isResponseNot200Error(error)) {
                                 error.response
                                     .json()
                                     .then((response: CardPostResponse) => {
@@ -86,7 +86,7 @@ export const CardsAdd = () => {
                                                 variant: "error",
                                             });
                                     });
-                            else throw new Error(error);
+                            } else throw new Error(error);
                         });
                 }
 
@@ -95,29 +95,36 @@ export const CardsAdd = () => {
 
                 if (started) {
                     setRegistering(true);
-                    const id = randomInt().toString();
-                    enqueueSnackbar(requestSuccess, {
-                        variant: "info",
-                        persist: true,
-                        key: id,
-                    });
+                    let id: string | undefined;
+
+                    if (!(response.registering && response.isCurrentUser)) {
+                        id = randomInt().toString();
+                        enqueueSnackbar(requestSuccess, {
+                            variant: "info",
+                            persist: true,
+                            key: id,
+                        });
+                    }
 
                     checkCardsChange()
                         .then((scanned) => {
-                            closeSnackbar(id);
                             setRegistering(false);
-                            if (scanned) {
-                                enqueueSnackbar(registerSucces, {
-                                    variant: "success",
-                                });
-                                getApi<readonly Card[]>(
-                                    "cards",
-                                    convertCardJSON
-                                ).then((cards) => setCards(cards));
-                            } else
-                                enqueueSnackbar(registerFail, {
-                                    variant: "error",
-                                });
+                            if (id) {
+                                closeSnackbar(id);
+
+                                if (scanned) {
+                                    enqueueSnackbar(registerSucces, {
+                                        variant: "success",
+                                    });
+                                    getApi<readonly Card[]>(
+                                        "cards",
+                                        convertCardJSON
+                                    ).then((cards) => setCards(cards));
+                                } else
+                                    enqueueSnackbar(registerFail, {
+                                        variant: "error",
+                                    });
+                            }
                         })
                         .finally(() => setProgressProps(defaultProgressProps));
                 }
