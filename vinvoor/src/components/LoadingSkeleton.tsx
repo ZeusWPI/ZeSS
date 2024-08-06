@@ -11,9 +11,5 @@ export const LoadingSkeleton: FC<LoadingSkeletonProps> = ({
     children,
     ...props
 }) => {
-    return loading ? (
-        <Skeleton animation="wave" height={300} {...props} />
-    ) : (
-        children
-    );
+    return loading ? <Skeleton height={300} {...props} /> : children;
 };

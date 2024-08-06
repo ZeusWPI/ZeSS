@@ -77,5 +77,5 @@ type Season struct {
 
 type StreakDay struct {
 	BaseModel
-	Date time.Time
+	Date time.Time `json:"date"`
 }

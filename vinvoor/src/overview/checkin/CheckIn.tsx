@@ -21,7 +21,7 @@ export const CheckIn = () => {
             }}
         >
             <AlertTitle>Checked in</AlertTitle>
-            Nice of you to stop by!
+            Nice of you to stop by !
         </Alert>
     ) : (
         <Alert
@@ -32,7 +32,7 @@ export const CheckIn = () => {
             }}
         >
             <AlertTitle>Not checked in</AlertTitle>
-            We miss you!
+            We miss you !
         </Alert>
     );
 };
