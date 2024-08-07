@@ -25,3 +25,41 @@
 
 # IDEA files
 .idea/
+cmake-build-*/
+
+# Results for the checking of the Python coding style and static analysis
+.mypy_cache
+flake8_output.txt
+
+# ESP-IDF default build directory name
+build
+
+# lock files for examples and components
+dependencies.lock
+
+# managed_components for examples
+managed_components
+
+# pytest log
+pytest_embedded_log/
+list_job*.txt
+size_info*.txt
+XUNIT_RESULT*.xml
+
+# clang config (for LSP)
+.clangd
+
+# Vale
+.vale/styles/*
+
+# pio
+.pio
+
+# sqlite
+*.db
+
+.env
+
+# vinscant
+key.txt
+webrepl_cli.py

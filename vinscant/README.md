@@ -25,8 +25,7 @@ RST: 16
 - connect to serial
 - connect to wifi and setup webrepl (see https://docs.micropython.org/en/latest/esp8266/tutorial/repl.html)
 - get `webrepl_cli.py` from https://github.com/micropython/webrepl
-- copy `boot.py`, `main.py` and `key.txt` (with the correct key set on vingo) to the microcontroller using `upload_file.sh`
-- download https://github.com/danjperron/micropython-mfrc522/blob/master/mfrc522.py and copy it to the microcontroller as well
+- copy all the files in `mpfiles` and `key.txt` (with the correct key set on vingo) to the microcontroller using `upload_file.sh`
 - beep boop
 
 # Future additions
