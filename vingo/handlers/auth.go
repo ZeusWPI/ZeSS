@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	ZAUTH_URL     = "https://adams.ugent.be"
+	ZAUTH_URL     = "https://zauth.zeus.gent"
 	CALLBACK_PATH = "/auth/callback" // TODO: hardcode ono
 )
 
