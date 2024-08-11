@@ -27,7 +27,7 @@ export const convertScanJSON = (scansJSON: ScanJSON[]): Scan[] =>
 export const mergeScansCards = (
     scans: readonly Scan[],
     cards: readonly Card[]
-): readonly ScanCard[] =>
+): ScanCard[] =>
     scans.map((scan) => ({
         scanTime: scan.scanTime,
         card: cards.find((card) => card.serial === scan.cardSerial),
