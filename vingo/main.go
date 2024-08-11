@@ -39,6 +39,8 @@ func main() {
 
 	public.Post("/scans", handlers.ScanRegister)
 
+	public.Get("/recent_scans", handlers.PublicRecentScans)
+
 	api := public.Group("/api", handlers.IsLoggedIn)
 	{
 		api.Post("/logout", handlers.Logout)

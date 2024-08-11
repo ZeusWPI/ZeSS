@@ -18,6 +18,11 @@ type LeaderboardItem struct {
 	PositionChange int    `json:"positionChange"`
 }
 
+type AnonymousScan struct {
+	Id       int       `json:"id"`
+	ScanTime time.Time `json:"scan_time"`
+}
+
 func CreateScan(card_serial string) error {
 	return gorm_db.Create(&Scan{ScanTime: time.Now(), CardSerial: card_serial}).Error
 }
@@ -95,4 +100,25 @@ func TotalDaysPerUser(before_time time.Time) ([]LeaderboardItem, error) {
 	}
 
 	return leaderboard, nil
+}
+
+func GetRecentScans() ([]AnonymousScan, error) {
+	scans := []AnonymousScan{}
+	twoWeeksAgo := time.Now().AddDate(0, 0, -14)
+
+	subQuery := gorm_db.
+		Table("scans").
+		Select("scans.id, scans.scan_time, users.id as user_id").
+		Joins("INNER JOIN cards ON cards.serial = scans.card_serial").
+		Joins("INNER JOIN users ON users.id = cards.user_id").
+		Where("scans.scan_time >= ?", twoWeeksAgo)
+
+	err := gorm_db.
+		Table("(?) as scans", subQuery).
+		Select("DISTINCT ON (user_id, DATE(scan_time)) id, scan_time").
+		Order("user_id, DATE(scan_time), id").
+		Scan(&scans).
+		Error
+
+	return scans, err
 }
