@@ -16,9 +16,7 @@ export const CheckIn = () => {
         <Alert
             variant="outlined"
             severity="success"
-            iconMapping={{
-                success: <EmoticonExcitedOutline fontSize="large" />,
-            }}
+            icon={<EmoticonExcitedOutline fontSize="large" />}
         >
             <AlertTitle>Checked in</AlertTitle>
             Nice of you to stop by !
@@ -27,9 +25,7 @@ export const CheckIn = () => {
         <Alert
             variant="outlined"
             severity="error"
-            iconMapping={{
-                error: <EmoticonFrownOutline fontSize="large" />,
-            }}
+            icon={<EmoticonFrownOutline fontSize="large" />}
         >
             <AlertTitle>Not checked in</AlertTitle>
             We miss you !
