@@ -17,7 +17,11 @@ export const ScansTableBody: FC<ScansTableBodyProps> = ({ scans, cards }) => {
     const [scanCards, setScanCards] = useState<readonly ScanCard[]>([]);
 
     useEffect(() => {
-        setScanCards(mergeScansCards(scans, cards));
+        const mergedScansCards = mergeScansCards(scans, cards);
+        mergedScansCards.sort(
+            (a, b) => b.scanTime.getTime() - a.scanTime.getTime()
+        );
+        setScanCards(mergedScansCards);
     }, [scans, cards]);
 
     return (
