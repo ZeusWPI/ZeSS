@@ -1,5 +1,12 @@
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { getApi } from "../util/fetch";
+import {
+    Dispatch,
+    SetStateAction,
+    useContext,
+    useEffect,
+    useState,
+} from "react";
+import { UserContext } from "../providers/UserProvider";
+import { getApi, isResponseNot200Error } from "../util/fetch";
 
 interface useFetchResult {
     loading: boolean;
@@ -14,10 +21,25 @@ export const useFetch = <T>(
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<Error | undefined>(undefined);
 
+    const { setUserState } = useContext(UserContext);
+
     useEffect(() => {
         getApi<T>(endpoint, convertData)
             .then((data) => setData(data))
-            .catch((error) => setError(error))
+            .catch((error) => {
+                if (
+                    isResponseNot200Error(error) &&
+                    error.response.status === 401
+                ) {
+                    setUserState({
+                        user: undefined,
+                        loading: false,
+                        error: error,
+                    });
+                }
+
+                setError(error);
+            })
             .finally(() => setLoading(false));
     }, [endpoint]);
 
