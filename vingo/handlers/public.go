@@ -14,5 +14,5 @@ func PublicRecentScans(c *fiber.Ctx) error {
 		return c.Status(500).SendString("Error getting recent scans")
 	}
 
-	return c.JSON(scans)
+	return c.JSON(fiber.Map{"scans": scans})
 }
