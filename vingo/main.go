@@ -25,24 +25,23 @@ func main() {
 	db := database.Get()
 	defer db.Close()
 
-	public := fiber.New(fiber.Config{})
+	api := fiber.New(fiber.Config{})
 
-	public.Use(cors.New(cors.Config{
+	api.Use(cors.New(cors.Config{
 		AllowOrigins:     corsAllowOrigins,
 		AllowHeaders:     "Origin, Content-Type, Accept, Access-Control-Allow-Origin",
 		AllowCredentials: true,
 	}))
 
 	// Public routes
-	public.Post("/login", handlers.Login)
-	public.Get("/auth/callback", handlers.Callback)
-
-	public.Post("/scans", handlers.ScanRegister)
-
-	public.Get("/recent_scans", handlers.PublicRecentScans)
-
-	api := public.Group("/api", handlers.IsLoggedIn)
 	{
+		api.Post("/login", handlers.Login)
+		api.Get("/auth/callback", handlers.Callback)
+
+		api.Post("/scans", handlers.ScanRegister)
+
+		api.Get("/recent_scans", handlers.PublicRecentScans)
+
 		api.Post("/logout", handlers.Logout)
 		api.Get("/user", handlers.User)
 		api.Get("/leaderboard", handlers.Leaderboard)
@@ -64,7 +63,7 @@ func main() {
 		}
 	}
 
-	log.Println(public.Listen(":4000"))
+	log.Println(api.Listen(":4000"))
 }
 
 func setupFromEnv() {
