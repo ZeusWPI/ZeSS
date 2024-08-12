@@ -68,7 +68,7 @@ export const SettingsOverview = () => {
             public: settings.public,
         })
             .then(() => enqueueSnackbar(saveSuccess, { variant: "success" }))
-            .catch((error) => enqueueSnackbar(error, { variant: "error" }));
+            .catch(() => enqueueSnackbar(saveFailure, { variant: "error" }));
     };
 
     const handleDelete = () => {
