@@ -24,8 +24,6 @@ FROM alpine:3.19
 
 WORKDIR /
 
-COPY layouts layouts
-
 COPY --from=build vingo .
 
 ENTRYPOINT ["./vingo"]
