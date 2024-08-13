@@ -12,8 +12,11 @@ func GetCardsForUser(user_id int) ([]Card, error) {
 
 func GetCardsAndStatsForUser(user_id int) ([]CardAPI, error) {
 	rows, err := db.Query(`
-	SELECT cards.id, cards.created_at, serial, name, COUNT(scans.id), (select MAX(scan_time) from scans where card_serial = cards.serial) from cards LEFT JOIN scans on scans.card_serial = serial WHERE
-	user_id = $1 GROUP BY cards.id;
+	        SELECT cards.id, cards.created_at, serial, name, COUNT(scans.id), (select MAX(scan_time) from scans where card_serial = cards.serial)
+        FROM cards
+        LEFT JOIN scans on scans.card_serial = serial
+        WHERE user_id = $1
+        GROUP BY cards.id, cards.created_at, cards.serial, cards.name;
 	`, user_id)
 
 	if err != nil {

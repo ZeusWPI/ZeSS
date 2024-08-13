@@ -30,6 +30,9 @@ func CreateScan(card_serial string) error {
 func GetScansForUser(user_id int) ([]Scan, error) {
 	var user User
 	result := gorm_db.Preload("Cards.Scans").First(&user, user_id)
+	if result.Error != nil {
+		return nil, result.Error
+	}
 
 	var scans []Scan
 	for _, card := range user.Cards {

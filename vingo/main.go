@@ -42,24 +42,27 @@ func main() {
 
 		api.Get("/recent_scans", handlers.PublicRecentScans)
 
-		api.Post("/logout", handlers.Logout)
-		api.Get("/user", handlers.User)
-		api.Get("/leaderboard", handlers.Leaderboard)
-		api.Get("/scans", handlers.Scans)
-
-		api.Get("/cards", handlers.Cards{}.Get)
-		api.Patch("/cards/:id", handlers.Cards{}.Update)
-		api.Get("/cards/register", handlers.Cards{}.RegisterStatus)
-		api.Post("/cards/register", handlers.Cards{}.StartRegister)
-
-		api.Get("/settings", handlers.Settings{}.Get)
-		api.Patch("/settings", handlers.Settings{}.Update)
-
-		admin := api.Group("/admin", handlers.IsAdmin)
+		authed := api.Group("", handlers.IsLoggedIn)
 		{
-			admin.Get("/days", handlers.Days{}.All)
-			admin.Post("/days", handlers.Days{}.CreateMultiple)
-			admin.Delete("/days/:id", handlers.Days{}.Delete)
+			authed.Post("/logout", handlers.Logout)
+			authed.Get("/user", handlers.User)
+			authed.Get("/leaderboard", handlers.Leaderboard)
+			authed.Get("/scans", handlers.Scans)
+
+			authed.Get("/cards", handlers.Cards{}.Get)
+			authed.Patch("/cards/:id", handlers.Cards{}.Update)
+			authed.Get("/cards/register", handlers.Cards{}.RegisterStatus)
+			authed.Post("/cards/register", handlers.Cards{}.StartRegister)
+
+			authed.Get("/settings", handlers.Settings{}.Get)
+			authed.Patch("/settings", handlers.Settings{}.Update)
+
+			admin := authed.Group("/admin", handlers.IsAdmin)
+			{
+				admin.Get("/days", handlers.Days{}.All)
+				admin.Post("/days", handlers.Days{}.CreateMultiple)
+				admin.Delete("/days/:id", handlers.Days{}.Delete)
+			}
 		}
 	}
 
