@@ -23,7 +23,7 @@ done
 if [ "$clean" = true ]; then
     rm vingo/.env || true
     rm vinvoor/.env || true
-    docker-compose -f docker-compose.yml build
+    docker compose -f docker-compose.yml build
 fi
 
 
@@ -37,7 +37,7 @@ if [ ! -f vinvoor/.env ]; then
 fi
 
 # Start the docker containers
-docker-compose -f docker-compose.yml up -d
+docker compose -f docker-compose.yml up -d
 
 echo "-------------------------------------"
 echo "Following logs..."
@@ -45,11 +45,11 @@ echo "Press CTRL + C to stop all containers"
 echo "-------------------------------------"
 
 if [ "$backend" = true ] && [ "$frontend" = false ]; then
-    docker-compose -f docker-compose.yml logs -f zess-backend
+    docker compose -f docker-compose.yml logs -f zess-backend
 elif [ "$backend" = false ] && [ "$frontend" = true ]; then
-    docker-compose -f docker-compose.yml logs -f zess-frontend
+    docker compose -f docker-compose.yml logs -f zess-frontend
 else
-    docker-compose -f docker-compose.yml logs -f zess-backend zess-frontend
+    docker compose -f docker-compose.yml logs -f zess-backend zess-frontend
 fi
 
-docker-compose -f docker-compose.yml down
+docker compose -f docker-compose.yml down
