@@ -38,8 +38,6 @@ Automatically run them by running `git config --local core.hooksPath .githooks/`
 
 ### Run
 
-#### Easy & Quick
-
 - Install Docker and Docker Compose
 - Run the script `./dev.sh` with optional flags:
   - `-b`: Show the output of the backend.
@@ -50,6 +48,12 @@ Automatically run them by running `git config --local core.hooksPath .githooks/`
 The backend is accessible at `localhost:3000`, and the frontend at `localhost:5173`.
 Both the backend and the frontend support hot module reloading (HMR).
 
-#### Manual
+## Production
 
-- Each part has it's own `README.md` with instructions on how to run it.
+- Install Docker
+- Set the environment variables for the frontend before building (see the [README in ./vinvoor](vinvoor/README.md))
+- Build the image `docker build -t zess .`
+- Set the required variables in a `.env` file for the backend (see the [README in ./vingo](vingo/README.md))
+- Run the image `docker run -v ${PWD}/.env:/.env zess`
+
+The website is accessible on port 4000
