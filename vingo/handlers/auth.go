@@ -9,18 +9,17 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-const (
-	ZAUTH_URL     = "https://zauth.zeus.gent"
-	CALLBACK_PATH = "/auth/callback" // TODO: hardcode ono
-)
-
 var (
+	ZauthURL          = ""
+	ZauthCallbackPath = ""
 	ZauthClientId     = ""
 	ZauthClientSecret = ""
 	ZauthRedirectUri  = ""
 )
 
-func SetZauth(client_id string, client_secret string, redirect_uri string) {
+func SetZauth(url string, callback_path string, client_id string, client_secret string, redirect_uri string) {
+	ZauthURL = url
+	ZauthCallbackPath = callback_path
 	ZauthClientId = client_id
 	ZauthClientSecret = client_secret
 	ZauthRedirectUri = redirect_uri
@@ -37,8 +36,8 @@ func Login(c *fiber.Ctx) error {
 	sess.Set(ZAUTH_STATE, state.String())
 	sess.Save()
 
-	callback_url := c.BaseURL() + CALLBACK_PATH
-	return c.Status(200).Redirect(fmt.Sprintf("%s/oauth/authorize?client_id=%s&response_type=code&state=%s&redirect_uri=%s", ZAUTH_URL, ZauthClientId, state.String(), callback_url))
+	callback_url := c.BaseURL() + ZauthCallbackPath
+	return c.Status(200).Redirect(fmt.Sprintf("%s/oauth/authorize?client_id=%s&response_type=code&state=%s&redirect_uri=%s", ZauthURL, ZauthClientId, state.String(), callback_url))
 }
 
 func Logout(c *fiber.Ctx) error {
@@ -87,12 +86,12 @@ func Callback(c *fiber.Ctx) error {
 	defer fiber.ReleaseArgs(args)
 	args.Set("grant_type", "authorization_code")
 	args.Set("code", code)
-	args.Set("redirect_uri", c.BaseURL()+CALLBACK_PATH)
+	args.Set("redirect_uri", c.BaseURL()+ZauthCallbackPath)
 
 	// Convert callback code into access token
 	zauth_token := new(ZauthToken)
 	status, _, errs := fiber.
-		Post(ZAUTH_URL+"/oauth/token").
+		Post(ZauthURL+"/oauth/token").
 		BasicAuth(ZauthClientId, ZauthClientSecret).
 		Form(args).
 		Struct(zauth_token)
@@ -107,7 +106,7 @@ func Callback(c *fiber.Ctx) error {
 	// Get user info using access token
 	zauth_user := new(ZauthUser)
 	status, _, errs = fiber.
-		Get(ZAUTH_URL+"/current_user").
+		Get(ZauthURL+"/current_user").
 		Set("Authorization", "Bearer "+zauth_token.AccessToken).
 		Struct(zauth_user)
 

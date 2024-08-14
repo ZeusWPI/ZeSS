@@ -14,7 +14,7 @@ import (
 	_ "github.com/lib/pq"
 )
 
-var corsAllowOrigins = ""
+var corsAllowOrigins string
 
 func main() {
 	gob.Register(database.User{})
@@ -82,6 +82,17 @@ func setupFromEnv() {
 	corsAllowOrigins = cors_allow_origins
 
 	// stuff for Zauth oauth flow
+
+	zauth_url, url_ok := os.LookupEnv("ZAUTH_URL")
+	if !url_ok {
+		log.Fatal("ZAUTH_URL environment variable not set")
+	}
+
+	zauth_callback_path, callback_ok := os.LookupEnv("ZAUTH_CALLBACK_PATH")
+	if !callback_ok {
+		log.Fatal("ZAUTH_CALLBACK_PATH environment variable not set")
+	}
+
 	zauth_client_id, id_ok := os.LookupEnv("ZAUTH_CLIENT_ID")
 	if !id_ok {
 		log.Fatal("ZAUTH_CLIENT_ID environment variable not set")
@@ -97,7 +108,7 @@ func setupFromEnv() {
 		log.Fatal("ZAUTH_REDIRECT_URI environment variable not set")
 	}
 
-	handlers.SetZauth(zauth_client_id, zauth_client_secret, zauth_redirect_uri)
+	handlers.SetZauth(zauth_url, zauth_callback_path, zauth_client_id, zauth_client_secret, zauth_redirect_uri)
 
 	// PSK that will authorize the scanner
 	scan_key, key_ok := os.LookupEnv("SCAN_KEY")
