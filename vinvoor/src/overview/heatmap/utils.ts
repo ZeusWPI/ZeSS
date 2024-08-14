@@ -56,14 +56,14 @@ export const styleMonth = [
 
 // Size
 
-export const RECT_SIZE = (isSmallView: boolean) => (isSmallView ? 5 : 20);
-export const RECT_RADIUS = (isSmallView: boolean) => (isSmallView ? 1 : 4);
-export const RECT_STROKE = (isSmallView: boolean) => (isSmallView ? 1 : 2);
-export const SPACE = (isSmallView: boolean) => (isSmallView ? 2 : 10);
-export const TOP_PAD = (isSmallView: boolean) => (isSmallView ? 8 : 25);
+export const RECT_SIZE = (isSmallView: boolean) => (isSmallView ? 3 : 20);
+export const RECT_RADIUS = (isSmallView: boolean) => (isSmallView ? 0.5 : 4);
+export const RECT_STROKE = (isSmallView: boolean) => (isSmallView ? 0.3 : 2);
+export const SPACE = (isSmallView: boolean) => (isSmallView ? 1.5 : 10);
+export const TOP_PAD = (isSmallView: boolean) => (isSmallView ? 6 : 25);
 export const LEFT_PAD = (isSmallView: boolean) => (isSmallView ? 2 : 5);
-export const MONTH_RECT_Y = (isSmallView: boolean) => (isSmallView ? 5 : 15);
-export const FONT_SIZE = (isSmallView: boolean) => (isSmallView ? 4 : 15);
+export const MONTH_RECT_Y = (isSmallView: boolean) => (isSmallView ? 4 : 15);
+export const FONT_SIZE = (isSmallView: boolean) => (isSmallView ? 3 : 15);
 
 // Month labels
 
