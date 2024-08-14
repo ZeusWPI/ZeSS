@@ -1,6 +1,6 @@
 const URLS: Record<string, string> = {
-  BASE: import.meta.env.VITE_BASE_URL as string,
-  API: import.meta.env.VITE_API_URL as string,
+  BASE: import.meta.env.VITE_BACKEND_URL as string,
+  API: import.meta.env.VITE_BACKEND_URL as string,
 };
 
 export const getApi = <T, U = unknown>(
