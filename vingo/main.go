@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/gob"
 	"os"
+	"strconv"
 	"vingo/database"
 	"vingo/handlers"
 
@@ -14,7 +15,10 @@ import (
 	_ "github.com/lib/pq"
 )
 
-var corsAllowOrigins string
+var (
+	corsAllowOrigins string
+	development      bool
+)
 
 func main() {
 	gob.Register(database.User{})
@@ -27,11 +31,15 @@ func main() {
 
 	api := fiber.New(fiber.Config{})
 
-	api.Use(cors.New(cors.Config{
-		AllowOrigins:     corsAllowOrigins,
-		AllowHeaders:     "Origin, Content-Type, Accept, Access-Control-Allow-Origin",
-		AllowCredentials: true,
-	}))
+	if development {
+		api.Use(cors.New(cors.Config{
+			AllowOrigins:     corsAllowOrigins,
+			AllowHeaders:     "Origin, Content-Type, Accept, Access-Control-Allow-Origin",
+			AllowCredentials: true,
+		}))
+	} else {
+		api.Static("/", "./public")
+	}
 
 	// Public routes
 	{
@@ -80,6 +88,16 @@ func setupFromEnv() {
 		log.Fatal("CORS_ALLOW_ORIGINS environment variable not set")
 	}
 	corsAllowOrigins = cors_allow_origins
+
+	dev, dev_ok := os.LookupEnv("DEVELOPMENT")
+	if !dev_ok {
+		log.Fatal("DEVELOPMENT environment variable not set")
+	}
+	dev_value, dev_value_err := strconv.ParseBool(dev)
+	if dev_value_err != nil {
+		log.Fatal("DEVELOPMENT environment variable is not a valid boolean")
+	}
+	development = dev_value
 
 	// stuff for Zauth oauth flow
 
