@@ -2,12 +2,12 @@ import { Button, ButtonProps } from "@mui/material";
 import { FC } from "react";
 
 export const Login: FC<ButtonProps> = props => {
-  const baseUrl = import.meta.env.VITE_BASE_URL as string;
+  const url = import.meta.env.VITE_BACKEND_URL as string;
 
   const handleClick = () => {
     const form = document.createElement("form");
     form.method = "POST";
-    form.action = `${baseUrl}/login`;
+    form.action = `${url}/login`;
     document.body.appendChild(form);
     form.submit();
   };
