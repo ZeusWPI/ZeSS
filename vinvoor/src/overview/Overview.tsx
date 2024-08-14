@@ -42,7 +42,7 @@ export const Overview = () => {
               sx={{
                 padding: 2,
                 width: "100%",
-                height: { xs: "auto", lg: paperHeight },
+                height: paperHeight,
                 display: "flex",
                 justifyContent: "center",
               }}
