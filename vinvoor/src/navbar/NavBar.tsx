@@ -5,7 +5,7 @@ import {
   CreditCardMultipleOutline,
   CreditCardScanOutline,
 } from "mdi-material-ui";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { DarkModeToggle } from "../components/DarkModeToggle";
 import { UserContext } from "../providers/UserProvider";
 import { NavBarLogo } from "./NavBarLogo";
@@ -30,11 +30,14 @@ const userMenuPages: PageIcon[] = [
 
 export const NavBar = () => {
   const { user } = useContext(UserContext);
+  const [selectedPage, setSelectedPage] = useState<string>("");
 
   const screenSize = {
     mobile: { xs: "flex", md: "none" },
     desktop: { xs: "none", md: "flex" },
   };
+
+  const handleSelectedPage = (page: string) => setSelectedPage(page);
 
   return (
     <AppBar position="static">
@@ -43,7 +46,11 @@ export const NavBar = () => {
           {/* Display either the ZeSS logo or a sandwich menu */}
 
           <Box sx={{ flexGrow: 1 }}>
-            <NavBarLogo sx={{ display: screenSize.desktop }} />
+            <NavBarLogo
+              sx={{ display: screenSize.desktop }}
+              selectedPage={selectedPage}
+              handleSelectedPage={handleSelectedPage}
+            />
 
             {user && (
               <NavBarSandwich
@@ -60,6 +67,8 @@ export const NavBar = () => {
               <NavBarPages
                 pageIcons={navBarPages}
                 sx={{ display: screenSize.desktop }}
+                selectedPage={selectedPage}
+                handleSelectedPage={handleSelectedPage}
               />
             )}
 
@@ -70,7 +79,11 @@ export const NavBar = () => {
 
           <Box sx={{ flexGrow: 0 }}>
             <DarkModeToggle />
-            <NavBarUserMenu pageIcons={userMenuPages} />
+            <NavBarUserMenu
+              pageIcons={userMenuPages}
+              selectedPage={selectedPage}
+              handleSelectedPage={handleSelectedPage}
+            />
           </Box>
         </Toolbar>
       </Container>

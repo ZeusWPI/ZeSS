@@ -3,7 +3,8 @@ import { createTheme, ThemeOptions } from "@mui/material";
 const baseTheme: ThemeOptions = {
   palette: {
     secondary: {
-      main: "#002379",
+      main: "#ffffff",
+      contrastText: "#ffffff",
     },
   },
   leaderboard: {

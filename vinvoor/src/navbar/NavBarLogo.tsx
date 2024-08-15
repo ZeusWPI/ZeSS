@@ -6,6 +6,8 @@ import { ThemeContext } from "../providers/ThemeProvider";
 
 interface NavBarLogoProps {
   sx?: SxProps<Theme>;
+  selectedPage?: string;
+  handleSelectedPage?: (page: string) => void;
 }
 
 const CLICK_AMOUNT = 10;
@@ -14,9 +16,15 @@ const CLICK_TIME_MS = 1000;
 let pressedAmount = 0;
 let startTimePress = 0;
 
-export const NavBarLogo: FC<NavBarLogoProps> = ({ sx }) => {
+export const NavBarLogo: FC<NavBarLogoProps> = ({
+  sx,
+  selectedPage,
+  handleSelectedPage,
+}) => {
   const { setTheme } = useContext(ThemeContext);
   const handleClick = () => {
+    if (handleSelectedPage) handleSelectedPage("home");
+
     if (pressedAmount < CLICK_AMOUNT) {
       if (pressedAmount === 0) startTimePress = Date.now();
 
@@ -40,6 +48,12 @@ export const NavBarLogo: FC<NavBarLogoProps> = ({ sx }) => {
             ...sx,
             textTransform: "none",
             color: "secondary.contrastText",
+            borderTop: "2px solid transparent",
+            borderBottom: "2px solid transparent",
+            ...(selectedPage === "home" && {
+              borderBottom: theme =>
+                `2px solid ${theme.palette.secondary.main}`,
+            }),
           }}
         >
           <HexagonSlice6 sx={{ mr: ".3rem" }} />
