@@ -1,5 +1,4 @@
 const URLS: Record<string, string> = {
-  BASE: import.meta.env.VITE_BACKEND_URL as string,
   API: import.meta.env.VITE_BACKEND_URL as string,
 };
 
