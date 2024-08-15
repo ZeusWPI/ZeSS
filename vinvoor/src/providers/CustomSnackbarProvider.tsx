@@ -18,6 +18,9 @@ export const CustomSnackbarProvider: FC<SnackbarProviderProps> = ({
     "&.notistack-MuiContent-error": {
       backgroundColor: theme.palette.error.dark,
     },
+    "&.notistack-MuiContent-info": {
+      backgroundColor: theme.palette.primary.main,
+    },
   }));
 
   return (
@@ -29,6 +32,7 @@ export const CustomSnackbarProvider: FC<SnackbarProviderProps> = ({
       Components={{
         success: StyledMaterialDesignContent,
         error: StyledMaterialDesignContent,
+        info: StyledMaterialDesignContent,
       }}
     >
       {children}

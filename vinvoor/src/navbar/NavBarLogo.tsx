@@ -26,7 +26,7 @@ export const NavBarLogo: FC<NavBarLogoProps> = ({ sx }) => {
         pressedAmount === CLICK_AMOUNT &&
         Date.now() - startTimePress <= CLICK_TIME_MS
       )
-        setTheme("hidden");
+        setTheme("kak");
     }
   };
 

@@ -67,7 +67,7 @@ export const darkTheme = createTheme({
   },
 });
 
-export const hiddenTheme = createTheme({
+export const kakTheme = createTheme({
   palette: {
     mode: "light",
     primary: {
@@ -163,6 +163,73 @@ export const hiddenTheme = createTheme({
   },
 });
 
+export const retroTheme = createTheme({
+  palette: {
+    mode: "light",
+    primary: {
+      main: "#244855",
+    },
+    secondary: {
+      main: "#E64833",
+    },
+    background: {
+      default: "#FBE9D0",
+      paper: "#F3DDC7",
+    },
+    success: {
+      main: "#008000",
+    },
+    error: {
+      main: "#ab0c26",
+      dark: "#7a0f20",
+    },
+    info: {
+      main: "#024950",
+    },
+  },
+  leaderboard: {
+    first: "#FFE55C",
+    second: "#E0E0E0",
+    third: "#DAAA5E",
+  },
+  heatmap: {
+    color0: { fill: "#e9ded1", stroke: "#ccc1b1" },
+    color1: { fill: "#ccc1b1", stroke: "#a5a59b" },
+    color2: { fill: "#a5a59b", stroke: "#778482" },
+    color3: { fill: "#778482", stroke: "#50686d" },
+    color4: { fill: "#50686d", stroke: "#244855" },
+    color5: { fill: "#244855", stroke: "#193540" },
+    colorActive: { fill: "#50686d", stroke: "#244855" },
+    colorInActive: { fill: "#e9ded1", stroke: "#ccc1b1" },
+  },
+  days: {
+    color0: "#a3bfd0",
+    color1: "#7f9dad",
+    color2: "#5b7c8a",
+    color3: "#406270",
+    color4: "#244855",
+  },
+  components: {
+    MuiTableCell: {
+      styleOverrides: {
+        root: {
+          borderBottom: "1px solid #874F41",
+        },
+      },
+    },
+    MuiAlert: {
+      styleOverrides: {
+        outlinedError: {
+          borderColor: "#7a0f20",
+        },
+        outlinedSuccess: {
+          borderColor: "#008000",
+        },
+      },
+    },
+  },
+});
+
 export interface HeatmapRectStyle {
   fill: string;
   stroke: string;
@@ -219,10 +286,11 @@ declare module "@mui/material/styles" {
   }
 }
 
-export type ThemeMode = "light" | "dark" | "hidden";
+export type ThemeMode = "light" | "dark" | "kak" | "retro";
 
 export const themeModes: Record<ThemeMode, ThemeOptions> = {
   light: lightTheme,
   dark: darkTheme,
-  hidden: hiddenTheme,
+  kak: kakTheme,
+  retro: retroTheme,
 };
