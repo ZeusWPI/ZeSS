@@ -1,21 +1,37 @@
-import { Button, Divider, Menu, MenuItem, Typography } from "@mui/material";
+import {
+  Button,
+  Divider,
+  Menu,
+  MenuItem,
+  Typography,
+  useMediaQuery,
+} from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import { Cow, ExitRun, ShieldAccountOutline } from "mdi-material-ui";
 import { FC, MouseEvent, useContext, useState } from "react";
 import { UnstyledLink } from "../components/UnstyledLink";
 import { UserContext } from "../providers/UserProvider";
-import { Optional } from "../types/general";
 import { Login } from "../user/Login";
 import { Logout } from "../user/Logout";
 import { PageIcon } from "./NavBar";
 
 interface NavBarUserMenuProps {
   pageIcons: readonly PageIcon[];
+  selectedPage: string;
+  handleSelectedPage: (page: string) => void;
 }
 
-export const NavBarUserMenu: FC<NavBarUserMenuProps> = ({ pageIcons }) => {
+export const NavBarUserMenu: FC<NavBarUserMenuProps> = ({
+  pageIcons,
+  selectedPage,
+  handleSelectedPage,
+}) => {
   const { user } = useContext(UserContext);
-  const [anchorElUser, setAnchorElUser] =
-    useState<Optional<HTMLElement>>(undefined);
+  const theme = useTheme();
+  const isBrowserView = useMediaQuery(theme.breakpoints.up("sm"));
+  const [anchorElUser, setAnchorElUser] = useState<HTMLElement | undefined>(
+    undefined,
+  );
 
   const handleOpenUserMenu = (event: MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
@@ -34,6 +50,12 @@ export const NavBarUserMenu: FC<NavBarUserMenuProps> = ({ pageIcons }) => {
             sx={{
               textTransform: "none",
               color: "secondary.contrastText",
+              borderTop: "2px solid transparent",
+              borderBottom: "2px solid transparent",
+              ...(selectedPage === "user" && {
+                borderBottom: theme =>
+                  `2px solid ${theme.palette.secondary.main}`,
+              }),
             }}
           >
             <ShieldAccountOutline sx={{ mr: "3px" }} />
@@ -56,7 +78,12 @@ export const NavBarUserMenu: FC<NavBarUserMenuProps> = ({ pageIcons }) => {
           >
             {pageIcons.map(({ page, icon }) => (
               <UnstyledLink key={page} to={page.toLowerCase()}>
-                <MenuItem onClick={handleCloseUserMenu}>
+                <MenuItem
+                  onClick={() => {
+                    handleCloseUserMenu();
+                    if (isBrowserView) handleSelectedPage("user");
+                  }}
+                >
                   {icon}
                   <Typography>{page}</Typography>
                 </MenuItem>
@@ -66,7 +93,10 @@ export const NavBarUserMenu: FC<NavBarUserMenuProps> = ({ pageIcons }) => {
             {user.admin && (
               <UnstyledLink to="admin">
                 <MenuItem
-                  onClick={handleCloseUserMenu}
+                  onClick={() => {
+                    handleCloseUserMenu();
+                    if (isBrowserView) handleSelectedPage("user");
+                  }}
                   sx={{
                     paddingX: "0",
                     justifyContent: "center",
