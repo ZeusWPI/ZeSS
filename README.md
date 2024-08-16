@@ -51,7 +51,7 @@ Both the backend and the frontend support hot module reloading (HMR).
 ## Production
 
 - Install Docker
-- Set the environment variables for the frontend before building (see the [README in ./vinvoor](vinvoor/README.md))
+- Set the required env variables for vinvoor in `vinvoor/production.env` _before_ building (see the [README in ./vinvoor](vinvoor/README.md))
 - Build the image `docker build -t zess .`
 - Set the required variables in a `.env` file for the backend (see the [README in ./vingo](vingo/README.md))
 - Run the image `docker run -v ${PWD}/.env:/.env zess`
