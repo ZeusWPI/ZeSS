@@ -29,20 +29,22 @@ func main() {
 	db := database.Get()
 	defer db.Close()
 
-	api := fiber.New(fiber.Config{})
+	app := fiber.New(fiber.Config{})
 
 	if development {
-		api.Use(cors.New(cors.Config{
+		app.Use(cors.New(cors.Config{
 			AllowOrigins:     corsAllowOrigins,
 			AllowHeaders:     "Origin, Content-Type, Accept, Access-Control-Allow-Origin",
 			AllowCredentials: true,
 		}))
 	} else {
-		api.Static("/", "./public")
+		app.Static("/", "./public")
 	}
 
-	// Public routes
+	api := app.Group("/api")
+
 	{
+		// Public routes
 		api.Post("/login", handlers.Login)
 		api.Get("/auth/callback", handlers.Callback)
 
@@ -50,6 +52,7 @@ func main() {
 
 		api.Get("/recent_scans", handlers.PublicRecentScans)
 
+		// Protected routes
 		authed := api.Group("", handlers.IsLoggedIn)
 		{
 			authed.Post("/logout", handlers.Logout)
@@ -65,6 +68,7 @@ func main() {
 			authed.Get("/settings", handlers.Settings{}.Get)
 			authed.Patch("/settings", handlers.Settings{}.Update)
 
+			// Admin routes
 			admin := authed.Group("/admin", handlers.IsAdmin)
 			{
 				admin.Get("/days", handlers.Days{}.All)
@@ -74,7 +78,12 @@ func main() {
 		}
 	}
 
-	log.Println(api.Listen(":4000"))
+	// Catch-all route leading to the frontend
+	app.Get("*", func(c *fiber.Ctx) error {
+		return c.SendFile("./public/index.html")
+	})
+
+	log.Println(app.Listen(":4000"))
 }
 
 func setupFromEnv() {
