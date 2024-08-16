@@ -36,6 +36,8 @@ RUN yarn install
 
 COPY vinvoor/ .
 
+COPY vinvoor/production.env .env
+
 RUN yarn run build
 
 
