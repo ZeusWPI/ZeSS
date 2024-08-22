@@ -68,4 +68,4 @@ const _fetch = async <T, U>(
         ? response.json()
         : response.text();
     })
-    .then(data => (convertData ? convertData(data) : (data as T)));
+    .then(data => (convertData ? convertData(data as U) : (data as T)));
