@@ -3,53 +3,53 @@ import { Scan } from "../../types/scans";
 import { HeatmapValue, HeatmapVariant } from "./types";
 
 export const getColumnCountDays = (startDate: Date, endDate: Date) => {
-    const startOfWeek = new Date(startDate);
-    startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
+  const startOfWeek = new Date(startDate);
+  startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
 
-    const endOfWeek = new Date(endDate);
-    if (endOfWeek.getDay() === 0)
-        endOfWeek.setDate(endOfWeek.getDate() - endOfWeek.getDay());
-    else endOfWeek.setDate(endOfWeek.getDate() - endOfWeek.getDay() + 6);
+  const endOfWeek = new Date(endDate);
+  if (endOfWeek.getDay() === 0)
+    endOfWeek.setDate(endOfWeek.getDate() - endOfWeek.getDay());
+  else endOfWeek.setDate(endOfWeek.getDate() - endOfWeek.getDay() + 6);
 
-    return Math.ceil(
-        (endOfWeek.getTime() - startOfWeek.getTime()) /
-            (DAYS_IN_WEEK * MILLISECONDS_IN_DAY)
-    );
+  return Math.ceil(
+    (endOfWeek.getTime() - startOfWeek.getTime()) /
+      (DAYS_IN_WEEK * MILLISECONDS_IN_DAY),
+  );
 };
 
 export const getColumnCountMonths = (startDate: Date, endDate: Date) => {
-    return (
-        (endDate.getFullYear() - startDate.getFullYear()) * 12 +
-        endDate.getMonth() -
-        startDate.getMonth() +
-        1
-    );
+  return (
+    (endDate.getFullYear() - startDate.getFullYear()) * 12 +
+    endDate.getMonth() -
+    startDate.getMonth() +
+    1
+  );
 };
 
 export const getMondayIndexedDay = (date: Date) => (date.getDay() + 6) % 7;
 
 export const formatData = (scans: Scan[]) => {
-    const result: Record<number, HeatmapValue> = {};
-    scans.forEach((scan) => {
-        result[scan.scanTime.getTime()] = {
-            date: scan.scanTime,
-            count: 1,
-        };
-    });
+  const result: Record<number, HeatmapValue> = {};
+  scans.forEach(scan => {
+    result[scan.scanTime.getTime()] = {
+      date: scan.scanTime,
+      count: 1,
+    };
+  });
 
-    return result;
+  return result;
 };
 
 export const isDayVariant = (variant: HeatmapVariant) =>
-    variant === HeatmapVariant.DAYS;
+  variant === HeatmapVariant.DAYS;
 
 export const styleMonth = [
-    (theme: Theme) => theme.heatmap.color0,
-    (theme: Theme) => theme.heatmap.color1,
-    (theme: Theme) => theme.heatmap.color2,
-    (theme: Theme) => theme.heatmap.color3,
-    (theme: Theme) => theme.heatmap.color4,
-    (theme: Theme) => theme.heatmap.color5,
+  (theme: Theme) => theme.heatmap.color0,
+  (theme: Theme) => theme.heatmap.color1,
+  (theme: Theme) => theme.heatmap.color2,
+  (theme: Theme) => theme.heatmap.color3,
+  (theme: Theme) => theme.heatmap.color4,
+  (theme: Theme) => theme.heatmap.color5,
 ];
 
 // Constants
@@ -68,26 +68,26 @@ export const FONT_SIZE = (isSmallView: boolean) => (isSmallView ? 4 : 15);
 // Month labels
 
 export const MONTH_LABELS = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
 ];
 
 // Formatter
 
 export const DATE_FORMATTER = new Intl.DateTimeFormat("en-GB", {
-    year: "2-digit",
-    month: "short",
-    day: "numeric",
+  year: "2-digit",
+  month: "short",
+  day: "numeric",
 });
 
 // Consts

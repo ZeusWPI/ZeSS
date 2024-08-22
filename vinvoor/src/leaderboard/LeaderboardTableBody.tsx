@@ -1,9 +1,9 @@
 import {
-    Icon,
-    TableBody,
-    TableCell,
-    TableRow,
-    Typography,
+  Icon,
+  TableBody,
+  TableCell,
+  TableRow,
+  Typography,
 } from "@mui/material";
 import { alpha, Theme, useTheme } from "@mui/material/styles";
 import { FC, useContext } from "react";
@@ -15,136 +15,133 @@ import SecondPlaceIcon from "/second_place.svg";
 import ThirdPlaceIcon from "/third_place.svg";
 
 interface LeaderboardTableBodyProps {
-    leaderboardItems: readonly LeaderboardItem[];
+  leaderboardItems: readonly LeaderboardItem[];
 }
 
 const leaderboardColors = [
-    (theme: Theme) => theme.leaderboard.first,
-    (theme: Theme) => theme.leaderboard.second,
-    (theme: Theme) => theme.leaderboard.third,
+  (theme: Theme) => theme.leaderboard.first,
+  (theme: Theme) => theme.leaderboard.second,
+  (theme: Theme) => theme.leaderboard.third,
 ];
 
 const leaderboardText = [
-    { fontSize: "30px", fontWeight: "bold" },
-    { fontSize: "25px", fontWeight: "bold" },
-    { fontSize: "18px", fontWeight: "bold" },
+  { fontSize: "30px", fontWeight: "bold" },
+  { fontSize: "25px", fontWeight: "bold" },
+  { fontSize: "18px", fontWeight: "bold" },
 ];
 
 const getLeaderboardColor = (index: number, theme: Theme) =>
-    leaderboardColors[index]
-        ? { backgroundColor: leaderboardColors[index](theme) }
-        : {};
+  leaderboardColors[index]
+    ? { backgroundColor: leaderboardColors[index](theme) }
+    : {};
 
 const getLeaderboardText = (index: number) => leaderboardText[index] || {};
 
 const getPositionChange = (positionChange: number) => {
-    let color = "text.primary";
-    let prefix = "";
+  let color = "text.primary";
+  let prefix = "";
 
-    if (positionChange > 0) {
-        color = "success.light";
-        prefix = "+";
-    } else if (positionChange < 0) {
-        color = "error.light";
-    }
+  if (positionChange > 0) {
+    color = "success.light";
+    prefix = "+";
+  } else if (positionChange < 0) {
+    color = "error.light";
+  }
 
-    return (
-        <Typography color={color} fontWeight="bold">
-            {prefix}
-            {positionChange !== 0 && positionChange}
-        </Typography>
-    );
+  return (
+    <Typography color={color} fontWeight="bold">
+      {prefix}
+      {positionChange !== 0 && positionChange}
+    </Typography>
+  );
 };
 
 const getPosition = (position: number) => {
-    switch (position) {
-        case 1:
-            return (
-                <Icon sx={{ fontSize: "40px", overflow: "visible" }}>
-                    <img src={FirstPlaceIcon} />
-                </Icon>
-            );
-        case 2:
-            return (
-                <Icon sx={{ fontSize: "35px", overflow: "visible" }}>
-                    <img src={SecondPlaceIcon} />
-                </Icon>
-            );
-        case 3:
-            return (
-                <Icon sx={{ fontSize: "30px", overflow: "visible" }}>
-                    <img src={ThirdPlaceIcon} />
-                </Icon>
-            );
-        default:
-            return <Typography fontWeight="bold">{position}</Typography>;
-    }
+  switch (position) {
+    case 1:
+      return (
+        <Icon sx={{ fontSize: "40px", overflow: "visible" }}>
+          <img src={FirstPlaceIcon} />
+        </Icon>
+      );
+    case 2:
+      return (
+        <Icon sx={{ fontSize: "35px", overflow: "visible" }}>
+          <img src={SecondPlaceIcon} />
+        </Icon>
+      );
+    case 3:
+      return (
+        <Icon sx={{ fontSize: "30px", overflow: "visible" }}>
+          <img src={ThirdPlaceIcon} />
+        </Icon>
+      );
+    default:
+      return <Typography fontWeight="bold">{position}</Typography>;
+  }
 };
 
 const getCell = (
-    row: LeaderboardItem,
-    headCell: TableHeadCell<LeaderboardItem>
+  row: LeaderboardItem,
+  headCell: TableHeadCell<LeaderboardItem>,
 ) => {
-    switch (headCell.id) {
-        case "positionChange":
-            return getPositionChange(row[headCell.id]);
-        case "position":
-            return getPosition(row[headCell.id]);
-        default:
-            return (
-                <Typography
-                    sx={{
-                        ...getLeaderboardText(row.position - 1),
-                    }}
-                >
-                    {row[headCell.id]}
-                </Typography>
-            );
-    }
+  switch (headCell.id) {
+    case "positionChange":
+      return getPositionChange(row[headCell.id]);
+    case "position":
+      return getPosition(row[headCell.id]);
+    default:
+      return (
+        <Typography
+          sx={{
+            ...getLeaderboardText(row.position - 1),
+          }}
+        >
+          {row[headCell.id]}
+        </Typography>
+      );
+  }
 };
 
 export const LeaderboardTableBody: FC<LeaderboardTableBodyProps> = ({
-    leaderboardItems: rows,
+  leaderboardItems: rows,
 }) => {
-    const theme = useTheme();
-    const {
-        userState: { user },
-    } = useContext(UserContext);
+  const theme = useTheme();
+  const { user } = useContext(UserContext);
 
-    return (
-        <TableBody>
-            {rows.map((row, index) => {
-                return (
-                    <TableRow
-                        key={row.username}
-                        id={row.username}
-                        sx={{
-                            ...(index % 2 === 0 && {
-                                backgroundColor: (theme) =>
-                                    theme.palette.action.hover,
-                            }),
-                            ...(row.username === user!.username && {
-                                backgroundColor: (theme) =>
-                                    alpha(
-                                        theme.palette.primary.main,
-                                        theme.palette.action.activatedOpacity
-                                    ),
-                            }),
-                            ...getLeaderboardColor(index, theme),
-                        }}
-                    >
-                        {leaderboardHeadCells.map((headCell) => (
-                            <TableCell
-                                key={headCell.id}
-                                align={headCell.align}
-                                padding={headCell.padding}
-                            >
-                                {getCell(row, headCell)}
-                            </TableCell>
-                        ))}
-                    </TableRow>
-                );
-            })}
-        </TableBody>
-    );
+  return (
+    <TableBody>
+      {rows.map((row, index) => {
+        return (
+          <TableRow
+            key={row.username}
+            id={row.username}
+            sx={{
+              ...(index % 2 === 0 && {
+                backgroundColor: theme => theme.palette.action.hover,
+              }),
+              ...(row.username === user!.username && {
+                backgroundColor: theme =>
+                  alpha(
+                    theme.palette.primary.main,
+                    theme.palette.action.activatedOpacity,
+                  ),
+              }),
+              ...getLeaderboardColor(index, theme),
+            }}
+          >
+            {leaderboardHeadCells.map(headCell => (
+              <TableCell
+                key={headCell.id}
+                align={headCell.align}
+                padding={headCell.padding}
+              >
+                {getCell(row, headCell)}
+              </TableCell>
+            ))}
+          </TableRow>
+        );
+      })}
+    </TableBody>
+  );
 };

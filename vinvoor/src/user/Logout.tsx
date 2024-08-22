@@ -1,16 +1,16 @@
 import { Button, ButtonProps } from "@mui/material";
 import { FC } from "react";
 
-export const Logout: FC<ButtonProps> = (props) => {
-    const apiUrl = import.meta.env.VITE_API_URL;
+export const Logout: FC<ButtonProps> = props => {
+  const apiUrl = import.meta.env.VITE_API_URL as string;
 
-    const handleClick = () => {
-        const form = document.createElement("form");
-        form.method = "POST";
-        form.action = `${apiUrl}/logout`;
-        document.body.appendChild(form);
-        form.submit();
-    };
+  const handleClick = () => {
+    const form = document.createElement("form");
+    form.method = "POST";
+    form.action = `${apiUrl}/logout`;
+    document.body.appendChild(form);
+    form.submit();
+  };
 
-    return <Button onClick={handleClick} {...props} />;
+  return <Button onClick={handleClick} {...props} />;
 };

@@ -8,31 +8,29 @@ import { UserContext } from "./providers/UserProvider";
 import { WelcomePage } from "./WelcomePage";
 
 export const App = () => {
-    const {
-        userState: { user, loading },
-    } = useContext(UserContext);
+  const { user, loading } = useContext(UserContext);
 
-    const outlet = useOutlet();
+  const outlet = useOutlet();
 
-    return (
-        <>
-            <NavBar />
-            <Container maxWidth="xl" sx={{ my: "2%" }}>
-                <LoadingSkeleton loading={loading}>
-                    {user !== undefined ? (
-                        outlet !== null ? (
-                            <Outlet />
-                        ) : (
-                            <Overview />
-                        )
-                    ) : (
-                        <>
-                            <WelcomePage />
-                            <Navigate to="/" />
-                        </>
-                    )}
-                </LoadingSkeleton>
-            </Container>
-        </>
-    );
+  return (
+    <>
+      <NavBar />
+      <Container maxWidth="xl" sx={{ my: "2%" }}>
+        <LoadingSkeleton loading={loading}>
+          {user !== undefined ? (
+            outlet !== null ? (
+              <Outlet />
+            ) : (
+              <Overview />
+            )
+          ) : (
+            <>
+              <WelcomePage />
+              <Navigate to="/" />
+            </>
+          )}
+        </LoadingSkeleton>
+      </Container>
+    </>
+  );
 };

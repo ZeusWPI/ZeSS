@@ -4,26 +4,26 @@ import { UnstyledLink } from "../components/UnstyledLink";
 import { PageIcon } from "./NavBar";
 
 interface NavBarPagesProps {
-    pageIcons: readonly PageIcon[];
-    sx?: SxProps<Theme>;
+  pageIcons: readonly PageIcon[];
+  sx?: SxProps<Theme>;
 }
 
 export const NavBarPages: FC<NavBarPagesProps> = ({ pageIcons, sx }) => {
-    return (
-        <Box sx={{ ...sx }}>
-            {pageIcons.map(({ page, icon }) => (
-                <UnstyledLink key={page} to={page.toLowerCase()}>
-                    <Button
-                        sx={{
-                            color: "secondary.contrastText",
-                        }}
-                    >
-                        {icon}
+  return (
+    <Box sx={{ ...sx }}>
+      {pageIcons.map(({ page, icon }) => (
+        <UnstyledLink key={page} to={page.toLowerCase()}>
+          <Button
+            sx={{
+              color: "secondary.contrastText",
+            }}
+          >
+            {icon}
 
-                        <Typography>{page}</Typography>
-                    </Button>
-                </UnstyledLink>
-            ))}
-        </Box>
-    );
+            <Typography>{page}</Typography>
+          </Button>
+        </UnstyledLink>
+      ))}
+    </Box>
+  );
 };
