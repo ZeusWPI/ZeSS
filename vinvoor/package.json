@@ -7,7 +7,8 @@
     "dev": "vite",
     "host": "vite --host",
     "build": "tsc && vite build",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "format": "prettier . --write",
+    "lint": "eslint . --fix",
     "preview": "vite preview"
   },
   "dependencies": {
