@@ -10,8 +10,8 @@ import (
 type Days struct{}
 
 type DaysBody struct {
-	StartDate time.Time `json:"startDate"`
-	EndDate   time.Time `json:"endDate"`
+	StartDate time.Time `json:"start_date"`
+	EndDate   time.Time `json:"end_date"`
 }
 
 func (Days) CreateMultiple(c *fiber.Ctx) error {
