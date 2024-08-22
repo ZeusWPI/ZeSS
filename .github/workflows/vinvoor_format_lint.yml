@@ -1,0 +1,35 @@
+name: Format and linting
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  format-and-lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20.15.1
+
+      - name: Install yarn
+        run: npm install -g yarn
+
+      - name: Install dependencies
+        run: yarn install
+        working-directory: vinvoor/
+
+      - name: Run formatter
+        run: yarn prettier --check .
+        working-directory: vinvoor/
+
+      - name: Run Linter
+        run: yarn eslint . --max-warnings=0
+        working-directory: vinvoor/

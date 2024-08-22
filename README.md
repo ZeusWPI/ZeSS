@@ -29,9 +29,16 @@ Secret goals:
 - `Vingo` -> Backend
 - `Vinvoor` -> Frontend
 
-## How to run (for development)
+## Development
 
-### Easy & Quick
+### Pre-commit hooks
+
+This project has a couple of pre-commit hooks.
+Automatically run them by running `git config --local core.hooksPath .githooks/`.
+
+### Run
+
+#### Easy & Quick
 
 - Install Docker and Docker Compose
 - Run the script `./dev.sh` with optional flags:
@@ -43,6 +50,6 @@ Secret goals:
 The backend is accessible at `localhost:3000`, and the frontend at `localhost:5173`.
 Both the backend and the frontend support hot module reloading (HMR).
 
-### Manual
+#### Manual
 
 - Each part has it's own `README.md` with instructions on how to run it.
