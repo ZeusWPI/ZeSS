@@ -66,5 +66,3 @@ export const UserProvider: FC<UserProviderProps> = ({ children }) => {
     </UserContext.Provider>
   );
 };
-
-// TODO: Check if everything is loaded
