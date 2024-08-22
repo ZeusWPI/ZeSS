@@ -1,7 +1,7 @@
 import { Card } from "./cards";
 import { TableHeadCell } from "./general";
 
-interface ScanJSON {
+export interface ScanJSON {
   scanTime: string;
   cardSerial: string;
 }
@@ -39,16 +39,15 @@ export const scanCardHeadCells: readonly TableHeadCell<ScanCard>[] = [
     label: "Scan time",
     align: "left",
     padding: "normal",
-    convert: (value: unknown) => dateTimeFormat.format(value as Date),
-  },
+    convert: (value: Date) => dateTimeFormat.format(value),
+  } as TableHeadCell<ScanCard>,
   {
     id: "card",
     label: "Card",
     align: "right",
     padding: "normal",
-    convert: (value?: unknown) =>
-      (value as Card)?.name || ((value as Card)?.serial ?? "Unknown"),
-  },
+    convert: (value?: Card) => value?.name || (value?.serial ?? "Unknown"),
+  } as TableHeadCell<ScanCard>,
 ];
 
 const dateTimeFormat = new Intl.DateTimeFormat("en-GB", {

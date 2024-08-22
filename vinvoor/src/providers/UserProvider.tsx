@@ -67,6 +67,4 @@ export const UserProvider: FC<UserProviderProps> = ({ children }) => {
   );
 };
 
-// TODO: Config formatter
-// TODO: Use generics for the unknown functions
 // TODO: Check if everything is loaded

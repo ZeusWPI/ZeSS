@@ -1,6 +1,6 @@
 import { Base, BaseJSON } from "./general";
 
-interface SettingsJSON extends BaseJSON {
+export interface SettingsJSON extends BaseJSON {
   scanInOut: boolean;
   leaderboard: boolean;
   public: boolean;

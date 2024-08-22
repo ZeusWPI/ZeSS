@@ -20,5 +20,5 @@ export interface TableHeadCell<T> {
   label: string;
   align: TableAlignOptions;
   padding: TablePaddingOptions;
-  convert?: (value: unknown) => string;
+  convert?: (value: T[keyof T]) => string;
 }

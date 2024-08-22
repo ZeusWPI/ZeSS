@@ -1,6 +1,6 @@
 import { Base, BaseJSON, TableHeadCell } from "./general";
 
-interface CardJSON extends BaseJSON {
+export interface CardJSON extends BaseJSON {
   serial: string;
   name: string;
   lastUsed: string;
@@ -14,8 +14,8 @@ export interface Card extends Base {
   amountUsed: number;
 }
 
-export const convertCardJSON = (cardsJSON: unknown): Card[] =>
-  (cardsJSON as CardJSON[]).map(CardJSON => ({
+export const convertCardJSON = (cardsJSON: CardJSON[]): Card[] =>
+  cardsJSON.map(CardJSON => ({
     serial: CardJSON.serial,
     name: CardJSON.name,
     lastUsed: new Date(CardJSON.lastUsed),
@@ -42,18 +42,18 @@ export const cardsHeadCells: readonly TableHeadCell<Card>[] = [
     label: "Last used",
     align: "right",
     padding: "normal",
-    convert: (value: unknown) => {
-      if ((value as Date).getFullYear() === 1) return "Not used";
-      else return (value as Date).toDateString();
+    convert: (value: Date) => {
+      if (value.getFullYear() === 1) return "Not used";
+      else return value.toDateString();
     },
-  },
+  } as TableHeadCell<Card>,
   {
     id: "createdAt",
     label: "Created at",
     align: "right",
     padding: "normal",
-    convert: (value: unknown) => (value as Date).toDateString(),
-  },
+    convert: (value: Date) => value.toDateString(),
+  } as TableHeadCell<Card>,
   {
     id: "serial",
     label: "Serial",
