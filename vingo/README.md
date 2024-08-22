@@ -10,7 +10,7 @@ To register a card, click the "Start registering a new card" button in the cards
 ## Environment variables
 
 - CORS_ALLOW_ORIGINS (string) | Allowed CORS
-- DEVELOPMENT (bool) | Whether the program is run in developmet mode
+- DEVELOPMENT (bool) | Whether the program is run in development mode
 - ZAUTH_URL (string) | URL of zauth
 - ZAUTH_CALLBACK_PATH (string) | Callback path after the zauth authentication (should go to the backend)
 - ZAUTH_CLIENT_ID (string) | ID of the zauth client
