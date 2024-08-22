@@ -49,7 +49,15 @@ export const DaysTableBody: FC<DaysTableBodyProps> = ({
   return (
     <TableBody>
       {rows.map(day => (
-        <TableRow key={day.id} selected={isSelected(day.id)}>
+        <TableRow
+          key={day.id}
+          selected={isSelected(day.id)}
+          sx={{
+            ...(day.date.getDay() === 1 && {
+              backgroundColor: theme => theme.palette.action.hover,
+            }),
+          }}
+        >
           <TableCell padding="checkbox" onClick={() => handleSelect(day.id)}>
             <Checkbox checked={isSelected(day.id)} />
           </TableCell>

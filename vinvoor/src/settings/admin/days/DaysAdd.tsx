@@ -31,8 +31,8 @@ export const DaysAdd: FC<DaysAddProps> = ({ reloadDays }) => {
     }
 
     postApi("admin/days", {
-      startDate: startDate.toISOString(),
-      endDate: endDate.toISOString(),
+      start_date: startDate.format("YYYY-MM-DDTHH:mm:ssZ"),
+      end_date: endDate.format("YYYY-MM-DDTHH:mm:ssZ"),
     })
       .then(() => {
         enqueueSnackbar("successfully saved days", {
