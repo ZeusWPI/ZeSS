@@ -176,7 +176,7 @@ try:
         last_uid = uid
         last_time = current_time
 
-        res = req.post("https://zess.zeus.gent/scans", data=f"{uid};{key}")
+        res = req.post("https://zess.zeus.gent/api/scans", data=f"{uid};{key}")
         watchdog.feed()
         if 200 <= res.status_code < 300:
             name = res.text
