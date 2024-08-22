@@ -7,6 +7,7 @@ import { useCardsContext } from "../providers/dataproviders/cardsProvider";
 import {
   Card,
   CardGetRegisterResponse,
+  CardJSON,
   CardPostResponse,
   convertCardJSON,
 } from "../types/cards";
@@ -116,9 +117,10 @@ export const CardsAdd = () => {
                   enqueueSnackbar(registerSucces, {
                     variant: "success",
                   });
-                  void getApi<readonly Card[]>("cards", convertCardJSON).then(
-                    cards => setCards(cards),
-                  );
+                  void getApi<readonly Card[], CardJSON[]>(
+                    "cards",
+                    convertCardJSON,
+                  ).then(cards => setCards(cards));
                 } else
                   enqueueSnackbar(registerFail, {
                     variant: "error",

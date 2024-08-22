@@ -21,10 +21,10 @@ interface DataContextProps<T> {
   error?: Error;
 }
 
-export const createDataContext = <T,>(
+export const createDataContext = <T, U = unknown>(
   endpoint: string,
   defaultValue: T,
-  convertData?: (data: unknown) => T,
+  convertData?: (data: U) => T,
 ) => {
   const DataContext = createContext<DataContextProps<T>>({
     data: defaultValue,
@@ -40,7 +40,7 @@ export const createDataContext = <T,>(
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<Optional<Error>>(undefined);
 
-    useFetch<T>(endpoint, setData, convertData, setLoading, setError);
+    useFetch<T, U>(endpoint, setData, convertData, setLoading, setError);
 
     return (
       <DataContext.Provider value={{ data, setData, loading, error }}>

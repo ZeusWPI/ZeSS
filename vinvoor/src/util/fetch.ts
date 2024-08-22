@@ -3,36 +3,36 @@ const URLS: Record<string, string> = {
   API: import.meta.env.VITE_API_URL as string,
 };
 
-export const getApi = <T>(
+export const getApi = <T, U = unknown>(
   endpoint: string,
-  convertData?: (data: unknown) => T,
-) => _fetch<T>(`${URLS.API}/${endpoint}`, {}, convertData);
+  convertData?: (data: U) => T,
+) => _fetch<T, U>(`${URLS.API}/${endpoint}`, {}, convertData);
 
-export const postApi = <T>(
+export const postApi = <T, U = unknown>(
   endpoint: string,
   body: Record<string, string | number | boolean> = {},
 ) =>
-  _fetch<T>(`${URLS.API}/${endpoint}`, {
+  _fetch<T, U>(`${URLS.API}/${endpoint}`, {
     method: "POST",
     body: JSON.stringify(body),
     headers: new Headers({ "content-type": "application/json" }),
   });
 
-export const patchApi = <T>(
+export const patchApi = <T, U = unknown>(
   endpoint: string,
   body: Record<string, string | number | boolean> = {},
 ) =>
-  _fetch<T>(`${URLS.API}/${endpoint}`, {
+  _fetch<T, U>(`${URLS.API}/${endpoint}`, {
     method: "PATCH",
     body: JSON.stringify(body),
     headers: new Headers({ "content-type": "application/json" }),
   });
 
-export const deleteAPI = <T>(
+export const deleteAPI = <T, U = unknown>(
   endpoint: string,
   body: Record<string, string | number | boolean> = {},
 ) =>
-  _fetch<T>(`${URLS.API}/${endpoint}`, {
+  _fetch<T, U>(`${URLS.API}/${endpoint}`, {
     method: "DELETE",
     body: JSON.stringify(body),
     headers: new Headers({ "content-type": "application/json" }),
@@ -47,10 +47,10 @@ export const isResponseNot200Error = (
 ): error is ResponseNot200Error =>
   (error as ResponseNot200Error).response !== undefined;
 
-const _fetch = async <T>(
+const _fetch = async <T, U>(
   url: string,
   options: RequestInit = {},
-  convertData?: (data: unknown) => T,
+  convertData?: (data: U) => T,
 ): Promise<T> =>
   fetch(url, { credentials: "include", ...options })
     .then(response => {

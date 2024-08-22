@@ -1,6 +1,6 @@
 import { Base, BaseJSON, TableHeadCell } from "./general";
 
-interface DayJSON extends BaseJSON {
+export interface DayJSON extends BaseJSON {
   date: string;
 }
 
@@ -24,5 +24,5 @@ export const daysHeadCells: readonly TableHeadCell<Day>[] = [
     align: "left",
     padding: "normal",
     convert: (value: Date) => value.toDateString(),
-  },
+  } as TableHeadCell<Day>,
 ];

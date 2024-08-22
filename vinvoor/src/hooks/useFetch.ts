@@ -3,10 +3,10 @@ import { UserContext } from "../providers/UserProvider";
 import { Optional } from "../types/general";
 import { getApi, isResponseNot200Error } from "../util/fetch";
 
-export const useFetch = <T>(
+export const useFetch = <T, U = unknown>(
   endpoint: string,
   setData: Dispatch<SetStateAction<T>>,
-  convertData?: (data: unknown) => T,
+  convertData?: (data: U) => T,
   setLoading?: Dispatch<SetStateAction<boolean>>,
   setError?: Dispatch<SetStateAction<Optional<Error>>>,
 ) => {
@@ -15,7 +15,7 @@ export const useFetch = <T>(
   useEffect(() => {
     if (user === undefined) return;
 
-    getApi<T>(endpoint, convertData)
+    getApi<T, U>(endpoint, convertData)
       .then(data => setData(data))
       .catch(error => {
         if (isResponseNot200Error(error) && error.response.status === 401) {

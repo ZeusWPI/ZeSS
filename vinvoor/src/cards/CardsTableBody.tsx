@@ -12,7 +12,12 @@ import { useConfirm } from "material-ui-confirm";
 import { useSnackbar } from "notistack";
 import { ChangeEvent, FC, MouseEvent } from "react";
 import { useCardsContext } from "../providers/dataproviders/cardsProvider";
-import { Card, cardsHeadCells, convertCardJSON } from "../types/cards";
+import {
+  Card,
+  CardJSON,
+  cardsHeadCells,
+  convertCardJSON,
+} from "../types/cards";
 import { getApi, patchApi } from "../util/fetch";
 
 interface CardsTableBodyProps {
@@ -64,9 +69,10 @@ export const CardsTableBody: FC<CardsTableBodyProps> = ({
             enqueueSnackbar(nameSaveSuccess, {
               variant: "success",
             });
-            void getApi<readonly Card[]>("cards", convertCardJSON).then(cards =>
-              setCards(cards),
-            );
+            void getApi<readonly Card[], CardJSON[]>(
+              "cards",
+              convertCardJSON,
+            ).then(cards => setCards(cards));
           })
           .catch(() => enqueueSnackbar(nameSaveFailure, { variant: "error" }));
       })

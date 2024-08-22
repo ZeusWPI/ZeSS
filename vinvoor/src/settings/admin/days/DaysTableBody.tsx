@@ -33,7 +33,7 @@ export const DaysTableBody: FC<DaysTableBodyProps> = ({
   const handleClick = (id: number) => {
     if (isSelected(id)) handleSelect(id); // This will remove it from the selected list
 
-    deleteAPI<void>(`admin/days/${id}`)
+    deleteAPI(`admin/days/${id}`)
       .then(() => {
         enqueueSnackbar("Deleted streakday", { variant: "success" });
         setDays([...days].filter(day => day.id !== id));

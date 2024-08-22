@@ -2,7 +2,7 @@ import { Grid } from "@mui/material";
 import { useSnackbar } from "notistack";
 import { LoadingSkeleton } from "../../../components/LoadingSkeleton";
 import { useDaysContext } from "../../../providers/dataproviders/daysProvider";
-import { convertDayJSON, Day } from "../../../types/days";
+import { convertDayJSON, Day, DayJSON } from "../../../types/days";
 import { getApi } from "../../../util/fetch";
 import { DaysAdd } from "./DaysAdd";
 import { DaysTable } from "./DaysTable";
@@ -12,7 +12,7 @@ export const Days = () => {
   const { enqueueSnackbar } = useSnackbar();
 
   const reloadDays = () => {
-    getApi<readonly Day[]>("admin/days", convertDayJSON)
+    getApi<readonly Day[], DayJSON[]>("admin/days", convertDayJSON)
       .then(data => setDays(data))
       // This is the admin page so just show the error
       .catch(error =>
