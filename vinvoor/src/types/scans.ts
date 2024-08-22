@@ -46,7 +46,7 @@ export const scanCardHeadCells: readonly TableHeadCell<ScanCard>[] = [
     label: "Card",
     align: "right",
     padding: "normal",
-    convert: (value?: Card) => value?.name ?? (value?.serial ?? "Unknown"),
+    convert: (value?: Card) => value?.name ?? value?.serial ?? "Unknown",
   } as TableHeadCell<ScanCard>,
 ];
 
