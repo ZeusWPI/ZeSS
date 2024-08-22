@@ -1,47 +1,29 @@
-import {
-    Dispatch,
-    SetStateAction,
-    useContext,
-    useEffect,
-    useState,
-} from "react";
+import { Dispatch, SetStateAction, useContext, useEffect } from "react";
 import { UserContext } from "../providers/UserProvider";
+import { Optional } from "../types/general";
 import { getApi, isResponseNot200Error } from "../util/fetch";
 
-interface useFetchResult {
-    loading: boolean;
-    error: Error | undefined;
-}
-
 export const useFetch = <T>(
-    endpoint: string,
-    setData: Dispatch<SetStateAction<T>>,
-    convertData?: (data: any) => T
-): useFetchResult => {
-    const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<Error | undefined>(undefined);
+  endpoint: string,
+  setData: Dispatch<SetStateAction<T>>,
+  convertData?: (data: unknown) => T,
+  setLoading?: Dispatch<SetStateAction<boolean>>,
+  setError?: Dispatch<SetStateAction<Optional<Error>>>,
+) => {
+  const { user, invalidateUser } = useContext(UserContext);
 
-    const { setUserState } = useContext(UserContext);
+  useEffect(() => {
+    if (user === undefined) return;
 
-    useEffect(() => {
-        getApi<T>(endpoint, convertData)
-            .then((data) => setData(data))
-            .catch((error) => {
-                if (
-                    isResponseNot200Error(error) &&
-                    error.response.status === 401
-                ) {
-                    setUserState({
-                        user: undefined,
-                        loading: false,
-                        error: error,
-                    });
-                }
+    getApi<T>(endpoint, convertData)
+      .then(data => setData(data))
+      .catch(error => {
+        if (isResponseNot200Error(error) && error.response.status === 401) {
+          invalidateUser(error);
+        }
 
-                setError(error);
-            })
-            .finally(() => setLoading(false));
-    }, [endpoint]);
-
-    return { loading, error };
+        setError?.(error as Error);
+      })
+      .finally(() => setLoading?.(false));
+  }, [user, endpoint]);
 };

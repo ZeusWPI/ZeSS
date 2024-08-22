@@ -1,13 +1,13 @@
 @keyframes createBox {
-    from {
-        width: 0;
-        height: 0;
-    }
-    to {
-        transform: scale(1);
-    }
+  from {
+    width: 0;
+    height: 0;
+  }
+  to {
+    transform: scale(1);
+  }
 }
 
 .rect:hover {
-    stroke-opacity: 0;
+  stroke-opacity: 0;
 }

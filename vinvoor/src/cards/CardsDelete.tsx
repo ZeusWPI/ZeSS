@@ -5,39 +5,39 @@ import { useSnackbar } from "notistack";
 import { FC } from "react";
 
 interface CardDeleteProps {
-    selected: readonly string[];
+  selected: readonly string[];
 }
 
 const deletePressed = "Not implemented yet :'(";
 
 export const CardsDelete: FC<CardDeleteProps> = ({ selected }) => {
-    const confirm = useConfirm();
-    const { enqueueSnackbar } = useSnackbar();
-    const numSelected = selected.length;
+  const confirm = useConfirm();
+  const { enqueueSnackbar } = useSnackbar();
+  const numSelected = selected.length;
 
-    const title = `Delete card${numSelected > 1 ? "s" : ""}`;
-    const content = (
-        <Typography component="span">
-            Are you sure you want to delete {numSelected} card
-            {numSelected > 1 ? "s" : ""}? Unfortunately, this feature isn't
-            available yet. Let's convince Hannes to add this feature by signing
-            this <Link href="https://chng.it/nQ6GSXVRMJ">petition!</Link>
-        </Typography>
-    );
+  const title = `Delete card${numSelected > 1 ? "s" : ""}`;
+  const content = (
+    <Typography component="span">
+      Are you sure you want to delete {numSelected} card
+      {numSelected > 1 ? "s" : ""}? Unfortunately, this feature isn't available
+      yet. Let's convince Hannes to add this feature by signing this{" "}
+      <Link href="https://chng.it/nQ6GSXVRMJ">petition!</Link>
+    </Typography>
+  );
 
-    const handleClick = () => {
-        confirm({
-            title: title,
-            description: content,
-            confirmationText: "Delete",
-        }).then(() => enqueueSnackbar(deletePressed, { variant: "error" }));
-    };
+  const handleClick = () => {
+    void confirm({
+      title: title,
+      description: content,
+      confirmationText: "Delete",
+    }).then(() => enqueueSnackbar(deletePressed, { variant: "error" }));
+  };
 
-    return (
-        <Tooltip title="Delete">
-            <IconButton onClick={handleClick}>
-                <DeleteIcon />
-            </IconButton>
-        </Tooltip>
-    );
+  return (
+    <Tooltip title="Delete">
+      <IconButton onClick={handleClick}>
+        <DeleteIcon />
+      </IconButton>
+    </Tooltip>
+  );
 };

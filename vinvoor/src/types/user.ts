@@ -1,12 +1,8 @@
-export interface User {
-    id: number;
-    username: string;
-    admin: boolean;
-    settings: Settings;
-}
+import { Settings } from "./settings";
 
-export interface Settings {
-    scanInOut: boolean;
-    leaderboard: boolean;
-    public: boolean;
+export interface User {
+  id: number;
+  username: string;
+  admin: boolean;
+  settings: Settings;
 }

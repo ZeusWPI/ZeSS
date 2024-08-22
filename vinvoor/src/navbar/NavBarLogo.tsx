@@ -5,7 +5,7 @@ import { UnstyledLink } from "../components/UnstyledLink";
 import { ThemeContext } from "../providers/ThemeProvider";
 
 interface NavBarLogoProps {
-    sx?: SxProps<Theme>;
+  sx?: SxProps<Theme>;
 }
 
 const CLICK_AMOUNT = 10;
@@ -15,46 +15,46 @@ let pressedAmount = 0;
 let startTimePress = 0;
 
 export const NavBarLogo: FC<NavBarLogoProps> = ({ sx }) => {
-    const { setTheme } = useContext(ThemeContext);
-    const handleClick = () => {
-        if (pressedAmount < CLICK_AMOUNT) {
-            if (pressedAmount === 0) startTimePress = Date.now();
+  const { setTheme } = useContext(ThemeContext);
+  const handleClick = () => {
+    if (pressedAmount < CLICK_AMOUNT) {
+      if (pressedAmount === 0) startTimePress = Date.now();
 
-            pressedAmount++;
+      pressedAmount++;
 
-            if (
-                pressedAmount === CLICK_AMOUNT &&
-                Date.now() - startTimePress <= CLICK_TIME_MS
-            )
-                setTheme("hidden");
-        }
-    };
+      if (
+        pressedAmount === CLICK_AMOUNT &&
+        Date.now() - startTimePress <= CLICK_TIME_MS
+      )
+        setTheme("hidden");
+    }
+  };
 
-    return (
-        <Box display="flex">
-            <UnstyledLink to="/">
-                <Button
-                    color="inherit"
-                    onClick={handleClick}
-                    sx={{
-                        ...sx,
-                        textTransform: "none",
-                        color: "secondary.contrastText",
-                    }}
-                >
-                    <HexagonSlice6 sx={{ mr: ".3rem" }} />
-                    <Typography
-                        variant="h6"
-                        sx={{
-                            letterSpacing: ".3rem",
-                            fontWeight: 700,
-                        }}
-                    >
-                        ZeSS
-                    </Typography>
-                </Button>
-            </UnstyledLink>
-            <Box sx={{ flexGrow: 1 }} />
-        </Box>
-    );
+  return (
+    <Box display="flex">
+      <UnstyledLink to="/">
+        <Button
+          color="inherit"
+          onClick={handleClick}
+          sx={{
+            ...sx,
+            textTransform: "none",
+            color: "secondary.contrastText",
+          }}
+        >
+          <HexagonSlice6 sx={{ mr: ".3rem" }} />
+          <Typography
+            variant="h6"
+            sx={{
+              letterSpacing: ".3rem",
+              fontWeight: 700,
+            }}
+          >
+            ZeSS
+          </Typography>
+        </Button>
+      </UnstyledLink>
+      <Box sx={{ flexGrow: 1 }} />
+    </Box>
+  );
 };
