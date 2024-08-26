@@ -32,9 +32,9 @@ jobs:
       - name: Build Docker image
         run: |
           if [ "${{ github.event_name }}" == "push" ]; then
-            docker tag ghcr.io/zeuswpi/ZeSS:pr-${{ github.sha }} ghcr.io/zeuswpi/ZeSS:latest
+            docker tag ghcr.io/zeuswpi/zess:pr-${{ github.sha }} ghcr.io/zeuswpi/zess:latest
           fi
 
       - name: Push Docker image
         if: github.event_name == 'push'
-        run: docker push --all-tags ghcr.io/zeuswpi/ZeSS
+        run: docker push --all-tags ghcr.io/zeuswpi/zess
