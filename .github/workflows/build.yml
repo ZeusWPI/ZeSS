@@ -11,7 +11,6 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
-      contents: read
       packages: write
 
     steps:
@@ -32,9 +31,7 @@ jobs:
       - name: Build Docker image
         run: |
           docker build . -t ghcr.io/zeuswpi/zess:pr-${{ github.sha }}
-          if [ "${{ github.event_name }}" == "push" ]; then
-            docker tag ghcr.io/zeuswpi/zess:pr-${{ github.sha }} ghcr.io/zeuswpi/zess:latest
-          fi
+          docker tag ghcr.io/zeuswpi/zess:pr-${{ github.sha }} ghcr.io/zeuswpi/zess:latest
 
       - name: Push Docker image
         if: github.event_name == 'push'
