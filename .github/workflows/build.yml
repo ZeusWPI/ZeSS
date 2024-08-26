@@ -37,4 +37,5 @@ jobs:
           fi
 
       - name: Push Docker image
+        if: github.event_name == 'push'
         run: docker push --all-tags ghcr.io/zeuswpi/zess
