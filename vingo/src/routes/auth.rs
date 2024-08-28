@@ -10,10 +10,31 @@ use tower_sessions::Session;
 const ZAUTH_URL: &str = "https://zauth.zeus.gent";
 const CALLBACK_URL: &str = "http://localhost:4000/api/auth/callback";
 
+pub async fn current_user(session: Session) -> Result<Html<String>, StatusCode> {
+    let username = session
+        .get::<String>("user")
+        .await
+        .unwrap()
+        .ok_or(StatusCode::INTERNAL_SERVER_ERROR)?;
+
+    Ok(Html(format!("Logged in as {}", username)))
+}
+
 pub async fn login(session: Session) -> impl IntoResponse {
     let state = Alphanumeric.sample_string(&mut rand::thread_rng(), 16);
     session.insert("state", state.clone()).await.unwrap();
     Redirect::to(&format!("{ZAUTH_URL}/oauth/authorize?client_id=tomtest&response_type=code&state={state}&redirect_uri={CALLBACK_URL}"))
+}
+
+pub async fn logout(session: Session) -> Result<Html<String>, StatusCode> {
+    let username = session
+        .get::<String>("user")
+        .await
+        .unwrap()
+        .ok_or(StatusCode::INTERNAL_SERVER_ERROR)?;
+
+    session.clear().await;
+    Ok(Html("logged out as ".to_owned() + &username))
 }
 
 #[derive(Deserialize, Debug)]
@@ -52,18 +73,12 @@ pub async fn callback(
     let form = [
         ("grant_type", "authorization_code"),
         ("code", &params.code),
-        (
-            "redirect_uri",
-            CALLBACK_URL,
-        ),
+        ("redirect_uri", CALLBACK_URL),
     ];
 
     let token = client
         .post(&format!("{ZAUTH_URL}/oauth/token"))
-        .basic_auth(
-            "tomtest",
-            Some("blargh"),
-        )
+        .basic_auth("tomtest", Some("blargh"))
         .form(&form)
         .send()
         .await
@@ -91,15 +106,4 @@ pub async fn callback(
     session.insert("user", &username).await.unwrap();
 
     Ok(Html(format!("Logged in as {}", username)))
-}
-
-pub async fn logout(session: Session) -> Result<Html<String>, StatusCode> {
-    let username = session
-        .get::<String>("user")
-        .await
-        .unwrap()
-        .ok_or(StatusCode::INTERNAL_SERVER_ERROR)?;
-
-    session.clear().await;
-    Ok(Html("logged out as ".to_owned() + &username))   
 }
