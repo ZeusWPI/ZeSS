@@ -1,2 +1,5 @@
-.env
-tmp/
+debug/
+target/
+
+**/*.rs.bk
+*.pdb
