@@ -19,9 +19,7 @@ async fn main() {
 
     // build our application with a route
     let app = Router::new()
-        .route("/login", get(auth::login))
-        .route("/state", get(auth::logout))
-        .route("/api/auth/callback", get(auth::callback))
+        .nest("/api", routes())
         .layer(sess_mw)
         .layer(TraceLayer::new_for_http());
 
@@ -31,4 +29,11 @@ async fn main() {
         .unwrap();
     println!("listening on {}", listener.local_addr().unwrap());
     axum::serve(listener, app).await.unwrap();
+}
+
+fn routes() -> Router {
+    Router::new()
+        .route("/login", get(auth::login))
+        .route("/logout", get(auth::logout))
+        .route("/auth/callback", get(auth::callback))
 }
