@@ -13,8 +13,8 @@ use user::Model;
 use crate::entities::{prelude::*, *};
 use crate::AppState;
 
+use super::util::errors::{ResponseResult, ResultAndLogError};
 use super::util::session::get_user;
-use super::util::errors::ResponseResult;
 
 const ZAUTH_URL: &str = "https://zauth.zeus.gent";
 const CALLBACK_URL: &str = "http://localhost:4000/api/auth/callback";
@@ -24,14 +24,17 @@ pub async fn current_user(session: Session) -> ResponseResult<Json<Model>> {
     Ok(Json(user))
 }
 
-pub async fn login(session: Session) -> impl IntoResponse {
+pub async fn login(session: Session) -> ResponseResult<Redirect> {
     let state = Alphanumeric.sample_string(&mut rand::thread_rng(), 16);
-    session.insert("state", state.clone()).await.unwrap();
-    Redirect::to(&format!("{ZAUTH_URL}/oauth/authorize?client_id=tomtest&response_type=code&state={state}&redirect_uri={CALLBACK_URL}"))
+    // insert state so we can check it in the callback
+    session.insert("state", state.clone()).await
+        .or_log((StatusCode::INTERNAL_SERVER_ERROR, "failed to insert state in session"))?;
+    // redirect to zauth to authenticate
+    Ok(Redirect::to(&format!("{ZAUTH_URL}/oauth/authorize?client_id=tomtest&response_type=code&state={state}&redirect_uri={CALLBACK_URL}")))
 }
 
 pub async fn logout(session: Session) -> ResponseResult<Json<bool>> {
-    let user = get_user(&session).await?;
+    get_user(&session).await?;
     session.clear().await;
     Ok(Json(true))
 }
@@ -57,14 +60,15 @@ pub async fn callback(
     Query(params): Query<Callback>,
     session: Session,
     state: State<AppState>,
-) -> Result<Html<String>, StatusCode> {
+) -> ResponseResult<()> {
     let zauth_state = session
         .get::<String>("state")
         .await
-        .unwrap()
-        .ok_or(StatusCode::INTERNAL_SERVER_ERROR)?;
+        .or_log((StatusCode::INTERNAL_SERVER_ERROR, "failed to get session"))?
+        .ok_or((StatusCode::INTERNAL_SERVER_ERROR, "state not in session"))?;
+    // check if saved state matches returned state
     if zauth_state != params.state {
-        return Err(StatusCode::UNAUTHORIZED);
+        return Err((StatusCode::UNAUTHORIZED, "state does not match"));
     }
 
     let client = reqwest::Client::new();
@@ -74,35 +78,43 @@ pub async fn callback(
         ("redirect_uri", CALLBACK_URL),
     ];
 
+    // get token from zauth with code
     let token = client
         .post(&format!("{ZAUTH_URL}/oauth/token"))
         .basic_auth("tomtest", Some("blargh"))
         .form(&form)
         .send()
         .await
-        .unwrap()
+        .or_log((
+            StatusCode::INTERNAL_SERVER_ERROR,
+            "zauth token request error",
+        ))?
         .error_for_status()
-        .unwrap()
+        .or_log((StatusCode::INTERNAL_SERVER_ERROR, "non 200 for zauth token"))?
         .json::<ZauthToken>()
         .await
-        .unwrap();
+        .or_log((StatusCode::INTERNAL_SERVER_ERROR, "failed to parse json"))?;
 
+    // get user info from zauth
     let zauth_user = client
         .get(format!("{ZAUTH_URL}/current_user"))
         .header("Authorization", "Bearer ".to_owned() + &token.access_token)
         .send()
         .await
-        .unwrap()
+        .or_log((
+            StatusCode::INTERNAL_SERVER_ERROR,
+            "zauth user request error",
+        ))?
         .error_for_status()
-        .unwrap()
+        .or_log((StatusCode::INTERNAL_SERVER_ERROR, "non 200 for zauth user"))?
         .json::<ZauthUser>()
         .await
-        .unwrap();
+        .or_log((StatusCode::INTERNAL_SERVER_ERROR, "failed to parse json"))?;
 
     let db_user = user::ActiveModel {
         id: Set(zauth_user.id),
         name: Set(zauth_user.username),
-        admin: Set(false),
+        admin: Set(false), // cant insert if not set, even if default
         created_at: Set(Local::now().into()),
     };
 
@@ -115,13 +127,14 @@ pub async fn callback(
         )
         .exec(&state.db)
         .await
-        .unwrap();
+        .or_log((StatusCode::INTERNAL_SERVER_ERROR, "user insert error"))?;
 
-    let db_user = db_user.try_into_model().unwrap();
-    let username = db_user.name.clone();
+    let db_user = db_user.try_into_model()
+        .or_log((StatusCode::INTERNAL_SERVER_ERROR, "user to model failed"))?;
 
     session.clear().await;
-    session.insert("user", db_user).await.unwrap();
+    session.insert("user", db_user).await
+        .or_log((StatusCode::INTERNAL_SERVER_ERROR, "failed to insert user in session"))?;
 
-    Ok(Html(format!("Logged in as {}", username)))
+    Ok(())
 }

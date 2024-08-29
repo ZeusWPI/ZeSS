@@ -38,6 +38,7 @@ async fn main() {
     let listener = tokio::net::TcpListener::bind("127.0.0.1:4000")
         .await
         .unwrap();
+    
     println!("listening on {}", listener.local_addr().unwrap());
     axum::serve(listener, app).await.unwrap();
 }
