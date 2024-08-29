@@ -1,23 +1,28 @@
-use std::borrow::Borrow;
-
-use axum::extract::Query;
+use axum::extract::{Query, State};
 use axum::response::{Html, IntoResponse, Redirect};
+use axum::Json;
+use chrono::Local;
 use rand::distributions::{Alphanumeric, DistString};
 use reqwest::StatusCode;
+use sea_orm::sea_query::OnConflict;
+use sea_orm::{EntityTrait, Set, TryIntoModel};
 use serde::{Deserialize, Serialize};
 use tower_sessions::Session;
+
+use crate::entities::{prelude::*, *};
+use crate::AppState;
 
 const ZAUTH_URL: &str = "https://zauth.zeus.gent";
 const CALLBACK_URL: &str = "http://localhost:4000/api/auth/callback";
 
-pub async fn current_user(session: Session) -> Result<Html<String>, StatusCode> {
-    let username = session
-        .get::<String>("user")
+pub async fn current_user(session: Session) -> Result<Json<user::Model>, StatusCode> {
+    let user = session
+        .get::<user::Model>("user")
         .await
         .unwrap()
         .ok_or(StatusCode::INTERNAL_SERVER_ERROR)?;
 
-    Ok(Html(format!("Logged in as {}", username)))
+    Ok(Json(user))
 }
 
 pub async fn login(session: Session) -> impl IntoResponse {
@@ -27,14 +32,14 @@ pub async fn login(session: Session) -> impl IntoResponse {
 }
 
 pub async fn logout(session: Session) -> Result<Html<String>, StatusCode> {
-    let username = session
-        .get::<String>("user")
+    let user = session
+        .get::<user::Model>("user")
         .await
         .unwrap()
         .ok_or(StatusCode::INTERNAL_SERVER_ERROR)?;
 
     session.clear().await;
-    Ok(Html("logged out as ".to_owned() + &username))
+    Ok(Html("logged out as ".to_owned() + &user.name))
 }
 
 #[derive(Deserialize, Debug)]
@@ -46,26 +51,25 @@ pub struct Callback {
 #[derive(Deserialize, Debug)]
 pub struct ZauthToken {
     access_token: String,
-    token_type: String,
-    expires_in: u64,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ZauthUser {
-    id: u64,
+    id: i32,
     username: String,
 }
 
 pub async fn callback(
     Query(params): Query<Callback>,
     session: Session,
+    state: State<AppState>,
 ) -> Result<Html<String>, StatusCode> {
-    let state = session
+    let zauth_state = session
         .get::<String>("state")
         .await
         .unwrap()
         .ok_or(StatusCode::INTERNAL_SERVER_ERROR)?;
-    if state != params.state {
+    if zauth_state != params.state {
         return Err(StatusCode::UNAUTHORIZED);
     }
 
@@ -89,7 +93,7 @@ pub async fn callback(
         .await
         .unwrap();
 
-    let user = client
+    let zauth_user = client
         .get(format!("{ZAUTH_URL}/current_user"))
         .header("Authorization", "Bearer ".to_owned() + &token.access_token)
         .send()
@@ -101,9 +105,29 @@ pub async fn callback(
         .await
         .unwrap();
 
-    let username = user.username.clone();
+    let db_user = user::ActiveModel {
+        id: Set(zauth_user.id),
+        name: Set(zauth_user.username),
+        admin: Set(false),
+        created_at: Set(Local::now().into()),
+    };
+
+    // update name if user already exists
+    User::insert(db_user.clone())
+        .on_conflict(
+            OnConflict::column(user::Column::Id)
+                .update_column(user::Column::Name)
+                .to_owned(),
+        )
+        .exec(&state.db)
+        .await
+        .unwrap();
+
+    let db_user = db_user.try_into_model().unwrap();
+    let username = db_user.name.clone();
+
     session.clear().await;
-    session.insert("user", &username).await.unwrap();
+    session.insert("user", db_user).await.unwrap();
 
     Ok(Html(format!("Logged in as {}", username)))
 }

@@ -2,6 +2,7 @@ mod routes {
     pub mod auth;
 }
 
+mod entities;
 use routes::auth;
 
 use axum::{routing::get, Router};
@@ -9,7 +10,7 @@ use sea_orm::{Database, DatabaseConnection};
 use tower_http::trace::TraceLayer;
 use tower_sessions::{cookie::SameSite, MemoryStore, SessionManagerLayer};
 
-const DB_URL: &str = "postgres://zess:zess@localhost/zess";
+const DB_URL: &str = "postgres://postgres:zess@localhost/zess";
 
 #[derive(Clone)]
 struct AppState {
@@ -47,5 +48,6 @@ fn routes() -> Router<AppState> {
     Router::new()
         .route("/login", get(auth::login))
         .route("/logout", get(auth::logout))
+        .route("/user", get(auth::current_user))
         .route("/auth/callback", get(auth::callback))
 }
