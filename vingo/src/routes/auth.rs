@@ -8,20 +8,19 @@ use sea_orm::sea_query::OnConflict;
 use sea_orm::{EntityTrait, Set, TryIntoModel};
 use serde::{Deserialize, Serialize};
 use tower_sessions::Session;
+use user::Model;
 
 use crate::entities::{prelude::*, *};
 use crate::AppState;
 
+use super::util::session::get_user;
+use super::util::errors::ResponseResult;
+
 const ZAUTH_URL: &str = "https://zauth.zeus.gent";
 const CALLBACK_URL: &str = "http://localhost:4000/api/auth/callback";
 
-pub async fn current_user(session: Session) -> Result<Json<user::Model>, StatusCode> {
-    let user = session
-        .get::<user::Model>("user")
-        .await
-        .unwrap()
-        .ok_or(StatusCode::INTERNAL_SERVER_ERROR)?;
-
+pub async fn current_user(session: Session) -> ResponseResult<Json<Model>> {
+    let user = get_user(&session).await?;
     Ok(Json(user))
 }
 
@@ -31,15 +30,10 @@ pub async fn login(session: Session) -> impl IntoResponse {
     Redirect::to(&format!("{ZAUTH_URL}/oauth/authorize?client_id=tomtest&response_type=code&state={state}&redirect_uri={CALLBACK_URL}"))
 }
 
-pub async fn logout(session: Session) -> Result<Html<String>, StatusCode> {
-    let user = session
-        .get::<user::Model>("user")
-        .await
-        .unwrap()
-        .ok_or(StatusCode::INTERNAL_SERVER_ERROR)?;
-
+pub async fn logout(session: Session) -> ResponseResult<Json<bool>> {
+    let user = get_user(&session).await?;
     session.clear().await;
-    Ok(Html("logged out as ".to_owned() + &user.name))
+    Ok(Json(true))
 }
 
 #[derive(Deserialize, Debug)]

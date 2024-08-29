@@ -1,6 +1,4 @@
-mod routes {
-    pub mod auth;
-}
+mod routes;
 
 mod entities;
 use routes::auth;
