@@ -27,8 +27,10 @@ pub async fn current_user(session: Session) -> ResponseResult<Json<Model>> {
 pub async fn login(session: Session) -> ResponseResult<Redirect> {
     let state = Alphanumeric.sample_string(&mut rand::thread_rng(), 16);
     // insert state so we can check it in the callback
-    session.insert("state", state.clone()).await
-        .or_log((StatusCode::INTERNAL_SERVER_ERROR, "failed to insert state in session"))?;
+    session.insert("state", state.clone()).await.or_log((
+        StatusCode::INTERNAL_SERVER_ERROR,
+        "failed to insert state in session",
+    ))?;
     // redirect to zauth to authenticate
     Ok(Redirect::to(&format!("{ZAUTH_URL}/oauth/authorize?client_id=tomtest&response_type=code&state={state}&redirect_uri={CALLBACK_URL}")))
 }
@@ -129,12 +131,15 @@ pub async fn callback(
         .await
         .or_log((StatusCode::INTERNAL_SERVER_ERROR, "user insert error"))?;
 
-    let db_user = db_user.try_into_model()
+    let db_user = db_user
+        .try_into_model()
         .or_log((StatusCode::INTERNAL_SERVER_ERROR, "user to model failed"))?;
 
     session.clear().await;
-    session.insert("user", db_user).await
-        .or_log((StatusCode::INTERNAL_SERVER_ERROR, "failed to insert user in session"))?;
+    session.insert("user", db_user).await.or_log((
+        StatusCode::INTERNAL_SERVER_ERROR,
+        "failed to insert user in session",
+    ))?;
 
     Ok(())
 }
