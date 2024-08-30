@@ -1,31 +1,39 @@
 use sea_orm_migration::{prelude::*, schema::*};
 
+use crate::m20220101_000001_create_users::User;
+
 #[derive(DeriveMigrationName)]
 pub struct Migration;
 
 #[derive(DeriveIden)]
-pub enum User {
+enum Card {
     Table,
     Id,
+    Serial,
     Name,
-    Admin,
     CreatedAt,
+    UserId,
 }
 
 #[async_trait::async_trait]
 impl MigrationTrait for Migration {
     async fn up(&self, manager: &SchemaManager) -> Result<(), DbErr> {
-        // Replace the sample below with your own migration scripts
         manager
             .create_table(
                 Table::create()
-                    .table(User::Table)
-                    .col(ColumnDef::new(User::Id).integer().primary_key())
-                    .col(text(User::Name))
-                    .col(boolean(User::Admin).default(false))
+                    .table(Card::Table)
+                    .col(pk_auto(Card::Id))
+                    .col(text_uniq(Card::Serial))
+                    .col(text(Card::Name).default(""))
                     .col(
-                        timestamp_with_time_zone(User::CreatedAt)
+                        timestamp_with_time_zone(Card::CreatedAt)
                             .default(Expr::current_timestamp()),
+                    )
+                    .col(integer(Card::UserId))
+                    .foreign_key(
+                        ForeignKey::create()
+                            .from(Card::Table, Card::UserId)
+                            .to(User::Table, User::Id),
                     )
                     .to_owned(),
             )
@@ -33,9 +41,8 @@ impl MigrationTrait for Migration {
     }
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
-        // Replace the sample below with your own migration scripts
         manager
-            .drop_table(Table::drop().table(User::Table).to_owned())
+            .drop_table(Table::drop().table(Card::Table).to_owned())
             .await
     }
 }
