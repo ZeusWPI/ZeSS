@@ -1,5 +1,5 @@
 use axum::extract::{Query, State};
-use axum::response::{Html, IntoResponse, Redirect};
+use axum::response::Redirect;
 use axum::Json;
 use chrono::Local;
 use rand::distributions::{Alphanumeric, DistString};

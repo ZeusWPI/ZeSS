@@ -1,9 +1,12 @@
 mod routes;
 
 mod entities;
-use routes::auth;
+use routes::{auth, cards};
 
-use axum::{routing::get, Router};
+use axum::{
+    routing::{get, post},
+    Router,
+};
 use sea_orm::{Database, DatabaseConnection};
 use tower_http::trace::TraceLayer;
 use tower_sessions::{cookie::SameSite, MemoryStore, SessionManagerLayer};
@@ -49,4 +52,6 @@ fn routes() -> Router<AppState> {
         .route("/logout", get(auth::logout))
         .route("/user", get(auth::current_user))
         .route("/auth/callback", get(auth::callback))
+        .route("/cards", get(cards::get_for_current_user))
+        .route("/cards/:card_id", post(cards::update))
 }
