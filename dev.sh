@@ -21,7 +21,7 @@ done
 # Build the docker containers if clean flag is set
 
 if [ "$clean" = true ]; then
-    rm vingo/.env || true
+#    rm vingo/.env || true
     rm vinvoor/.env || true
     docker compose -f docker-compose.yml build
 fi
@@ -29,9 +29,9 @@ fi
 
 # Check for the required files
 
-if [ ! -f vingo/.env ]; then
-    cp vingo/dev.env vingo/.env
-fi
+#if [ ! -f vingo/.env ]; then
+#    cp vingo/dev.env vingo/.env
+#fi
 if [ ! -f vinvoor/.env ]; then
     cp vinvoor/dev.env vinvoor/.env
 fi

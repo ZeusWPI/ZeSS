@@ -20,7 +20,6 @@ services:
       - 4000:4000
     volumes:
       - ./vingo:/backend
-      - backend-packages:/go/pkg/mod
     extra_hosts:
       - "host.docker.internal:host-gateway"
     depends_on:

@@ -1,0 +1,9 @@
+FROM rust:1.80.1-alpine3.19
+
+WORKDIR /backend
+
+RUN apk add musl-dev
+
+RUN cargo install cargo-watch
+
+CMD cargo watch -x run
