@@ -14,10 +14,10 @@ export interface LeaderboardItemJSON {
 
 export interface LeaderboardItem {
   position: number;
-  userId: number;
+  user_id: number;
   username: string;
-  totalDays: number;
-  positionChange: number;
+  total_days: number;
+  position_change: number;
 }
 
 // Converters
@@ -36,7 +36,7 @@ export const convertLeaderboardItemJSON = (
 
 export const leaderboardHeadCells: readonly TableHeadCell<LeaderboardItem>[] = [
   {
-    id: "positionChange",
+    id: "position_change",
     label: "Change",
     align: "right",
     padding: "checkbox",
@@ -54,7 +54,7 @@ export const leaderboardHeadCells: readonly TableHeadCell<LeaderboardItem>[] = [
     padding: "normal",
   },
   {
-    id: "totalDays",
+    id: "total_days",
     label: "Total Days",
     align: "right",
     padding: "normal",
