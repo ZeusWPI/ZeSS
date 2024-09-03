@@ -30,7 +30,7 @@ export const UserProvider: FC<UserProviderProps> = ({ children }) => {
   const [error, setError] = useState<Optional<Error>>(undefined);
 
   useEffect(() => {
-    const sessionId = Cookies.get("session_id");
+    const sessionId = Cookies.get("id");
 
     if (!sessionId) {
       setLoading(false);
@@ -41,7 +41,7 @@ export const UserProvider: FC<UserProviderProps> = ({ children }) => {
     getApi<User>("user")
       .then(data => setUser(data))
       .catch(error => {
-        Cookies.remove("session_id");
+        Cookies.remove("id");
         setUser(undefined);
         if (!isResponseNot200Error(error)) setError(error as Error);
       })
