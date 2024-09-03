@@ -49,10 +49,10 @@ export const CardsAdd = () => {
   const checkCardsChange = async (): Promise<boolean> => {
     let status: CardGetRegisterResponse =
       await getApi<CardGetRegisterResponse>(REGISTER_ENDPOINT);
-    while (status.registering && status.isCurrentUser) {
+    while (status.registering && status.is_current_user) {
       setProgressProps({
-        time: status.timeRemaining,
-        percentage: status.timePercentage,
+        time: status.time_remaining,
+        percentage: status.time_percentage,
       });
       status = await getApi<CardGetRegisterResponse>(REGISTER_ENDPOINT);
       await new Promise(r => setTimeout(r, CHECK_INTERVAL));
@@ -73,7 +73,7 @@ export const CardsAdd = () => {
                 void error.response
                   .json()
                   .then((response: CardPostResponse) => {
-                    if (response.isCurrentUser)
+                    if (response.is_current_user)
                       enqueueSnackbar(requestYou, {
                         variant: "warning",
                       });
@@ -86,13 +86,13 @@ export const CardsAdd = () => {
             });
         }
 
-        if (response.registering && response.isCurrentUser) started = true;
+        if (response.registering && response.is_current_user) started = true;
 
         if (started) {
           setRegistering(true);
           let id: Optional<string>;
 
-          if (!(response.registering && response.isCurrentUser)) {
+          if (!(response.registering && response.is_current_user)) {
             id = randomInt().toString();
             enqueueSnackbar(requestSuccess, {
               variant: "info",

@@ -18,7 +18,7 @@ use tower_sessions::{cookie::SameSite, MemoryStore, SessionManagerLayer};
 
 use migration::{Migrator, MigratorTrait};
 
-const DB_URL: &str = "postgres://postgres:zess@localhost/zess";
+const DB_URL: &str = "postgres://postgres:zess@host.docker.internal/zess?sslmode=disable";
 
 #[derive(Clone, Debug)]
 struct AppState {
@@ -65,7 +65,7 @@ async fn main() {
         .with_state(state);
 
     // run it
-    let listener = tokio::net::TcpListener::bind("127.0.0.1:4000")
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:4000")
         .await
         .unwrap();
 
@@ -81,7 +81,7 @@ fn routes() -> Router<AppState> {
         .route("/auth/callback", get(auth::callback))
         .route("/cards", get(cards::get_for_current_user))
         .route("/cards/:card_id", patch(cards::update))
-        .route("/cards/register", post(cards::start_register))
+        .route("/cards/register", get(cards::register_status).post(cards::start_register))
         .route("/scans", get(scans::get_for_current_user))
         .route("/scans", post(scans::add))
 }
