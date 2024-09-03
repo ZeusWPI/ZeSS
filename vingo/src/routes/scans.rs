@@ -44,7 +44,6 @@ pub async fn add(state: State<AppState>, body: String) -> ResponseResult<String>
     }
 
     let mut registering = state.registering.lock().await;
-    dbg!(&registering);
 
     // if someone is registering a card
     if Local::now().fixed_offset() < registering.end {

@@ -48,6 +48,29 @@ pub async fn start_register(session: Session, state: State<AppState>) -> Respons
 }
 
 #[derive(Debug, Serialize, Deserialize)]
+pub struct RegisterStatus {
+    registering: bool,
+    is_current_user: bool,
+    success: bool,
+    time_remaining: u32,
+    time_percentage: f64,
+}
+
+pub async fn register_status(session: Session, state: State<AppState>) -> ResponseResult<Json<RegisterStatus>> {
+    let user = get_user(&session).await?;
+    let registering = state.registering.lock().await;
+
+    let time_remaining = (registering.end - Local::now().fixed_offset()).num_seconds() as u32;
+    Ok(Json(RegisterStatus {
+        registering: Local::now().fixed_offset() < registering.end,
+        is_current_user: user.id == registering.user,
+        success: registering.last_success,
+        time_remaining,
+        time_percentage: f64::from(time_remaining) / 60.0,
+    }))
+}
+
+#[derive(Debug, Serialize, Deserialize)]
 pub struct CardUpdate {
     name: String,
 }
