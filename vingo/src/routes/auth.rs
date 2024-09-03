@@ -18,6 +18,7 @@ use super::util::session::get_user;
 
 const ZAUTH_URL: &str = "https://zauth.zeus.gent";
 const CALLBACK_URL: &str = "http://localhost:4000/api/auth/callback";
+const FRONTEND_URL: &str = "http://localhost:5173";
 
 pub async fn current_user(session: Session) -> ResponseResult<Json<Model>> {
     let user = get_user(&session).await?;
@@ -62,7 +63,7 @@ pub async fn callback(
     Query(params): Query<Callback>,
     session: Session,
     state: State<AppState>,
-) -> ResponseResult<()> {
+) -> ResponseResult<Redirect> {
     let zauth_state = session
         .get::<String>("state")
         .await
@@ -141,5 +142,5 @@ pub async fn callback(
         "failed to insert user in session",
     ))?;
 
-    Ok(())
+    Ok(Redirect::to(FRONTEND_URL))
 }

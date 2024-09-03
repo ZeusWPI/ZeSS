@@ -1,7 +1,10 @@
+use std::sync::Mutex;
+
 use axum::{
     extract::{Path, State},
-    Json,
+    Extension, Json,
 };
+use chrono::{Local, TimeDelta};
 use reqwest::StatusCode;
 use sea_orm::*;
 use serde::{Deserialize, Serialize};
@@ -28,6 +31,22 @@ pub async fn get_for_current_user(
         .or_log((StatusCode::INTERNAL_SERVER_ERROR, "failed to get cards"))?;
 
     Ok(Json(cards))
+}
+
+pub async fn start_register(session: Session, state: State<AppState>) -> ResponseResult<()> {
+    let user = get_user(&session).await?;
+    let mut registering = state.registering.lock().await;
+    if Local::now() < registering.end {
+        Err((
+            StatusCode::SERVICE_UNAVAILABLE,
+            "someone is already registering a card",
+        ))?
+    }
+
+    registering.user = user.id;
+    registering.end = Local::now().fixed_offset() + TimeDelta::minutes(1);
+
+    Ok(())
 }
 
 #[derive(Debug, Serialize, Deserialize)]
