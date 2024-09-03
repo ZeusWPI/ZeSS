@@ -1,21 +1,36 @@
 mod routes;
 
 mod entities;
-use routes::{auth, cards};
+
+use std::sync::Arc;
+
+use chrono::{FixedOffset, Local, TimeDelta};
+use routes::{auth, cards, scans};
 
 use axum::{
     routing::{get, post},
     Router,
 };
-use sea_orm::{Database, DatabaseConnection};
+use sea_orm::{prelude::DateTimeWithTimeZone, Database, DatabaseConnection};
+use tokio::sync::Mutex;
 use tower_http::trace::TraceLayer;
 use tower_sessions::{cookie::SameSite, MemoryStore, SessionManagerLayer};
 
+use migration::{Migrator, MigratorTrait};
+
 const DB_URL: &str = "postgres://postgres:zess@localhost/zess";
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 struct AppState {
     db: DatabaseConnection,
+    registering: Arc<Mutex<RegisterState>>,
+}
+
+#[derive(Clone, Debug)]
+struct RegisterState {
+    user: i32,
+    end: DateTimeWithTimeZone,
+    last_success: bool,
 }
 
 #[tokio::main]
@@ -25,10 +40,22 @@ async fn main() {
         .init();
 
     let sess_store = MemoryStore::default();
-    let sess_mw = SessionManagerLayer::new(sess_store).with_same_site(SameSite::Lax);
+    let sess_mw = SessionManagerLayer::new(sess_store)
+        .with_same_site(SameSite::Lax)
+        .with_http_only(false);
 
     let db = Database::connect(DB_URL).await.unwrap();
-    let state = AppState { db };
+    Migrator::up(&db, None).await.unwrap();
+
+    let registering_state = RegisterState {
+        user: -1,
+        end: Local::now().fixed_offset() - TimeDelta::minutes(1),
+        last_success: false,
+    };
+    let state = AppState {
+        db,
+        registering: Arc::new(Mutex::new(registering_state)),
+    };
 
     // build our application with a route
     let app = Router::new()
@@ -48,10 +75,12 @@ async fn main() {
 
 fn routes() -> Router<AppState> {
     Router::new()
-        .route("/login", get(auth::login))
+        .route("/login", post(auth::login))
         .route("/logout", get(auth::logout))
         .route("/user", get(auth::current_user))
         .route("/auth/callback", get(auth::callback))
         .route("/cards", get(cards::get_for_current_user))
         .route("/cards/:card_id", post(cards::update))
+        .route("/cards/register", get(cards::start_register))
+        .route("/scans", post(scans::add))
 }
