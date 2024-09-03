@@ -1,8 +1,6 @@
-use std::sync::Mutex;
-
 use axum::{
     extract::{Path, State},
-    Extension, Json,
+    Json,
 };
 use chrono::{Local, TimeDelta};
 use reqwest::StatusCode;

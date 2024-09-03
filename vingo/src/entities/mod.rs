@@ -3,4 +3,5 @@
 pub mod prelude;
 
 pub mod card;
+pub mod scan;
 pub mod user;

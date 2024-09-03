@@ -1,39 +1,34 @@
+use crate::m20240829_234032_create_card::Card;
 use sea_orm_migration::{prelude::*, schema::*};
-
-use crate::m20220101_000001_create_users::User;
 
 #[derive(DeriveMigrationName)]
 pub struct Migration;
 
 #[derive(DeriveIden)]
-pub enum Card {
+enum Scan {
     Table,
     Id,
-    Serial,
-    Name,
-    CreatedAt,
-    UserId,
+    ScanTime,
+    CardSerial,
 }
 
 #[async_trait::async_trait]
 impl MigrationTrait for Migration {
     async fn up(&self, manager: &SchemaManager) -> Result<(), DbErr> {
+        // Replace the sample below with your own migration scripts
         manager
             .create_table(
                 Table::create()
-                    .table(Card::Table)
-                    .col(pk_auto(Card::Id))
-                    .col(text_uniq(Card::Serial))
-                    .col(text(Card::Name).default(""))
+                    .table(Scan::Table)
+                    .col(pk_auto(Scan::Id))
+                    .col(text(Scan::CardSerial))
                     .col(
-                        timestamp_with_time_zone(Card::CreatedAt)
-                            .default(Expr::current_timestamp()),
+                        timestamp_with_time_zone(Scan::ScanTime).default(Expr::current_timestamp()),
                     )
-                    .col(integer(Card::UserId))
                     .foreign_key(
                         ForeignKey::create()
-                            .from(Card::Table, Card::UserId)
-                            .to(User::Table, User::Id),
+                            .from(Scan::Table, Scan::CardSerial)
+                            .to(Card::Table, Card::Serial),
                     )
                     .to_owned(),
             )
@@ -42,7 +37,7 @@ impl MigrationTrait for Migration {
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         manager
-            .drop_table(Table::drop().table(Card::Table).to_owned())
+            .drop_table(Table::drop().table(Scan::Table).to_owned())
             .await
     }
 }

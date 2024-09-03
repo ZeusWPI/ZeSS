@@ -4,11 +4,11 @@ mod entities;
 
 use std::sync::Arc;
 
-use chrono::{FixedOffset, Local, TimeDelta};
+use chrono::Local;
 use routes::{auth, cards, scans};
 
 use axum::{
-    routing::{get, post},
+    routing::{get, patch, post},
     Router,
 };
 use sea_orm::{prelude::DateTimeWithTimeZone, Database, DatabaseConnection};
@@ -49,7 +49,7 @@ async fn main() {
 
     let registering_state = RegisterState {
         user: -1,
-        end: Local::now().fixed_offset() - TimeDelta::minutes(1),
+        end: Local::now().fixed_offset(),
         last_success: false,
     };
     let state = AppState {
@@ -80,7 +80,8 @@ fn routes() -> Router<AppState> {
         .route("/user", get(auth::current_user))
         .route("/auth/callback", get(auth::callback))
         .route("/cards", get(cards::get_for_current_user))
-        .route("/cards/:card_id", post(cards::update))
-        .route("/cards/register", get(cards::start_register))
+        .route("/cards/:card_id", patch(cards::update))
+        .route("/cards/register", post(cards::start_register))
+        .route("/scans", get(scans::get_for_current_user))
         .route("/scans", post(scans::add))
 }
