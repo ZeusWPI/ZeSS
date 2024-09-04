@@ -10,22 +10,32 @@ export const getApi = <T, U = unknown>(
 export const postApi = <T, U = unknown>(
   endpoint: string,
   body: Record<string, string | number | boolean> = {},
+  convertData?: (data: U) => T,
 ) =>
-  _fetch<T, U>(`${URLS.API}/${endpoint}`, {
-    method: "POST",
-    body: JSON.stringify(body),
-    headers: new Headers({ "content-type": "application/json" }),
-  });
+  _fetch<T, U>(
+    `${URLS.API}/${endpoint}`,
+    {
+      method: "POST",
+      body: JSON.stringify(body),
+      headers: new Headers({ "content-type": "application/json" }),
+    },
+    convertData,
+  );
 
 export const patchApi = <T, U = unknown>(
   endpoint: string,
   body: Record<string, string | number | boolean> = {},
+  convertData?: (data: U) => T,
 ) =>
-  _fetch<T, U>(`${URLS.API}/${endpoint}`, {
-    method: "PATCH",
-    body: JSON.stringify(body),
-    headers: new Headers({ "content-type": "application/json" }),
-  });
+  _fetch<T, U>(
+    `${URLS.API}/${endpoint}`,
+    {
+      method: "PATCH",
+      body: JSON.stringify(body),
+      headers: new Headers({ "content-type": "application/json" }),
+    },
+    convertData,
+  );
 
 export const deleteAPI = <T, U = unknown>(
   endpoint: string,

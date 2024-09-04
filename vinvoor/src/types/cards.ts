@@ -9,11 +9,11 @@ export interface CardJSON extends BaseJSON {
   amount_used: number;
 }
 
-interface CardPostResponseJSON {
+export interface CardPostResponseJSON {
   is_current_user: boolean;
 }
 
-interface CardGetRegisterResponseJSON {
+export interface CardGetRegisterResponseJSON {
   registering: boolean;
   is_current_user: boolean;
   success: boolean;
