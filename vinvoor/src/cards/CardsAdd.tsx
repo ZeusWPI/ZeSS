@@ -3,7 +3,14 @@ import { Button, Typography } from "@mui/material";
 import { useConfirm } from "material-ui-confirm";
 import { useSnackbar } from "notistack";
 import { useEffect, useState } from "react";
-import { CardGetRegisterResponse, CardPostResponse } from "../types/cards";
+import {
+  CardGetRegisterResponse,
+  CardGetRegisterResponseJSON,
+  CardPostResponse,
+  CardPostResponseJSON,
+  convertCardGetRegisterResponseJSON,
+  convertCardPostResponseJSON,
+} from "../types/cards";
 import { Optional } from "../types/general";
 import { getApi, isResponseNot200Error, postApi } from "../util/fetch";
 import { randomInt } from "../util/util";
@@ -47,14 +54,19 @@ export const CardsAdd = () => {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   const checkCardsChange = async (): Promise<boolean> => {
-    let status: CardGetRegisterResponse =
-      await getApi<CardGetRegisterResponse>(REGISTER_ENDPOINT);
-    while (status.registering && status.is_current_user) {
+    let status: CardGetRegisterResponse = await getApi<
+      CardGetRegisterResponse,
+      CardGetRegisterResponseJSON
+    >(REGISTER_ENDPOINT, convertCardGetRegisterResponseJSON);
+    while (status.registering && status.isCurrentUser) {
       setProgressProps({
-        time: status.time_remaining,
-        percentage: status.time_percentage,
+        time: status.timeRemaining,
+        percentage: status.timePercentage,
       });
-      status = await getApi<CardGetRegisterResponse>(REGISTER_ENDPOINT);
+      status = await getApi<
+        CardGetRegisterResponse,
+        CardGetRegisterResponseJSON
+      >(REGISTER_ENDPOINT, convertCardGetRegisterResponseJSON);
       await new Promise(r => setTimeout(r, CHECK_INTERVAL));
     }
 
@@ -62,18 +74,25 @@ export const CardsAdd = () => {
   };
 
   const handleRegister = (start: boolean) => {
-    getApi<CardGetRegisterResponse>(REGISTER_ENDPOINT)
+    getApi<CardGetRegisterResponse, CardGetRegisterResponseJSON>(
+      REGISTER_ENDPOINT,
+      convertCardGetRegisterResponseJSON,
+    )
       .then(async response => {
         let started = false;
         if (!response.registering && start) {
-          await postApi<CardPostResponse>(REGISTER_ENDPOINT)
+          await postApi<CardPostResponse, CardPostResponseJSON>(
+            REGISTER_ENDPOINT,
+            {},
+            convertCardPostResponseJSON,
+          )
             .then(() => (started = true))
             .catch(error => {
               if (isResponseNot200Error(error)) {
                 void error.response
                   .json()
                   .then((response: CardPostResponse) => {
-                    if (response.is_current_user)
+                    if (response.isCurrentUser)
                       enqueueSnackbar(requestYou, {
                         variant: "warning",
                       });
@@ -86,13 +105,13 @@ export const CardsAdd = () => {
             });
         }
 
-        if (response.registering && response.is_current_user) started = true;
+        if (response.registering && response.isCurrentUser) started = true;
 
         if (started) {
           setRegistering(true);
           let id: Optional<string>;
 
-          if (!(response.registering && response.is_current_user)) {
+          if (!(response.registering && response.isCurrentUser)) {
             id = randomInt().toString();
             enqueueSnackbar(requestSuccess, {
               variant: "info",
