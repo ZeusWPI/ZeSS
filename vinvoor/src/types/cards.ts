@@ -1,11 +1,27 @@
 import { Base, BaseJSON, TableHeadCell } from "./general";
 
+// External
+
 export interface CardJSON extends BaseJSON {
   serial: string;
   name: string;
-  lastUsed: string;
-  amountUsed: number;
+  last_used: string;
+  amount_used: number;
 }
+
+interface CardPostResponseJSON {
+  is_current_user: boolean;
+}
+
+interface CardGetRegisterResponseJSON {
+  registering: boolean;
+  is_current_user: boolean;
+  success: boolean;
+  time_remaining: number;
+  time_percentage: number;
+}
+
+// Internal
 
 export interface Card extends Base {
   serial: string;
@@ -14,15 +30,44 @@ export interface Card extends Base {
   amountUsed: number;
 }
 
+export interface CardPostResponse {
+  isCurrentUser: boolean;
+}
+
+export interface CardGetRegisterResponse {
+  registering: boolean;
+  isCurrentUser: boolean;
+  success: boolean;
+  timeRemaining: number;
+  timePercentage: number;
+}
+
+// Converters
+
 export const convertCardJSON = (cardsJSON: CardJSON[]): Card[] =>
-  cardsJSON.map(CardJSON => ({
-    serial: CardJSON.serial,
-    name: CardJSON.name,
-    lastUsed: new Date(CardJSON.lastUsed),
-    amountUsed: CardJSON.amountUsed,
-    id: CardJSON.id,
-    createdAt: new Date(CardJSON.createdAt),
+  cardsJSON.map(cardJSON => ({
+    ...cardJSON,
+    lastUsed: new Date(cardJSON.last_used),
+    amountUsed: cardJSON.amount_used,
+    createdAt: new Date(cardJSON.created_at),
   }));
+
+export const convertCardPostResponseJSON = (
+  cardJSON: CardPostResponseJSON,
+): CardPostResponse => ({
+  isCurrentUser: cardJSON.is_current_user,
+});
+
+export const convertCardGetRegisterResponseJSON = (
+  cardJSON: CardGetRegisterResponseJSON,
+): CardGetRegisterResponse => ({
+  ...cardJSON,
+  isCurrentUser: cardJSON.is_current_user,
+  timeRemaining: cardJSON.time_remaining,
+  timePercentage: cardJSON.time_percentage,
+});
+
+// Table
 
 export const cardsHeadCells: readonly TableHeadCell<Card>[] = [
   {
@@ -61,15 +106,3 @@ export const cardsHeadCells: readonly TableHeadCell<Card>[] = [
     padding: "normal",
   },
 ];
-
-export interface CardPostResponse {
-  isCurrentUser: boolean;
-}
-
-export interface CardGetRegisterResponse {
-  registering: boolean;
-  isCurrentUser: boolean;
-  success: boolean;
-  timeRemaining: number;
-  timePercentage: number;
-}

@@ -8,8 +8,8 @@ import (
 
 type BaseModel struct {
 	Id        int            `json:"id" gorm:"primarykey"`
-	CreatedAt time.Time      `json:"createdAt"`
-	UpdatedAt time.Time      `json:"updatedAt"`
+	CreatedAt time.Time      `json:"created_at"`
+	UpdatedAt time.Time      `json:"-"`
 	DeletedAt gorm.DeletedAt `json:"-" gorm:"index"`
 }
 
@@ -24,7 +24,7 @@ type User struct {
 
 type Settings struct {
 	BaseModel
-	ScanInOut   bool `json:"scanInOut"`
+	ScanInOut   bool `json:"scan_in_out"`
 	Leaderboard bool `json:"leaderboard"`
 	Public      bool `json:"public"`
 }
@@ -55,17 +55,17 @@ func Card_to_API(card Card) CardAPI {
 
 type CardAPI struct {
 	Id         int       `json:"id"`
-	CreatedAt  time.Time `json:"createdAt"`
+	CreatedAt  time.Time `json:"created_at"`
 	Serial     string    `json:"serial"`
 	Name       string    `json:"name"`
-	LastUsed   time.Time `json:"lastUsed"`
-	AmountUsed int       `json:"amountUsed"`
+	LastUsed   time.Time `json:"last_used"`
+	AmountUsed int       `json:"amount_used"`
 }
 
 type Scan struct {
 	BaseModel
-	ScanTime   time.Time `json:"scanTime"`
-	CardSerial string    `json:"cardSerial" gorm:"index"`
+	ScanTime   time.Time `json:"scan_time"`
+	CardSerial string    `json:"card_serial" gorm:"index"`
 	Card       Card      `json:"-" gorm:"foreignKey:CardSerial;references:Serial"`
 }
 

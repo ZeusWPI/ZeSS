@@ -3,8 +3,8 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs, { Dayjs } from "dayjs";
 import { ChangeEvent, Dispatch, FC, SetStateAction, useState } from "react";
-import { useDaysContext } from "../../../providers/dataproviders/daysProvider";
 import { Optional } from "../../../types/general";
+import { useDays } from "../../../hooks/useDays";
 
 interface DaysTableToolbarProps {
   dateFilter: [Optional<Date>, Optional<Date>];
@@ -23,7 +23,9 @@ export const DaysTableToolbar: FC<DaysTableToolbarProps> = ({
   weekendsFilter,
   setWeekendsFilter,
 }) => {
-  const { data: days } = useDaysContext();
+  const { data: days } = useDays();
+  if (!days) return null; // Can never happen
+
   const [startDate, setStartDate] = useState<Dayjs | null>(
     days.length ? dayjs(days[0].date) : dayjs(),
   );

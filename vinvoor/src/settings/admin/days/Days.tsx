@@ -1,29 +1,14 @@
 import { Grid } from "@mui/material";
-import { useSnackbar } from "notistack";
 import { LoadingSkeleton } from "../../../components/LoadingSkeleton";
-import { useDaysContext } from "../../../providers/dataproviders/daysProvider";
-import { convertDayJSON, Day, DayJSON } from "../../../types/days";
-import { getApi } from "../../../util/fetch";
 import { DaysAdd } from "./DaysAdd";
 import { DaysTable } from "./DaysTable";
+import { useDays } from "../../../hooks/useDays";
 
 export const Days = () => {
-  const { setData: setDays, loading } = useDaysContext();
-  const { enqueueSnackbar } = useSnackbar();
-
-  const reloadDays = () => {
-    getApi<readonly Day[], DayJSON[]>("admin/days", convertDayJSON)
-      .then(data => setDays(data))
-      // This is the admin page so just show the error
-      .catch(error =>
-        enqueueSnackbar(`Error getting all days: ${error}`, {
-          variant: "error",
-        }),
-      );
-  };
+  const { isLoading } = useDays();
 
   return (
-    <LoadingSkeleton loading={loading}>
+    <LoadingSkeleton loading={isLoading}>
       <Grid
         container
         justifyContent="space-between"
@@ -31,10 +16,10 @@ export const Days = () => {
         rowSpacing={6}
       >
         <Grid item xs={12} md={6}>
-          <DaysTable reloadDays={reloadDays} />
+          <DaysTable />
         </Grid>
         <Grid item xs={12} md={6}>
-          <DaysAdd reloadDays={reloadDays} />
+          <DaysAdd />
         </Grid>
       </Grid>
     </LoadingSkeleton>

@@ -1,6 +1,5 @@
 import { useTheme } from "@mui/material";
 import { FC, useMemo } from "react";
-import { useScansContext } from "../../providers/dataproviders/scansProvider";
 import "./heatmap.css";
 import { Rect } from "./Rect";
 import { DayData, HeatmapVariant } from "./types";
@@ -15,6 +14,7 @@ import {
   styleMonth,
   WEEKS_IN_MONTH,
 } from "./utils";
+import { useScans } from "../../hooks/useScan";
 
 interface DayProps {
   startDate: Date;
@@ -34,7 +34,8 @@ export const Day: FC<DayProps> = ({
   variant,
 }) => {
   const theme = useTheme();
-  const { data: scans } = useScansContext();
+  const { data: scans } = useScans();
+  if (!scans) return null; // Can never happen
 
   const data = useMemo<DayData>(() => {
     const normalizedScans = [...scans];

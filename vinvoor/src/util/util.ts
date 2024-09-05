@@ -17,6 +17,14 @@ export const shiftDate = (date: Date, numDays: number) => {
   return newDate;
 };
 
+export const dateTimeFormat = new Intl.DateTimeFormat("en-GB", {
+  year: "2-digit",
+  month: "short",
+  day: "numeric",
+  hour: "numeric",
+  minute: "numeric",
+});
+
 // Compare functions
 
 export const equal = (left: unknown, right: unknown): boolean => {

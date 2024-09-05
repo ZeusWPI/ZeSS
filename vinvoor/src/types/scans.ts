@@ -1,12 +1,17 @@
+import { dateTimeFormat } from "../util/util";
 import { Card } from "./cards";
-import { TableHeadCell } from "./general";
+import { Base, BaseJSON, TableHeadCell } from "./general";
 
-export interface ScanJSON {
-  scanTime: string;
-  cardSerial: string;
+// External
+
+export interface ScanJSON extends BaseJSON {
+  scan_time: string;
+  card_serial: string;
 }
 
-export interface Scan {
+// Internal
+
+export interface Scan extends Base {
   scanTime: Date;
   cardSerial: string;
 }
@@ -16,22 +21,19 @@ export interface ScanCard {
   card?: Card;
 }
 
+// Converters
+
 export const convertScanJSON = (scansJSON: ScanJSON[]): Scan[] =>
   scansJSON
     .map(scanJSON => ({
-      scanTime: new Date(scanJSON.scanTime),
-      cardSerial: scanJSON.cardSerial,
+      ...scanJSON,
+      scanTime: new Date(scanJSON.scan_time),
+      cardSerial: scanJSON.card_serial,
+      createdAt: new Date(scanJSON.created_at),
     }))
     .sort((a, b) => a.scanTime.getTime() - b.scanTime.getTime());
 
-export const mergeScansCards = (
-  scans: readonly Scan[],
-  cards: readonly Card[],
-): ScanCard[] =>
-  scans.map(scan => ({
-    scanTime: scan.scanTime,
-    card: cards.find(card => card.serial === scan.cardSerial),
-  }));
+// Table
 
 export const scanCardHeadCells: readonly TableHeadCell<ScanCard>[] = [
   {
@@ -50,10 +52,13 @@ export const scanCardHeadCells: readonly TableHeadCell<ScanCard>[] = [
   } as TableHeadCell<ScanCard>,
 ];
 
-const dateTimeFormat = new Intl.DateTimeFormat("en-GB", {
-  year: "2-digit",
-  month: "short",
-  day: "numeric",
-  hour: "numeric",
-  minute: "numeric",
-});
+// Other
+
+export const mergeScansCards = (
+  scans: readonly Scan[],
+  cards: readonly Card[],
+): ScanCard[] =>
+  scans.map(scan => ({
+    scanTime: scan.scanTime,
+    card: cards.find(card => card.serial === scan.cardSerial),
+  }));

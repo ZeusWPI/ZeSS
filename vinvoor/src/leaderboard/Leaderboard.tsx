@@ -1,20 +1,20 @@
 import { Divider, Paper, Table, TableContainer } from "@mui/material";
 import { LoadingSkeleton } from "../components/LoadingSkeleton";
-import { useLeaderboardContext } from "../providers/dataproviders/leaderboardProvider";
 import { LeaderboardTableBody } from "./LeaderboardTableBody";
 import { LeaderboardTableToolbar } from "./LeaderboardTableToolbar";
+import { useLeaderboardItems } from "../hooks/useLeaderboard";
 
 export const Leaderboard = () => {
-  const { data: leaderboardItems, loading } = useLeaderboardContext();
+  const { isLoading } = useLeaderboardItems();
 
   return (
-    <LoadingSkeleton loading={loading}>
+    <LoadingSkeleton loading={isLoading}>
       <Paper elevation={4}>
         <LeaderboardTableToolbar />
         <Divider sx={{ borderColor: "primary.main", borderBottomWidth: 3 }} />
         <TableContainer>
           <Table>
-            <LeaderboardTableBody leaderboardItems={leaderboardItems} />
+            <LeaderboardTableBody />
           </Table>
         </TableContainer>
       </Paper>

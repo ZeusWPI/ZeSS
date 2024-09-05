@@ -14,11 +14,6 @@ import { ProtectedRoute } from "./components/ProtectedRoute.tsx";
 import { ErrorPage } from "./errors/ErrorPage.tsx";
 import { Leaderboard } from "./leaderboard/Leaderboard.tsx";
 import { CustomSnackbarProvider } from "./providers/CustomSnackbarProvider.tsx";
-import { CardsProvider } from "./providers/dataproviders/cardsProvider.ts";
-import { DaysProvider } from "./providers/dataproviders/daysProvider.ts";
-import { LeaderboardProvider } from "./providers/dataproviders/leaderboardProvider.ts";
-import { ScansProvider } from "./providers/dataproviders/scansProvider.ts";
-import { SettingsProvider } from "./providers/dataproviders/settingsProvider.ts";
 import { ThemeProvider } from "./providers/ThemeProvider.tsx";
 import { UserProvider } from "./providers/UserProvider.tsx";
 import { Scans } from "./scans/Scans.tsx";
@@ -26,6 +21,9 @@ import { Admin } from "./settings/admin/Admin.tsx";
 import { SettingsOverview } from "./settings/SettingsOverview.tsx";
 import { Login } from "./user/Login.tsx";
 import { Logout } from "./user/Logout.tsx";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
 
 const router = createBrowserRouter([
   {
@@ -55,19 +53,13 @@ const router = createBrowserRouter([
       },
       {
         path: "settings",
-        element: (
-          <SettingsProvider>
-            <SettingsOverview />
-          </SettingsProvider>
-        ),
+        element: <SettingsOverview />,
       },
       {
         path: "admin",
         element: (
           <ProtectedRoute>
-            <DaysProvider>
-              <Admin />
-            </DaysProvider>
+            <Admin />
           </ProtectedRoute>
         ),
       },
@@ -80,17 +72,13 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <ThemeProvider>
       <CssBaseline enableColorScheme>
         <UserProvider>
-          <ScansProvider>
-            <LeaderboardProvider>
-              <CardsProvider>
-                <ConfirmProvider>
-                  <CustomSnackbarProvider>
-                    <RouterProvider router={router} />
-                  </CustomSnackbarProvider>
-                </ConfirmProvider>
-              </CardsProvider>
-            </LeaderboardProvider>
-          </ScansProvider>
+          <QueryClientProvider client={queryClient}>
+            <ConfirmProvider>
+              <CustomSnackbarProvider>
+                <RouterProvider router={router} />
+              </CustomSnackbarProvider>
+            </ConfirmProvider>
+          </QueryClientProvider>
         </UserProvider>
       </CssBaseline>
     </ThemeProvider>

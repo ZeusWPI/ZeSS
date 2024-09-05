@@ -4,15 +4,15 @@ import { useLayoutEffect, useRef, useState } from "react";
 import { Tooltip } from "react-tooltip";
 import { BrowserView } from "../components/BrowserView";
 import { LoadingSkeleton } from "../components/LoadingSkeleton";
-import { useScansContext } from "../providers/dataproviders/scansProvider";
 import { CheckIn } from "./checkin/CheckIn";
 import { Days } from "./days/Days";
 import { Heatmap } from "./heatmap/Heatmap";
 import { HeatmapVariant } from "./heatmap/types";
 import { Streak } from "./streak/Streak";
+import { useScans } from "../hooks/useScan";
 
 export const Overview = () => {
-  const { data: scans, loading } = useScansContext();
+  const { data: scans, isLoading } = useScans();
   const [checked, setChecked] = useState<boolean>(false);
   const daysRef = useRef<HTMLDivElement>(null);
   const [paperHeight, setPaperHeight] = useState<number>(0);
@@ -27,8 +27,8 @@ export const Overview = () => {
   });
 
   return (
-    <LoadingSkeleton loading={loading}>
-      {scans.length > 0 ? (
+    <LoadingSkeleton loading={isLoading}>
+      {scans?.length ? (
         <Grid container spacing={2} justifyContent="space-between">
           <Grid item xs={8} md={4} lg={3}>
             <CheckIn />

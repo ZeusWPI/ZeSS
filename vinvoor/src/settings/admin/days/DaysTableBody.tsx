@@ -9,9 +9,8 @@ import {
 } from "@mui/material";
 import { useSnackbar } from "notistack";
 import { FC, ReactNode } from "react";
-import { useDaysContext } from "../../../providers/dataproviders/daysProvider";
 import { Day, daysHeadCells } from "../../../types/days";
-import { deleteAPI } from "../../../util/fetch";
+import { useDays, useDeleteDay } from "../../../hooks/useDays";
 
 interface DaysTableBodyProps {
   rows: readonly Day[];
@@ -26,24 +25,24 @@ export const DaysTableBody: FC<DaysTableBodyProps> = ({
   isSelected,
   deleting,
 }) => {
-  const { data: days, setData: setDays } = useDaysContext();
+  const { refetch } = useDays();
+  const deleteCard = useDeleteDay();
 
   const { enqueueSnackbar } = useSnackbar();
 
   const handleClick = (id: number) => {
     if (isSelected(id)) handleSelect(id); // This will remove it from the selected list
 
-    deleteAPI(`admin/days/${id}`)
-      .then(() => {
+    deleteCard.mutate(id, {
+      onSuccess: () => {
         enqueueSnackbar("Deleted streakday", { variant: "success" });
-        setDays([...days].filter(day => day.id !== id));
-      })
-      .catch(error =>
-        // This is the admin page so just show the error
-        enqueueSnackbar(`Failed to delete streakday: ${error}`, {
+        void refetch();
+      },
+      onError: (error: Error) =>
+        enqueueSnackbar(`Failed to delete streakday ${id}: ${error.message}`, {
           variant: "error",
         }),
-      );
+    });
   };
 
   return (

@@ -1,11 +1,11 @@
 import { Paper, Table, TableContainer, TablePagination } from "@mui/material";
 import { ChangeEvent, MouseEvent, useMemo, useState } from "react";
-import { useCardsContext } from "../providers/dataproviders/cardsProvider";
 import { Card } from "../types/cards";
 import { TableOrder } from "../types/general";
 import { CardsTableBody } from "./CardsTableBody";
 import { CardsTableHead } from "./CardsTableHead";
 import { CardsTableToolbar } from "./CardsTableToolbar";
+import { useCards } from "../hooks/useCard";
 
 const rowsPerPageOptions = [10, 25, 50];
 
@@ -44,7 +44,9 @@ const stableSort = <T,>(
 };
 
 export const CardsTable = () => {
-  const { data: cards } = useCardsContext();
+  const { data: cards } = useCards();
+  if (!cards) return null; // Can never happen
+
   const [order, setOrder] = useState<TableOrder>("asc");
   const [orderBy, setOrderBy] = useState<keyof Card>("serial");
   const [selected, setSelected] = useState<readonly string[]>([]);

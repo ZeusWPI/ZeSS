@@ -11,14 +11,8 @@ import {
 import { useConfirm } from "material-ui-confirm";
 import { useSnackbar } from "notistack";
 import { ChangeEvent, FC, MouseEvent } from "react";
-import { useCardsContext } from "../providers/dataproviders/cardsProvider";
-import {
-  Card,
-  CardJSON,
-  cardsHeadCells,
-  convertCardJSON,
-} from "../types/cards";
-import { getApi, patchApi } from "../util/fetch";
+import { Card, cardsHeadCells } from "../types/cards";
+import { useCards, usePatchCards } from "../hooks/useCard";
 
 interface CardsTableBodyProps {
   rows: readonly Card[];
@@ -39,7 +33,8 @@ export const CardsTableBody: FC<CardsTableBodyProps> = ({
   handleClick,
   emptyRows,
 }) => {
-  const { setData: setCards } = useCardsContext();
+  const { refetch } = useCards();
+  const patchCard = usePatchCards();
   const confirm = useConfirm();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -64,17 +59,19 @@ export const CardsTableBody: FC<CardsTableBodyProps> = ({
           return;
         }
 
-        patchApi(`cards/${id}`, { name: newName })
-          .then(() => {
-            enqueueSnackbar(nameSaveSuccess, {
-              variant: "success",
-            });
-            void getApi<readonly Card[], CardJSON[]>(
-              "cards",
-              convertCardJSON,
-            ).then(cards => setCards(cards));
-          })
-          .catch(() => enqueueSnackbar(nameSaveFailure, { variant: "error" }));
+        patchCard.mutate(
+          { id: id, newName: newName },
+          {
+            onSuccess: () => {
+              enqueueSnackbar(nameSaveSuccess, {
+                variant: "success",
+              });
+              void refetch();
+            },
+            onError: () =>
+              enqueueSnackbar(nameSaveFailure, { variant: "error" }),
+          },
+        );
       })
       .catch(() => {
         // Required otherwise the confirm dialog will throw an error in the console

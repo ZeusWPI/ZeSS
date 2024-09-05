@@ -1,12 +1,14 @@
 import { TableBody, TableCell, TableRow, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useCardsContext } from "../providers/dataproviders/cardsProvider";
-import { useScansContext } from "../providers/dataproviders/scansProvider";
 import { mergeScansCards, ScanCard, scanCardHeadCells } from "../types/scans";
+import { useCards } from "../hooks/useCard";
+import { useScans } from "../hooks/useScan";
 
 export const ScansTableBody = () => {
-  const { data: scans } = useScansContext();
-  const { data: cards } = useCardsContext();
+  const { data: scans } = useScans();
+  const { data: cards } = useCards();
+  if (!scans || !cards) return null; // Can never happen
+
   const [scanCards, setScanCards] = useState<readonly ScanCard[]>([]);
 
   useEffect(() => {

@@ -27,7 +27,7 @@ export const WelcomePage = () => {
         pt: 10,
       }}
     >
-      <TypographyG variant="h3">Welcome to Vinvoor!</TypographyG>
+      <TypographyG variant="h3">Welcome to Zess!</TypographyG>
       <TypographyG variant="h4">Log in to start scanning</TypographyG>
       <Box mt={2}>
         <Login variant="contained" fullWidth>

@@ -3,14 +3,7 @@ import { Button, Typography } from "@mui/material";
 import { useConfirm } from "material-ui-confirm";
 import { useSnackbar } from "notistack";
 import { useEffect, useState } from "react";
-import { useCardsContext } from "../providers/dataproviders/cardsProvider";
-import {
-  Card,
-  CardGetRegisterResponse,
-  CardJSON,
-  CardPostResponse,
-  convertCardJSON,
-} from "../types/cards";
+import { CardGetRegisterResponse, CardPostResponse } from "../types/cards";
 import { Optional } from "../types/general";
 import { getApi, isResponseNot200Error, postApi } from "../util/fetch";
 import { randomInt } from "../util/util";
@@ -18,6 +11,7 @@ import {
   CircularTimeProgress,
   CircularTimeProgressProps,
 } from "./CircularTimeProgress";
+import { useCards } from "../hooks/useCard";
 
 const CHECK_INTERVAL = 1000;
 const REGISTER_TIME = 60000;
@@ -45,7 +39,7 @@ const registerSucces = "Card registered successfully";
 const registerFail = "Failed to register card";
 
 export const CardsAdd = () => {
-  const { setData: setCards } = useCardsContext();
+  const { refetch } = useCards();
   const [registering, setRegistering] = useState<boolean>(false);
   const [progressProps, setProgressProps] =
     useState<CircularTimeProgressProps>(defaultProgressProps);
@@ -117,10 +111,7 @@ export const CardsAdd = () => {
                   enqueueSnackbar(registerSucces, {
                     variant: "success",
                   });
-                  void getApi<readonly Card[], CardJSON[]>(
-                    "cards",
-                    convertCardJSON,
-                  ).then(cards => setCards(cards));
+                  void refetch();
                 } else
                   enqueueSnackbar(registerFail, {
                     variant: "error",

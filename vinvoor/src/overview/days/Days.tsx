@@ -1,8 +1,8 @@
 import { useTheme } from "@mui/material";
 import { ApexOptions } from "apexcharts";
 import Chart from "react-apexcharts";
-import { useScansContext } from "../../providers/dataproviders/scansProvider";
 import { Scan } from "../../types/scans";
+import { useScans } from "../../hooks/useScan";
 
 const getDayCount = (scans: readonly Scan[]) => {
   const days = [0, 0, 0, 0, 0, 0, 0];
@@ -14,7 +14,8 @@ const getDayCount = (scans: readonly Scan[]) => {
 
 export const Days = () => {
   const theme = useTheme();
-  const { data: scans } = useScansContext();
+  const { data: scans } = useScans();
+  if (!scans) return null; // Can never happen
 
   const state = {
     options: {
