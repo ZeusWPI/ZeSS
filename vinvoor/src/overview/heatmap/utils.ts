@@ -28,11 +28,18 @@ export const getColumnCountMonths = (startDate: Date, endDate: Date) => {
 
 export const getMondayIndexedDay = (date: Date) => (date.getDay() + 6) % 7;
 
+const getNormalizedTime = (date: Date) => {
+  const result = new Date(date);
+  result.setHours(0, 0, 0, 0);
+  return result;
+};
+
 export const formatData = (scans: Scan[]) => {
   const result: Record<number, HeatmapValue> = {};
   scans.forEach(scan => {
-    result[scan.scanTime.getTime()] = {
-      date: scan.scanTime,
+    const date = getNormalizedTime(scan.scanTime);
+    result[date.getTime()] = {
+      date: date,
       count: 1,
     };
   });

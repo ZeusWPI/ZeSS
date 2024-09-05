@@ -39,7 +39,7 @@ export const Day: FC<DayProps> = ({
 
   const data = useMemo<DayData>(() => {
     const normalizedScans = [...scans];
-    normalizedScans.forEach(scan => scan.scanTime.setHours(0, 0, 0, 0));
+    // normalizedScans.forEach(scan => scan.scanTime.setHours(0, 0, 0, 0));
     const formattedScans = formatData(normalizedScans);
 
     const start = new Date(

@@ -29,8 +29,9 @@ const isStreakDay = (date1: Date, date2: Date) => {
 const getStreak = (scans: readonly Scan[]): [boolean, number] => {
   const dates = scans
     .map(scan => {
-      scan.scanTime.setHours(0, 0, 0, 0);
-      return scan.scanTime;
+      const date = new Date(scan.scanTime);
+      date.setHours(0, 0, 0, 0);
+      return date;
     })
     .filter((value, index, array) => {
       return (
