@@ -1,5 +1,17 @@
 import { TableHeadCell } from "./general";
 
+// External
+
+export interface LeaderboardItemJSON {
+  position: number;
+  user_id: number;
+  username: string;
+  total_days: number;
+  position_change: number;
+}
+
+// Internal
+
 export interface LeaderboardItem {
   position: number;
   userId: number;
@@ -7,6 +19,20 @@ export interface LeaderboardItem {
   totalDays: number;
   positionChange: number;
 }
+
+// Converters
+
+export const convertLeaderboardItemJSON = (
+  leaderboardItems: LeaderboardItemJSON[],
+): LeaderboardItem[] =>
+  leaderboardItems.map(leaderboardItem => ({
+    ...leaderboardItem,
+    userId: leaderboardItem.user_id,
+    totalDays: leaderboardItem.total_days,
+    positionChange: leaderboardItem.position_change,
+  }));
+
+// Table
 
 export const leaderboardHeadCells: readonly TableHeadCell<LeaderboardItem>[] = [
   {

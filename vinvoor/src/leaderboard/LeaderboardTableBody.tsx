@@ -6,17 +6,14 @@ import {
   Typography,
 } from "@mui/material";
 import { alpha, Theme, useTheme } from "@mui/material/styles";
-import { FC, useContext } from "react";
+import { useContext } from "react";
 import { UserContext } from "../providers/UserProvider";
 import { TableHeadCell } from "../types/general";
 import { leaderboardHeadCells, LeaderboardItem } from "../types/leaderboard";
 import FirstPlaceIcon from "/first_place.svg";
 import SecondPlaceIcon from "/second_place.svg";
 import ThirdPlaceIcon from "/third_place.svg";
-
-interface LeaderboardTableBodyProps {
-  leaderboardItems: readonly LeaderboardItem[];
-}
+import { useLeaderboardItems } from "../hooks/useLeaderboard";
 
 const leaderboardColors = [
   (theme: Theme) => theme.leaderboard.first,
@@ -103,9 +100,10 @@ const getCell = (
   }
 };
 
-export const LeaderboardTableBody: FC<LeaderboardTableBodyProps> = ({
-  leaderboardItems: rows,
-}) => {
+export const LeaderboardTableBody = () => {
+  const { data: rows } = useLeaderboardItems();
+  if (!rows) return null; // Can never happen
+
   const theme = useTheme();
   const { user } = useContext(UserContext);
 

@@ -1,14 +1,14 @@
 import { LoadingSkeleton } from "../components/LoadingSkeleton";
-import { useCardsContext } from "../providers/dataproviders/cardsProvider";
+import { useCards } from "../hooks/useCard";
 import { CardsEmpty } from "./CardsEmpty";
 import { CardsTable } from "./CardsTable";
 
 export const Cards = () => {
-  const { data: cards, loading } = useCardsContext();
+  const { data: cards, isLoading } = useCards();
 
   return (
-    <LoadingSkeleton loading={loading}>
-      {cards.length ? <CardsTable /> : <CardsEmpty />}
+    <LoadingSkeleton loading={isLoading}>
+      {cards?.length ? <CardsTable /> : <CardsEmpty />}
     </LoadingSkeleton>
   );
 };

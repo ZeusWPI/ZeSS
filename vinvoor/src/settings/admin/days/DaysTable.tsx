@@ -1,29 +1,20 @@
 import { Paper, Stack, Table, TableContainer } from "@mui/material";
 import { useSnackbar } from "notistack";
-import {
-  ChangeEvent,
-  Dispatch,
-  FC,
-  SetStateAction,
-  useEffect,
-  useState,
-} from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { TypographyG } from "../../../components/TypographyG";
-import { useDaysContext } from "../../../providers/dataproviders/daysProvider";
 import { Day } from "../../../types/days";
 import { Optional } from "../../../types/general";
-import { deleteAPI } from "../../../util/fetch";
 import { randomInt } from "../../../util/util";
 import { DaysTableBody } from "./DaysTableBody";
 import { DaysTableHead } from "./DaysTableHead";
 import { DaysTableToolbar } from "./DaysTableToolbar";
+import { useDays, useDeleteDay } from "../../../hooks/useDays";
 
-interface DaysTableProps {
-  reloadDays: Dispatch<SetStateAction<void>>;
-}
+export const DaysTable = () => {
+  const { data: days, refetch } = useDays();
+  if (!days) return null; // Can never happen
 
-export const DaysTable: FC<DaysTableProps> = ({ reloadDays }) => {
-  const { data: days } = useDaysContext();
+  const deleteDay = useDeleteDay();
   const [rows, setRows] = useState<readonly Day[]>(days);
   const [selected, setSelected] = useState<readonly number[]>([]);
   const [deleting, setDeleting] = useState<boolean>(false);
@@ -69,27 +60,31 @@ export const DaysTable: FC<DaysTableProps> = ({ reloadDays }) => {
     });
 
     const promises = selected.map(id =>
-      deleteAPI(`admin/days/${id}`).catch(error =>
-        // This is the admin page so just show the error
-        enqueueSnackbar(`Failed to delete streakday ${id}: ${error}`, {
-          variant: "error",
-        }),
-      ),
+      deleteDay.mutate(id, {
+        onError: (error: Error) =>
+          enqueueSnackbar(
+            `Failed to delete streakday ${id}: ${error.message}`,
+            {
+              variant: "error",
+            },
+          ),
+      }),
     );
 
-    void Promise.all(promises).then(() => {
-      closeSnackbar(key);
-      enqueueSnackbar(
-        `Deleted ${selected.length} streakday${selected.length > 1 ? "s" : ""}`,
-        {
-          variant: "success",
-        },
-      );
+    void Promise.all(promises)
+      .then(() => {
+        closeSnackbar(key);
+        enqueueSnackbar(
+          `Deleted ${selected.length} streakday${selected.length > 1 ? "s" : ""}`,
+          {
+            variant: "success",
+          },
+        );
 
-      setSelected([]);
-      setDeleting(false);
-      reloadDays();
-    });
+        setSelected([]);
+        setDeleting(false);
+      })
+      .finally(() => void refetch());
   };
 
   const handleSelect = (id: number) => {

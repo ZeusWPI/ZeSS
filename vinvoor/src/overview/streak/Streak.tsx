@@ -1,11 +1,11 @@
 import { Box, Typography } from "@mui/material";
-import { useScansContext } from "../../providers/dataproviders/scansProvider";
 import { Scan } from "../../types/scans";
 import {
   isTheSameDay,
   MILLISECONDS_IN_ONE_DAY,
   shiftDate,
 } from "../../util/util";
+import { useScans } from "../../hooks/useScan";
 
 const isWeekendBetween = (date1: Date, date2: Date) => {
   const diffDays = Math.floor(
@@ -65,7 +65,8 @@ const getStreak = (scans: readonly Scan[]): [boolean, number] => {
 };
 
 export const Streak = () => {
-  const { data: scans } = useScansContext();
+  const { data: scans } = useScans();
+  if (!scans) return null; // Can never happen
 
   const [isOnStreak, streak] = getStreak(scans);
 

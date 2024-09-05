@@ -2,7 +2,7 @@ export type Optional<T> = T | undefined;
 
 export interface BaseJSON {
   id: number;
-  createdAt: string;
+  created_at: string;
 }
 
 export interface Base {

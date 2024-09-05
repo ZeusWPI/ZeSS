@@ -1,10 +1,14 @@
 import { Base, BaseJSON } from "./general";
 
+// External
+
 export interface SettingsJSON extends BaseJSON {
-  scanInOut: boolean;
+  scan_in_out: boolean;
   leaderboard: boolean;
   public: boolean;
 }
+
+// Internal
 
 export interface Settings extends Base {
   scanInOut: boolean;
@@ -12,21 +16,15 @@ export interface Settings extends Base {
   public: boolean;
 }
 
-export const defaultSettings: Settings = {
-  id: -1,
-  createdAt: new Date(),
-  scanInOut: false,
-  leaderboard: false,
-  public: false,
-};
+// Converters
 
 export const converSettingsJSON = (settingsJSON: SettingsJSON): Settings => ({
-  id: settingsJSON.id,
-  createdAt: new Date(settingsJSON.createdAt),
-  scanInOut: settingsJSON.scanInOut,
-  leaderboard: settingsJSON.leaderboard,
-  public: settingsJSON.public,
+  ...settingsJSON,
+  createdAt: new Date(settingsJSON.created_at),
+  scanInOut: settingsJSON.scan_in_out,
 });
+
+// Table
 
 interface AdjustableSettings {
   id: keyof Settings;

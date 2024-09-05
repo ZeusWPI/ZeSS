@@ -12,10 +12,10 @@ type Present struct {
 
 type LeaderboardItem struct {
 	Position       int    `json:"position"`
-	UserId         int    `json:"userId"`
+	UserId         int    `json:"user_id"`
 	Username       string `json:"username"`
-	TotalDays      int    `json:"totalDays"`
-	PositionChange int    `json:"positionChange"`
+	TotalDays      int    `json:"total_days"`
+	PositionChange int    `json:"position_change"`
 }
 
 type AnonymousScan struct {

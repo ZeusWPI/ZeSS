@@ -1,16 +1,16 @@
 import { Paper, Table, TableContainer } from "@mui/material";
 import { LoadingSkeleton } from "../components/LoadingSkeleton";
-import { useCardsContext } from "../providers/dataproviders/cardsProvider";
-import { useScansContext } from "../providers/dataproviders/scansProvider";
 import { ScansTableBody } from "./ScansTableBody";
 import { ScansTableHead } from "./ScansTableHead";
+import { useScans } from "../hooks/useScan";
+import { useCards } from "../hooks/useCard";
 
 export const Scans = () => {
-  const { loading: loadingScans } = useScansContext();
-  const { loading: loadingCards } = useCardsContext();
+  const { isLoading: isLoadingScans } = useScans();
+  const { isLoading: isLoadingCards } = useCards();
 
   return (
-    <LoadingSkeleton loading={loadingScans && loadingCards}>
+    <LoadingSkeleton loading={isLoadingScans || isLoadingCards}>
       <Paper elevation={4}>
         <TableContainer>
           <Table>

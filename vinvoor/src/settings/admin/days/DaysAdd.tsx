@@ -3,15 +3,13 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs, { Dayjs } from "dayjs";
 import { useSnackbar } from "notistack";
-import { Dispatch, FC, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { TypographyG } from "../../../components/TypographyG";
 import { postApi } from "../../../util/fetch";
+import { useDays } from "../../../hooks/useDays";
 
-interface DaysAddProps {
-  reloadDays: Dispatch<SetStateAction<void>>;
-}
-
-export const DaysAdd: FC<DaysAddProps> = ({ reloadDays }) => {
+export const DaysAdd = () => {
+  const { refetch } = useDays();
   const [startDate, setStartDate] = useState<Dayjs | null>(dayjs());
   const [endDate, setEndDate] = useState<Dayjs | null>(dayjs());
 
@@ -38,7 +36,7 @@ export const DaysAdd: FC<DaysAddProps> = ({ reloadDays }) => {
         enqueueSnackbar("successfully saved days", {
           variant: "success",
         });
-        reloadDays();
+        void refetch();
       })
       .catch(error =>
         // This is the admin page so just show the error

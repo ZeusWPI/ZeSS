@@ -1,10 +1,11 @@
 import { Alert, AlertTitle } from "@mui/material";
 import { EmoticonExcitedOutline, EmoticonFrownOutline } from "mdi-material-ui";
-import { useScansContext } from "../../providers/dataproviders/scansProvider";
 import { isTheSameDay } from "../../util/util";
+import { useScans } from "../../hooks/useScan";
 
 export const CheckIn = () => {
-  const { data: scans } = useScansContext();
+  const { data: scans } = useScans();
+  if (!scans) return null; // Can never happen
 
   const checkedIn = isTheSameDay(scans[scans.length - 1].scanTime, new Date());
 
