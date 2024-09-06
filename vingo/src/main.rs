@@ -5,7 +5,7 @@ mod entities;
 use std::sync::Arc;
 
 use chrono::Local;
-use routes::{auth, cards, scans};
+use routes::{auth, cards, leaderboard, scans};
 
 use axum::{
     routing::{get, patch, post},
@@ -65,9 +65,7 @@ async fn main() {
         .with_state(state);
 
     // run it
-    let listener = tokio::net::TcpListener::bind("0.0.0.0:4000")
-        .await
-        .unwrap();
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:4000").await.unwrap();
 
     println!("listening on {}", listener.local_addr().unwrap());
     axum::serve(listener, app).await.unwrap();
@@ -81,7 +79,11 @@ fn routes() -> Router<AppState> {
         .route("/auth/callback", get(auth::callback))
         .route("/cards", get(cards::get_for_current_user))
         .route("/cards/:card_id", patch(cards::update))
-        .route("/cards/register", get(cards::register_status).post(cards::start_register))
+        .route(
+            "/cards/register",
+            get(cards::register_status).post(cards::start_register),
+        )
         .route("/scans", get(scans::get_for_current_user))
         .route("/scans", post(scans::add))
+        .route("/leaderboard", get(leaderboard::get))
 }

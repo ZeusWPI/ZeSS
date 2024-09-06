@@ -56,7 +56,10 @@ pub struct RegisterStatus {
     time_percentage: f64,
 }
 
-pub async fn register_status(session: Session, state: State<AppState>) -> ResponseResult<Json<RegisterStatus>> {
+pub async fn register_status(
+    session: Session,
+    state: State<AppState>,
+) -> ResponseResult<Json<RegisterStatus>> {
     let user = get_user(&session).await?;
     let registering = state.registering.lock().await;
 

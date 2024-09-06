@@ -4,8 +4,8 @@ import { TableHeadCell } from "./general";
 
 export interface LeaderboardItemJSON {
   position: number;
-  user_id: number;
-  username: string;
+  id: number;
+  name: string;
   total_days: number;
   position_change: number;
 }
@@ -27,7 +27,8 @@ export const convertLeaderboardItemJSON = (
 ): LeaderboardItem[] =>
   leaderboardItems.map(leaderboardItem => ({
     ...leaderboardItem,
-    userId: leaderboardItem.user_id,
+    userId: leaderboardItem.id,
+    username: leaderboardItem.name,
     totalDays: leaderboardItem.total_days,
     positionChange: leaderboardItem.position_change,
   }));
