@@ -16,4 +16,5 @@ export const useLeaderboardItems = () =>
         ENDPOINT,
         convertLeaderboardItemJSON,
       ),
+    retry: 1,
   });

@@ -5,10 +5,10 @@ import { LeaderboardTableToolbar } from "./LeaderboardTableToolbar";
 import { useLeaderboardItems } from "../hooks/useLeaderboard";
 
 export const Leaderboard = () => {
-  const { isLoading } = useLeaderboardItems();
+  const { isLoading, isError } = useLeaderboardItems();
 
   return (
-    <LoadingSkeleton loading={isLoading}>
+    <LoadingSkeleton isLoading={isLoading} isError={isError}>
       <Paper elevation={4}>
         <LeaderboardTableToolbar />
         <Divider sx={{ borderColor: "primary.main", borderBottomWidth: 3 }} />
