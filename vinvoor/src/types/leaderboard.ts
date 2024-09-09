@@ -14,8 +14,8 @@ export interface LeaderboardItemJSON {
 
 export interface LeaderboardItem {
   position: number;
-  userId: number;
-  username: string;
+  id: number;
+  name: string;
   totalDays: number;
   positionChange: number;
 }
@@ -27,8 +27,6 @@ export const convertLeaderboardItemJSON = (
 ): LeaderboardItem[] =>
   leaderboardItems.map(leaderboardItem => ({
     ...leaderboardItem,
-    userId: leaderboardItem.id,
-    username: leaderboardItem.name,
     totalDays: leaderboardItem.total_days,
     positionChange: leaderboardItem.position_change,
   }));
@@ -49,7 +47,7 @@ export const leaderboardHeadCells: readonly TableHeadCell<LeaderboardItem>[] = [
     padding: "checkbox",
   },
   {
-    id: "username",
+    id: "name",
     label: "Username",
     align: "left",
     padding: "normal",

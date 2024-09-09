@@ -14,6 +14,7 @@ use axum::{
 use sea_orm::{prelude::DateTimeWithTimeZone, Database, DatabaseConnection};
 use tokio::sync::Mutex;
 use tower_http::trace::TraceLayer;
+use tower_http::cors::CorsLayer;
 use tower_sessions::{cookie::SameSite, MemoryStore, SessionManagerLayer};
 
 use migration::{Migrator, MigratorTrait};
@@ -61,6 +62,7 @@ async fn main() {
     let app = Router::new()
         .nest("/api", routes())
         .layer(sess_mw)
+        .layer(CorsLayer::very_permissive())
         .layer(TraceLayer::new_for_http())
         .with_state(state);
 
