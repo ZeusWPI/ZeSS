@@ -14,7 +14,7 @@ use crate::entities::{prelude::*, *};
 use crate::AppState;
 
 use super::util::errors::{ResponseResult, ResultAndLogError};
-use super::util::session::get_user;
+use super::util::session::{get_user, SessionKeys};
 
 const ZAUTH_URL: &str = "https://zauth.zeus.gent";
 const CALLBACK_URL: &str = "http://localhost:4000/api/auth/callback";
@@ -133,7 +133,7 @@ pub async fn callback(
         .or_log((StatusCode::INTERNAL_SERVER_ERROR, "user insert error"))?;
 
     session.clear().await;
-    session.insert("user", db_user).await.or_log((
+    session.insert(SessionKeys::User.as_str(), db_user).await.or_log((
         StatusCode::INTERNAL_SERVER_ERROR,
         "failed to insert user in session",
     ))?;

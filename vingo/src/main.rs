@@ -5,7 +5,7 @@ mod routes;
 use std::sync::Arc;
 
 use chrono::Local;
-use routes::{auth, cards, days, leaderboard, scans};
+use routes::{auth, cards, days, leaderboard, scans, seasons, settings};
 
 use axum::{
     middleware::from_fn,
@@ -101,6 +101,7 @@ fn authenticated_routes() -> Router<AppState> {
         )
         .route("/scans", get(scans::get_for_current_user))
         .route("/leaderboard", get(leaderboard::get))
+        .route("/settings/seasons/:season_id", post(settings::set_season))
         .route_layer(from_fn(middleware::is_logged_in))
 }
 
@@ -111,5 +112,7 @@ fn admin_routes() -> Router<AppState> {
             get(days::get).post(days::add_multiple),
         )
         .route("/days/:day_id", delete(days::delete))
+        .route("/seasons", get(seasons::get).post(seasons::add))
+        .route("/seasons/:season_id", delete(seasons::delete))
         .route_layer(from_fn(middleware::is_admin))
 }

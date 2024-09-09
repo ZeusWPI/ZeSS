@@ -3,6 +3,8 @@ pub mod cards;
 pub mod days;
 pub mod leaderboard;
 pub mod scans;
+pub mod seasons;
+pub mod settings;
 
 pub mod util {
     pub mod errors;
