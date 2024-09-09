@@ -23,7 +23,7 @@ const leaderboardColors = [
 
 const leaderboardText = [
   { fontSize: "30px", fontWeight: "bold" },
-  { fontSize: "25px", fontWeight: "bold" },
+  { fontSize: "24px", fontWeight: "bold" },
   { fontSize: "18px", fontWeight: "bold" },
 ];
 
