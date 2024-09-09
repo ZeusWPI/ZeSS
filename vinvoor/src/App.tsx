@@ -8,7 +8,7 @@ import { UserContext } from "./providers/UserProvider";
 import { WelcomePage } from "./WelcomePage";
 
 export const App = () => {
-  const { user, loading } = useContext(UserContext);
+  const { user, loading, error } = useContext(UserContext);
 
   const outlet = useOutlet();
 
@@ -16,7 +16,7 @@ export const App = () => {
     <>
       <NavBar />
       <Container maxWidth="xl" sx={{ my: "2%" }}>
-        <LoadingSkeleton loading={loading}>
+        <LoadingSkeleton isLoading={loading} isError={error !== undefined}>
           {user !== undefined ? (
             outlet !== null ? (
               <Outlet />

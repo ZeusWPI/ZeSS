@@ -2,14 +2,19 @@ import { Skeleton, SkeletonProps } from "@mui/material";
 import { FC, ReactNode } from "react";
 
 interface LoadingSkeletonProps extends SkeletonProps {
-  loading: boolean;
+  isLoading: boolean;
+  isError: boolean;
   children: ReactNode;
 }
 
 export const LoadingSkeleton: FC<LoadingSkeletonProps> = ({
-  loading,
+  isLoading,
+  isError,
   children,
   ...props
 }) => {
-  return loading ? <Skeleton height={300} {...props} /> : children;
+  if (isError)
+    throw new Error("Error fetching data. Unable to reach the server");
+
+  return isLoading ? <Skeleton {...props} /> : <>{children}</>;
 };

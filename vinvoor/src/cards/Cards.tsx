@@ -4,10 +4,10 @@ import { CardsEmpty } from "./CardsEmpty";
 import { CardsTable } from "./CardsTable";
 
 export const Cards = () => {
-  const { data: cards, isLoading } = useCards();
+  const { data: cards, isLoading, isError } = useCards();
 
   return (
-    <LoadingSkeleton loading={isLoading}>
+    <LoadingSkeleton isLoading={isLoading} isError={isError}>
       {cards?.length ? <CardsTable /> : <CardsEmpty />}
     </LoadingSkeleton>
   );

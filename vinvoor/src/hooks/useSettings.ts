@@ -8,6 +8,7 @@ export const useSettings = () =>
   useQuery({
     queryKey: ["settings"],
     queryFn: () => getApi<Settings, SettingsJSON>(ENDPOINT, converSettingsJSON),
+    retry: 1,
   });
 
 export const usePatchSettings = () => {

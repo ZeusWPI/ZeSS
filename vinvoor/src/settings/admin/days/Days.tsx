@@ -5,10 +5,10 @@ import { DaysTable } from "./DaysTable";
 import { useDays } from "../../../hooks/useDays";
 
 export const Days = () => {
-  const { isLoading } = useDays();
+  const { isLoading, isError } = useDays();
 
   return (
-    <LoadingSkeleton loading={isLoading}>
+    <LoadingSkeleton isLoading={isLoading} isError={isError}>
       <Grid
         container
         justifyContent="space-between"

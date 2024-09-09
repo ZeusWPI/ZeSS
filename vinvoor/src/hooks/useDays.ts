@@ -8,6 +8,7 @@ export const useDays = () =>
   useQuery({
     queryKey: ["days"],
     queryFn: () => getApi<Day[], DayJSON[]>(ENDPOINT, convertDayJSON),
+    retry: 1,
   });
 
 export const useDeleteDay = () => {

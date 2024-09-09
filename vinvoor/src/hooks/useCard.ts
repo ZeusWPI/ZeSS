@@ -8,6 +8,7 @@ export const useCards = () =>
   useQuery<Card[]>({
     queryKey: ["cards"],
     queryFn: () => getApi<Card[], CardJSON[]>(ENDPOINT, convertCardJSON),
+    retry: 1,
   });
 
 export const usePatchCards = () => {

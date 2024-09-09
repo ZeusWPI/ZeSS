@@ -8,4 +8,5 @@ export const useScans = () =>
   useQuery({
     queryKey: ["scans"],
     queryFn: () => getApi<Scan[], ScanJSON[]>(ENDPOINT, convertScanJSON),
+    retry: 1,
   });
