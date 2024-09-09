@@ -29,8 +29,8 @@ export const DaysAdd = () => {
     }
 
     postApi("admin/days", {
-      start_date: startDate.format("YYYY-MM-DDTHH:mm:ssZ"),
-      end_date: endDate.format("YYYY-MM-DDTHH:mm:ssZ"),
+      start_date: startDate.format("YYYY-MM-DD"),
+      end_date: endDate.format("YYYY-MM-DD"),
     })
       .then(() => {
         enqueueSnackbar("successfully saved days", {
