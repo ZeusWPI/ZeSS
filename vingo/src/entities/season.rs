@@ -4,15 +4,14 @@ use sea_orm::entity::prelude::*;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Eq, Serialize, Deserialize)]
-#[sea_orm(table_name = "seasons")]
+#[sea_orm(table_name = "season")]
 pub struct Model {
     #[sea_orm(primary_key)]
-    pub id: i64,
-    pub created_at: Option<DateTimeWithTimeZone>,
-    pub updated_at: Option<DateTimeWithTimeZone>,
-    pub deleted_at: Option<DateTimeWithTimeZone>,
-    pub start_date: Option<DateTimeWithTimeZone>,
-    pub end_date: Option<DateTimeWithTimeZone>,
+    pub id: i32,
+    #[sea_orm(column_type = "Text")]
+    pub name: String,
+    pub start: Date,
+    pub end: Date,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
