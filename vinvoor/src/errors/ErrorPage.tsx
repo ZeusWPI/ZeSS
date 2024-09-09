@@ -1,6 +1,6 @@
 import { Box, Typography } from "@mui/material";
 import { isRouteErrorResponse, useRouteError } from "react-router-dom";
-import SobIcon from "/sob.svg";
+import CursesSob from "/cursed_sob.png";
 
 const get_error = (error: unknown) => {
   if (isRouteErrorResponse(error)) {
@@ -28,7 +28,7 @@ export const ErrorPage = () => {
         width: "100%",
         height: "85vh",
         textAlign: "center",
-        backgroundImage: `url(${SobIcon})`,
+        cursor: `url(${CursesSob}), pointer`,
       }}
     >
       <Typography variant="h1" gutterBottom>

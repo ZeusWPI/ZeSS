@@ -22,6 +22,7 @@ import { SettingsOverview } from "./settings/SettingsOverview.tsx";
 import { Login } from "./user/Login.tsx";
 import { Logout } from "./user/Logout.tsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { NavBar } from "./navbar/NavBar.tsx";
 
 const queryClient = new QueryClient();
 
@@ -29,7 +30,12 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
-    errorElement: <ErrorPage />,
+    errorElement: (
+      <>
+        <NavBar />
+        <ErrorPage />
+      </>
+    ),
     children: [
       {
         path: "login",
