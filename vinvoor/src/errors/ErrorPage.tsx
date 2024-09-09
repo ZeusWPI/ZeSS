@@ -1,5 +1,6 @@
 import { Box, Typography } from "@mui/material";
 import { isRouteErrorResponse, useRouteError } from "react-router-dom";
+import SobIcon from "/sob.svg";
 
 const get_error = (error: unknown) => {
   if (isRouteErrorResponse(error)) {
@@ -24,10 +25,10 @@ export const ErrorPage = () => {
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
-        height: "100vh", // Full viewport height
-        bgcolor: "background.default",
-        padding: "24px", // Adjust padding as needed
+        width: "100%",
+        height: "85vh",
         textAlign: "center",
+        backgroundImage: `url(${SobIcon})`,
       }}
     >
       <Typography variant="h1" gutterBottom>
