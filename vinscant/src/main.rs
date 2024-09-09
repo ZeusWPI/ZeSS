@@ -14,7 +14,7 @@ use esp_idf_svc::{
             //config::{DriverConfig, Config},
         },
     },
-    http::client::{Configuration, EspHttpConnection},
+    http::client::{Configuration, EspHttpConnection}, sys::esp_task_wdt_deinit,
 };
 
 use mfrc522::{
@@ -33,6 +33,9 @@ pub struct Config {
 }
 
 fn main() {
+    unsafe {
+        esp_task_wdt_deinit();
+    }
     // It is necessary to call this function once. Otherwise some patches to the runtime
     // implemented by esp-idf-sys might not link properly. See https://github.com/esp-rs/esp-idf-template/issues/71
     esp_idf_svc::sys::link_patches();
@@ -57,10 +60,16 @@ fn main() {
 
     let scan_spi_device = SpiSingleDeviceDriver::new_single(
         peripherals.spi2,
-        pins.gpio34.downgrade_output(), // SCK
-        pins.gpio35.downgrade_output(), // MOSI
-        Some(pins.gpio36.downgrade_input()), // MISO
-        Some(pins.gpio33.downgrade_output()), // CS/SDA
+        // esp32s2
+        // pins.gpio34.downgrade_output(), // SCK
+        // esp32
+        pins.gpio0.downgrade_output(), // SCK
+        // esp32s2
+        // pins.gpio35.downgrade_output(), // MOSI
+        // esp32
+        pins.gpio4.downgrade_output(), // MOSI
+        Some(pins.gpio27.downgrade_input()), // MISO
+        Some(pins.gpio13.downgrade_output()), // CS/SDA
         &spi::config::DriverConfig::new(),
         &spi::config::Config::new()
     ).unwrap();
@@ -68,9 +77,15 @@ fn main() {
     let mut scanner = Mfrc522::new(scan_interface).init().unwrap();
 
     loop {
-        match scanner.new_card_present() {
+        match scanner.reqa() {
             Ok(answer) => {
-                log::info!("Card found");
+                match scanner.select(&answer) {
+                    Ok(uid) => {
+                        log::info!("{:?}", uid.as_bytes());
+                        log::info!("Card found");
+                    }
+                    Err(_) => ()
+                }
             },
             Err(_) => ()
         }
