@@ -82,12 +82,16 @@ export const Overview = () => {
           </Grid>
         </Grid>
       ) : (
-        <Box display="flex" mt={10} flexDirection="column" alignItems="center">
-          <Typography variant="h3" gutterBottom>
-            You don't have any scans.
-          </Typography>
-          <Typography variant="h5">Start scanning to see some data!</Typography>
-        </Box>
+        <Paper elevation={4} sx={{ padding: 2, mt: 10 }}>
+          <Box display="flex" flexDirection="column" alignItems="center">
+            <Typography variant="h3" gutterBottom>
+              You don't have any scans.
+            </Typography>
+            <Typography variant="h5">
+              Start scanning to see some data!
+            </Typography>
+          </Box>
+        </Paper>
       )}
     </LoadingSkeleton>
   );

@@ -1,7 +1,7 @@
 import { ThemeProvider as MUIThemeProvider } from "@mui/material";
 import Cookies from "js-cookie";
 import { createContext, FC, ReactNode, useEffect, useState } from "react";
-import { ThemeMode, themeModes } from "../theme";
+import { ThemeMode, themeModes } from "../themes/theme";
 
 interface ThemeProviderProps {
   children: ReactNode;

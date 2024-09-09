@@ -1,15 +1,12 @@
 import { Button, ButtonProps } from "@mui/material";
-import { FC } from "react";
+import { FC, useContext } from "react";
+import { postApi } from "../util/fetch";
+import { UserContext } from "../providers/UserProvider";
 
 export const Logout: FC<ButtonProps> = props => {
-  const url = import.meta.env.VITE_BACKEND_URL as string;
-
+  const { invalidateUser } = useContext(UserContext);
   const handleClick = () => {
-    const form = document.createElement("form");
-    form.method = "POST";
-    form.action = `${url}/logout`;
-    document.body.appendChild(form);
-    form.submit();
+    void postApi("logout").finally(() => invalidateUser());
   };
 
   return <Button onClick={handleClick} {...props} />;
