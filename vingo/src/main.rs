@@ -76,29 +76,35 @@ async fn main() {
 
 fn routes() -> Router<AppState> {
     Router::new()
-    .nest("", open_routes())
-    .nest("", authenticated_routes())
+        .nest("", open_routes())
+        .nest("", authenticated_routes())
+        .nest("", admin_routes())
 }
 
 fn open_routes() -> Router<AppState> {
     Router::new()
-    .route("/login", post(auth::login))
-    .route("/auth/callback", get(auth::callback))
-    .route("/scans", post(scans::add))
+        .route("/login", post(auth::login))
+        .route("/auth/callback", get(auth::callback))
+        .route("/scans", post(scans::add))
 }
 
 fn authenticated_routes() -> Router<AppState> {
     // authenticated routes
     Router::new()
-    .route("/logout", get(auth::logout))
-    .route("/user", get(auth::current_user))
-    .route("/cards", get(cards::get_for_current_user))
-    .route("/cards/:card_id", patch(cards::update))
-    .route(
-        "/cards/register",
-        get(cards::register_status).post(cards::start_register),
-    )
-    .route("/scans", get(scans::get_for_current_user))
-    .route("/leaderboard", get(leaderboard::get))
-    .route_layer(from_fn(middleware::is_logged_in))
+        .route("/logout", get(auth::logout))
+        .route("/user", get(auth::current_user))
+        .route("/cards", get(cards::get_for_current_user))
+        .route("/cards/:card_id", patch(cards::update))
+        .route(
+            "/cards/register",
+            get(cards::register_status).post(cards::start_register),
+        )
+        .route("/scans", get(scans::get_for_current_user))
+        .route("/leaderboard", get(leaderboard::get))
+        .route_layer(from_fn(middleware::is_logged_in))
+}
+
+fn admin_routes() -> Router<AppState> {
+    Router::new()
+    .route_layer(from_fn(middleware::is_admin))
 }
