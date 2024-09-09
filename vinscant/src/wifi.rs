@@ -32,11 +32,11 @@ pub fn wifi(
 
     info!("Scanning...");
 
-    let ap_infos = wifi.scan()?;
+    //let ap_infos = wifi.scan()?;
 
-    let ours = ap_infos.into_iter().find(|a| a.ssid == ssid);
+    //let ours = ap_infos.into_iter().find(|a| a.ssid == ssid);
 
-    let channel = if let Some(ours) = ours {
+    /*let channel = if let Some(ours) = ours {
         info!(
             "Found configured access point {} on channel {}",
             ssid, ours.channel
@@ -48,7 +48,8 @@ pub fn wifi(
             ssid
         );
         None
-    };
+    };*/
+    let channel = None;
 
     wifi.set_configuration(&Configuration::Client(ClientConfiguration {
         ssid: ssid
