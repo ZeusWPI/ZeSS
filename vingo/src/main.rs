@@ -9,13 +9,13 @@ use routes::{auth, cards, days, leaderboard, scans};
 
 use axum::{
     middleware::from_fn,
-    routing::{get, patch, post},
+    routing::{delete, get, patch, post},
     Router,
 };
 use sea_orm::{prelude::DateTimeWithTimeZone, Database, DatabaseConnection};
 use tokio::sync::Mutex;
-use tower_http::trace::TraceLayer;
 use tower_http::cors::CorsLayer;
+use tower_http::trace::TraceLayer;
 use tower_sessions::{cookie::SameSite, MemoryStore, SessionManagerLayer};
 
 use migration::{Migrator, MigratorTrait};
@@ -106,9 +106,10 @@ fn authenticated_routes() -> Router<AppState> {
 
 fn admin_routes() -> Router<AppState> {
     Router::new()
-        .route("/days", 
-            get(days::get)
-            .post(days::add_multiple)
-            .delete(days::delete))
+        .route(
+            "/days",
+            get(days::get).post(days::add_multiple),
+        )
+        .route("/days/:day_id", delete(days::delete))
         .route_layer(from_fn(middleware::is_admin))
 }
