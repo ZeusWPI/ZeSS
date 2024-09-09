@@ -1,6 +1,6 @@
-mod routes;
-
 mod entities;
+mod middleware;
+mod routes;
 
 use std::sync::Arc;
 
@@ -8,6 +8,7 @@ use chrono::Local;
 use routes::{auth, cards, leaderboard, scans};
 
 use axum::{
+    middleware::from_fn,
     routing::{get, patch, post},
     Router,
 };
@@ -75,17 +76,29 @@ async fn main() {
 
 fn routes() -> Router<AppState> {
     Router::new()
-        .route("/login", post(auth::login))
-        .route("/logout", get(auth::logout))
-        .route("/user", get(auth::current_user))
-        .route("/auth/callback", get(auth::callback))
-        .route("/cards", get(cards::get_for_current_user))
-        .route("/cards/:card_id", patch(cards::update))
-        .route(
-            "/cards/register",
-            get(cards::register_status).post(cards::start_register),
-        )
-        .route("/scans", get(scans::get_for_current_user))
-        .route("/scans", post(scans::add))
-        .route("/leaderboard", get(leaderboard::get))
+    .nest("", open_routes())
+    .nest("", authenticated_routes())
+}
+
+fn open_routes() -> Router<AppState> {
+    Router::new()
+    .route("/login", post(auth::login))
+    .route("/auth/callback", get(auth::callback))
+    .route("/scans", post(scans::add))
+}
+
+fn authenticated_routes() -> Router<AppState> {
+    // authenticated routes
+    Router::new()
+    .route("/logout", get(auth::logout))
+    .route("/user", get(auth::current_user))
+    .route("/cards", get(cards::get_for_current_user))
+    .route("/cards/:card_id", patch(cards::update))
+    .route(
+        "/cards/register",
+        get(cards::register_status).post(cards::start_register),
+    )
+    .route("/scans", get(scans::get_for_current_user))
+    .route("/leaderboard", get(leaderboard::get))
+    .route_layer(from_fn(middleware::is_logged_in))
 }
