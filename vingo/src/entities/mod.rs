@@ -3,5 +3,6 @@
 pub mod prelude;
 
 pub mod card;
+pub mod day;
 pub mod scan;
 pub mod user;

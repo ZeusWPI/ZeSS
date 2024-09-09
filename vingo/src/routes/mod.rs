@@ -1,5 +1,6 @@
 pub mod auth;
 pub mod cards;
+pub mod days;
 pub mod leaderboard;
 pub mod scans;
 
