@@ -112,13 +112,13 @@ export const LeaderboardTableBody = () => {
       {rows.map((row, index) => {
         return (
           <TableRow
-            key={row.username}
-            id={row.username}
+            key={row.name}
+            id={row.name}
             sx={{
               ...(index % 2 === 0 && {
                 backgroundColor: theme => theme.palette.action.hover,
               }),
-              ...(row.username === user!.username && {
+              ...(row.name === user!.username && {
                 backgroundColor: theme =>
                   alpha(
                     theme.palette.primary.main,
