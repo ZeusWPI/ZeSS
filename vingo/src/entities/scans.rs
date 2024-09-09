@@ -4,30 +4,33 @@ use sea_orm::entity::prelude::*;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Eq, Serialize, Deserialize)]
-#[sea_orm(table_name = "scan")]
+#[sea_orm(table_name = "scans")]
 pub struct Model {
     #[sea_orm(primary_key)]
-    pub id: i32,
-    #[sea_orm(column_type = "Text")]
-    pub card_serial: String,
-    pub scan_time: DateTimeWithTimeZone,
+    pub id: i64,
+    pub created_at: Option<DateTimeWithTimeZone>,
+    pub updated_at: Option<DateTimeWithTimeZone>,
+    pub deleted_at: Option<DateTimeWithTimeZone>,
+    pub scan_time: Option<DateTimeWithTimeZone>,
+    #[sea_orm(column_type = "Text", nullable)]
+    pub card_serial: Option<String>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
     #[sea_orm(
-        belongs_to = "super::card::Entity",
+        belongs_to = "super::cards::Entity",
         from = "Column::CardSerial",
-        to = "super::card::Column::Serial",
+        to = "super::cards::Column::Serial",
         on_update = "NoAction",
         on_delete = "NoAction"
     )]
-    Card,
+    Cards,
 }
 
-impl Related<super::card::Entity> for Entity {
+impl Related<super::cards::Entity> for Entity {
     fn to() -> RelationDef {
-        Relation::Card.def()
+        Relation::Cards.def()
     }
 }
 

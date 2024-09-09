@@ -65,7 +65,7 @@ pub async fn add(state: State<AppState>, body: String) -> ResponseResult<String>
         Ok("card registered".to_string())
     } else {
         if !serial.chars().all(|ch| char::is_ascii_hexdigit(&ch)) {
-            return Err((StatusCode::BAD_REQUEST, "not valid hex"))
+            return Err((StatusCode::BAD_REQUEST, "not valid hex"));
         }
         scan::ActiveModel {
             card_serial: Set(serial.to_string()),

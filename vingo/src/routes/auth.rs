@@ -122,19 +122,15 @@ pub async fn callback(
     };
 
     // update name if user already exists
-    User::insert(db_user.clone())
+    let db_user = User::insert(db_user.clone())
         .on_conflict(
             OnConflict::column(user::Column::Id)
                 .update_column(user::Column::Name)
                 .to_owned(),
         )
-        .exec(&state.db)
+        .exec_with_returning(&state.db)
         .await
         .or_log((StatusCode::INTERNAL_SERVER_ERROR, "user insert error"))?;
-
-    let db_user = db_user
-        .try_into_model()
-        .or_log((StatusCode::INTERNAL_SERVER_ERROR, "user to model failed"))?;
 
     session.clear().await;
     session.insert("user", db_user).await.or_log((
