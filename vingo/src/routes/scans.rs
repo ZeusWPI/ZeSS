@@ -14,7 +14,7 @@ use tower_sessions::Session;
 
 use super::util::{
     errors::{ResponseResult, ResultAndLogError},
-    session::get_user,
+    session::{get_season, get_user},
 };
 
 const SCAN_KEY: &str = "bad_key";
@@ -24,10 +24,14 @@ pub async fn get_for_current_user(
     state: State<AppState>,
 ) -> ResponseResult<Json<Vec<scan::Model>>> {
     let user = get_user(&session).await?;
+    let season = get_season(&session, &state).await?;
     let scans = Scan::find()
         .join(InnerJoin, scan::Relation::Card.def())
         .join(InnerJoin, card::Relation::User.def())
         .filter(user::Column::Id.eq(user.id))
+        // scan time > start && scan_time < end
+        .filter(scan::Column::ScanTime.gte(season.start))
+        .filter(scan::Column::ScanTime.lte(season.end))
         .all(&state.db)
         .await
         .or_log((StatusCode::INTERNAL_SERVER_ERROR, "failed to get scans"))?;
