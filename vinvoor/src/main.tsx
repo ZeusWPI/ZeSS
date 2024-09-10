@@ -19,8 +19,8 @@ import { UserProvider } from "./providers/UserProvider.tsx";
 import { Scans } from "./scans/Scans.tsx";
 import { Admin } from "./settings/admin/Admin.tsx";
 import { SettingsOverview } from "./settings/SettingsOverview.tsx";
-import { Login } from "./user/Login.tsx";
-import { Logout } from "./user/Logout.tsx";
+import { Login } from "./auth/Login.tsx";
+import { Logout } from "./auth/Logout.tsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { NavBar } from "./navbar/NavBar.tsx";
 
@@ -77,15 +77,13 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ThemeProvider>
       <CssBaseline enableColorScheme>
-        <UserProvider>
-          <QueryClientProvider client={queryClient}>
-            <ConfirmProvider>
-              <CustomSnackbarProvider>
-                <RouterProvider router={router} />
-              </CustomSnackbarProvider>
-            </ConfirmProvider>
-          </QueryClientProvider>
-        </UserProvider>
+        <QueryClientProvider client={queryClient}>
+          <ConfirmProvider>
+            <CustomSnackbarProvider>
+              <RouterProvider router={router} />
+            </CustomSnackbarProvider>
+          </ConfirmProvider>
+        </QueryClientProvider>
       </CssBaseline>
     </ThemeProvider>
   </React.StrictMode>,

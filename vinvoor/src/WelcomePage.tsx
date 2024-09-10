@@ -2,7 +2,7 @@ import { GitHub } from "@mui/icons-material";
 import { Box, Button, Typography } from "@mui/material";
 import { ShakerOutline } from "mdi-material-ui";
 import { TypographyG } from "./components/TypographyG";
-import { Login } from "./user/Login";
+import { Login } from "./auth/Login";
 
 declare module "@mui/material/Button" {
   interface ButtonPropsColorOverrides {

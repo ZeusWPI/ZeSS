@@ -19,7 +19,6 @@ export const convertDayJSON = (daysJSON: DayJSON[]): Day[] =>
     .map(dayJSON => ({
       ...dayJSON,
       date: new Date(dayJSON.date),
-      createdAt: new Date(dayJSON.created_at),
     }))
     .sort((a, b) => a.date.getTime() - b.date.getTime());
 

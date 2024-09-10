@@ -7,6 +7,7 @@ import { Base, BaseJSON, TableHeadCell } from "./general";
 export interface ScanJSON extends BaseJSON {
   scan_time: string;
   card_serial: string;
+  created_at: string;
 }
 
 // Internal
@@ -14,6 +15,7 @@ export interface ScanJSON extends BaseJSON {
 export interface Scan extends Base {
   scanTime: Date;
   cardSerial: string;
+  createdAt: Date;
 }
 
 export interface ScanCard {

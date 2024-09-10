@@ -1,30 +1,22 @@
-import { Base, BaseJSON } from "./general";
-
 // External
 
-export interface SettingsJSON extends BaseJSON {
-  scan_in_out: boolean;
-  leaderboard: boolean;
-  public: boolean;
+export interface SettingsJSON {
+  season: number;
 }
 
 // Internal
 
-export interface Settings extends Base {
-  scanInOut: boolean;
-  leaderboard: boolean;
-  public: boolean;
+export interface Settings {
+  season: number;
 }
 
 // Converters
 
 export const converSettingsJSON = (settingsJSON: SettingsJSON): Settings => ({
   ...settingsJSON,
-  createdAt: new Date(settingsJSON.created_at),
-  scanInOut: settingsJSON.scan_in_out,
 });
 
-// Table
+// // Table
 
 interface AdjustableSettings {
   id: keyof Settings;

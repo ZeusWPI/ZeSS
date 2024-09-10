@@ -5,13 +5,13 @@ import {
   CreditCardMultipleOutline,
   CreditCardScanOutline,
 } from "mdi-material-ui";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { DarkModeToggle } from "../components/DarkModeToggle";
-import { UserContext } from "../providers/UserProvider";
 import { NavBarLogo } from "./NavBarLogo";
 import { NavBarPages } from "./NavBarPages";
 import { NavBarSandwich } from "./NavBarSandwich";
 import { NavBarUserMenu } from "./NavBarUserMenu";
+import { useUser } from "../hooks/useUser";
 
 export interface PageIcon {
   page: string;
@@ -29,7 +29,7 @@ const userMenuPages: PageIcon[] = [
 ];
 
 export const NavBar = () => {
-  const { user } = useContext(UserContext);
+  const { data: user } = useUser();
   const [selectedPage, setSelectedPage] = useState<string>("");
 
   const screenSize = {

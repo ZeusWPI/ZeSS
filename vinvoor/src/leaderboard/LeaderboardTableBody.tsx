@@ -6,14 +6,13 @@ import {
   Typography,
 } from "@mui/material";
 import { alpha, Theme, useTheme } from "@mui/material/styles";
-import { useContext } from "react";
-import { UserContext } from "../providers/UserProvider";
 import { TableHeadCell } from "../types/general";
 import { leaderboardHeadCells, LeaderboardItem } from "../types/leaderboard";
 import FirstPlaceIcon from "/first_place.svg";
 import SecondPlaceIcon from "/second_place.svg";
 import ThirdPlaceIcon from "/third_place.svg";
 import { useLeaderboardItems } from "../hooks/useLeaderboard";
+import { useUser } from "../hooks/useUser";
 
 const leaderboardColors = [
   (theme: Theme) => theme.leaderboard.first,
@@ -105,7 +104,7 @@ export const LeaderboardTableBody = () => {
   if (!rows) return null; // Can never happen
 
   const theme = useTheme();
-  const { user } = useContext(UserContext);
+  const { data: user } = useUser();
 
   return (
     <TableBody>
@@ -118,7 +117,7 @@ export const LeaderboardTableBody = () => {
               ...(index % 2 === 0 && {
                 backgroundColor: theme => theme.palette.action.hover,
               }),
-              ...(row.name === user!.username && {
+              ...(row.name === user!.name && {
                 backgroundColor: theme =>
                   alpha(
                     theme.palette.primary.main,
