@@ -4,11 +4,11 @@ import { CardsEmpty } from "./CardsEmpty";
 import { CardsTable } from "./CardsTable";
 
 export const Cards = () => {
-  const { data: cards, isLoading, isError } = useCards();
+  const cardsQuery = useCards();
 
   return (
-    <LoadingSkeleton isLoading={isLoading} isError={isError}>
-      {cards?.length ? <CardsTable /> : <CardsEmpty />}
+    <LoadingSkeleton queries={[cardsQuery]}>
+      {cardsQuery.data?.length ? <CardsTable /> : <CardsEmpty />}
     </LoadingSkeleton>
   );
 };

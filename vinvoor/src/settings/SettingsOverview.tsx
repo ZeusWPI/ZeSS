@@ -3,10 +3,10 @@ import { useSettings } from "../hooks/useSettings";
 import { Settings } from "./Settings";
 
 export const SettingsOverview = () => {
-  const { isLoading, isError } = useSettings();
+  const settingsQuery = useSettings();
 
   return (
-    <LoadingSkeleton isLoading={isLoading} isError={isError}>
+    <LoadingSkeleton queries={[settingsQuery]}>
       <Settings />
     </LoadingSkeleton>
   );

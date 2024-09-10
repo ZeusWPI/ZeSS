@@ -10,7 +10,7 @@ import "./themes/background.css";
 import { useUser } from "./hooks/useUser";
 
 export const App = () => {
-  const { data: user, isLoading, isError } = useUser();
+  const userQuery = useUser();
   const outlet = useOutlet();
 
   const [backgroundSix] = useState(() => randomInt(0, 50) === 1);
@@ -24,8 +24,8 @@ export const App = () => {
           my: "2%",
         }}
       >
-        <LoadingSkeleton isLoading={isLoading} isError={isError}>
-          {user && Object.keys(user).length > 0 ? (
+        <LoadingSkeleton queries={[userQuery]}>
+          {Object.keys(userQuery.data ?? {}).length > 0 ? (
             outlet !== null ? (
               <Outlet />
             ) : (

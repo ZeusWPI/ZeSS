@@ -25,7 +25,7 @@ const navBarPages: PageIcon[] = [
 ];
 
 const userMenuPages: PageIcon[] = [
-  { page: "Settings", icon: <CogOutline sx={{ mr: ".3rem" }} /> },
+  // { page: "Settings", icon: <CogOutline sx={{ mr: ".3rem" }} /> },
 ];
 
 export const NavBar = () => {
