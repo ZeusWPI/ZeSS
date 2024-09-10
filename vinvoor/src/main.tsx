@@ -15,7 +15,6 @@ import { ErrorPage } from "./errors/ErrorPage.tsx";
 import { Leaderboard } from "./leaderboard/Leaderboard.tsx";
 import { CustomSnackbarProvider } from "./providers/CustomSnackbarProvider.tsx";
 import { ThemeProvider } from "./providers/ThemeProvider.tsx";
-import { UserProvider } from "./providers/UserProvider.tsx";
 import { Scans } from "./scans/Scans.tsx";
 import { Admin } from "./settings/admin/Admin.tsx";
 import { SettingsOverview } from "./settings/SettingsOverview.tsx";
