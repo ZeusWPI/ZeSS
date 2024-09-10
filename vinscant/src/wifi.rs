@@ -30,13 +30,13 @@ pub fn wifi(
 
     wifi.start()?;
 
-    info!("Scanning...");
+    /*info!("Scanning...");
 
-    //let ap_infos = wifi.scan()?;
+    let ap_infos = wifi.scan()?;
 
-    //let ours = ap_infos.into_iter().find(|a| a.ssid == ssid);
+    let ours = ap_infos.into_iter().find(|a| a.ssid == ssid);
 
-    /*let channel = if let Some(ours) = ours {
+    let channel = if let Some(ours) = ours {
         info!(
             "Found configured access point {} on channel {}",
             ssid, ours.channel
