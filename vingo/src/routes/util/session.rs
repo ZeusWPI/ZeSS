@@ -1,13 +1,16 @@
+use axum::extract::State;
 use reqwest::StatusCode;
+use sea_orm::EntityTrait;
 use tower_sessions::Session;
-use user::Model;
 
 use super::errors::{ResponseResult, ResultAndLogError};
-use crate::entities::*;
-
+use crate::{
+    entities::{prelude::*, *},
+    AppState,
+};
 pub enum SessionKeys {
     User,
-    Season,    
+    Season,
 }
 
 impl SessionKeys {
@@ -19,8 +22,7 @@ impl SessionKeys {
     }
 }
 
-
-pub async fn get_user(session: &Session) -> ResponseResult<Model> {
+pub async fn get_user(session: &Session) -> ResponseResult<user::Model> {
     session
         .get(SessionKeys::User.as_str())
         .await
@@ -28,13 +30,23 @@ pub async fn get_user(session: &Session) -> ResponseResult<Model> {
         .ok_or((StatusCode::UNAUTHORIZED, "Not logged in"))
 }
 
-pub type SeasonId = i32;
-
-pub async fn get_season(session: &Session) -> ResponseResult<SeasonId> {
-    Ok(session
+pub async fn get_season(
+    session: &Session,
+    state: &State<AppState>,
+) -> ResponseResult<season::Model> {
+    let season: Option<season::Model> = session
         .get(SessionKeys::Season.as_str())
         .await
-        .or_log((StatusCode::INTERNAL_SERVER_ERROR, "Failed to get session"))?
-        .or(Some(0)) // set season to 0 (all) if none is set
-        .expect("can't be none"))
+        .or_log((StatusCode::INTERNAL_SERVER_ERROR, "Failed to get session"))?;
+
+    let season_or_default = match season {
+        Some(season_model) => season_model,
+        None => Season::find_by_id(0)
+            .one(&state.db)
+            .await
+            .or_log((StatusCode::INTERNAL_SERVER_ERROR, "failed to get season"))?
+            .ok_or((StatusCode::INTERNAL_SERVER_ERROR, "no season 0"))?,
+    };
+
+    Ok(season_or_default)
 }

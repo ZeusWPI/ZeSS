@@ -101,18 +101,16 @@ fn authenticated_routes() -> Router<AppState> {
         )
         .route("/scans", get(scans::get_for_current_user))
         .route("/leaderboard", get(leaderboard::get))
-        .route("/settings/seasons/:season_id", post(settings::set_season))
+        .route("/seasons", get(seasons::get))
+        .route("/settings", get(settings::get).patch(settings::update))
         .route_layer(from_fn(middleware::is_logged_in))
 }
 
 fn admin_routes() -> Router<AppState> {
     Router::new()
-        .route(
-            "/days",
-            get(days::get).post(days::add_multiple),
-        )
+        .route("/days", get(days::get).post(days::add_multiple))
         .route("/days/:day_id", delete(days::delete))
-        .route("/seasons", get(seasons::get).post(seasons::add))
+        .route("/seasons", post(seasons::add))
         .route("/seasons/:season_id", delete(seasons::delete))
         .route_layer(from_fn(middleware::is_admin))
 }
