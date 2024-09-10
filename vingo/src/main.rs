@@ -91,7 +91,7 @@ fn open_routes() -> Router<AppState> {
 fn authenticated_routes() -> Router<AppState> {
     // authenticated routes
     Router::new()
-        .route("/logout", get(auth::logout))
+        .route("/logout", post(auth::logout))
         .route("/user", get(auth::current_user))
         .route("/cards", get(cards::get_for_current_user))
         .route("/cards/:card_id", patch(cards::update))
