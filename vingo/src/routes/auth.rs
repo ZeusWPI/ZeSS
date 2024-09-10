@@ -5,7 +5,7 @@ use chrono::Local;
 use rand::distributions::{Alphanumeric, DistString};
 use reqwest::StatusCode;
 use sea_orm::sea_query::OnConflict;
-use sea_orm::{EntityTrait, Set, TryIntoModel};
+use sea_orm::{EntityTrait, Set};
 use serde::{Deserialize, Serialize};
 use tower_sessions::Session;
 use user::Model;
@@ -133,10 +133,13 @@ pub async fn callback(
         .or_log((StatusCode::INTERNAL_SERVER_ERROR, "user insert error"))?;
 
     session.clear().await;
-    session.insert(SessionKeys::User.as_str(), db_user).await.or_log((
-        StatusCode::INTERNAL_SERVER_ERROR,
-        "failed to insert user in session",
-    ))?;
+    session
+        .insert(SessionKeys::User.as_str(), db_user)
+        .await
+        .or_log((
+            StatusCode::INTERNAL_SERVER_ERROR,
+            "failed to insert user in session",
+        ))?;
 
     Ok(Redirect::to(FRONTEND_URL))
 }

@@ -2,7 +2,7 @@ use axum::{
     extract::{Path, State},
     Json,
 };
-use chrono::{DateTime, Datelike, FixedOffset, NaiveDate, TimeDelta, Weekday};
+use chrono::{Datelike, NaiveDate, TimeDelta, Weekday};
 use reqwest::StatusCode;
 use sea_orm::{ActiveModelTrait, EntityTrait, Set, TransactionTrait};
 use serde::{Deserialize, Serialize};
@@ -38,7 +38,6 @@ pub async fn add_multiple(
 
     let mut current_date = day_range.start_date;
     while current_date <= day_range.end_date {
-
         if current_date.weekday() == Weekday::Sat || current_date.weekday() == Weekday::Sun {
             current_date += TimeDelta::days(1);
             continue;

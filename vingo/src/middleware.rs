@@ -1,8 +1,4 @@
-use axum::{
-    extract::Request,
-    middleware::Next,
-    response::{IntoResponse, Response},
-};
+use axum::{extract::Request, middleware::Next, response::IntoResponse};
 use reqwest::StatusCode;
 use tower_sessions::Session;
 

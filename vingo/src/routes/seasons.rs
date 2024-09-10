@@ -2,9 +2,9 @@ use axum::{
     extract::{Path, State},
     Json,
 };
-use chrono::{DateTime, Datelike, FixedOffset, NaiveDate, TimeDelta, Weekday};
+use chrono::NaiveDate;
 use reqwest::StatusCode;
-use sea_orm::{ActiveModelTrait, EntityTrait, Set, TransactionTrait};
+use sea_orm::{ActiveModelTrait, EntityTrait, Set};
 use serde::{Deserialize, Serialize};
 
 use crate::{
@@ -27,13 +27,19 @@ pub struct SeasonAddBody {
     start: NaiveDate,
     end: NaiveDate,
 }
-pub async fn add(state: State<AppState>, Json(new_season): Json<SeasonAddBody>) -> ResponseResult<()> {
+pub async fn add(
+    state: State<AppState>,
+    Json(new_season): Json<SeasonAddBody>,
+) -> ResponseResult<()> {
     season::ActiveModel {
         name: Set(new_season.name),
         start: Set(new_season.start),
         end: Set(new_season.end),
         ..Default::default()
-    }.insert(&state.db).await.or_log((StatusCode::INTERNAL_SERVER_ERROR, "failed to insert season"))?;
+    }
+    .insert(&state.db)
+    .await
+    .or_log((StatusCode::INTERNAL_SERVER_ERROR, "failed to insert season"))?;
 
     Ok(())
 }
