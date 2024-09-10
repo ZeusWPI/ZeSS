@@ -1,3 +1,4 @@
 [vinscant]
 wifi_ssid = "Your SSID here"
 wifi_psk = "Your password here"
+auth_key = "Your key here"
