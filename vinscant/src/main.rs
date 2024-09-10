@@ -1,9 +1,6 @@
-use anyhow::{bail, Result};
+use ws2812_esp32_rmt_driver::{driver::color::LedPixelColorGrb24, LedPixelEsp32Rmt, RGB8};
 use core::str;
-use embedded_svc::{
-    http::{client::Client, Method},
-    io::Read,
-};
+use embedded_svc::http::{client::Client, Method};
 use esp_idf_svc::{
     eventloop::EspSystemEventLoop, hal::{
         gpio::{InputPin, OutputPin},
@@ -12,7 +9,9 @@ use esp_idf_svc::{
             self, SpiSingleDeviceDriver
             //config::{DriverConfig, Config},
         },
-    }, http::client::{Configuration, EspHttpConnection}, sys::esp_task_wdt_deinit
+    },
+    http::client::{Configuration, EspHttpConnection},
+    sys::esp_task_wdt_deinit
 };
 
 use mfrc522::{
@@ -30,6 +29,26 @@ pub struct Config {
     wifi_psk: &'static str,
     #[default("")]
     auth_key: &'static str,
+}
+
+#[derive(Debug)]
+struct StatusNotifier<'a> {
+    led_strip: LedPixelEsp32Rmt::<'a, RGB8, LedPixelColorGrb24>,
+    leds: usize,
+}
+impl StatusNotifier<'_> {
+    fn idle(&mut self) {
+        let pixels = std::iter::repeat(RGB8::new(0xff, 0xff, 0x00)).take(self.leds);
+        self.led_strip.write_nocopy(pixels);
+    }
+    fn good(&mut self) {
+        let pixels = std::iter::repeat(RGB8::new(0x00, 0xff, 0x00)).take(self.leds);
+        self.led_strip.write_nocopy(pixels);
+    }
+    fn bad(&mut self) {
+        let pixels = std::iter::repeat(RGB8::new(0xff, 0x00, 0x00)).take(self.leds);
+        self.led_strip.write_nocopy(pixels);
+    }
 }
 
 fn main() {
@@ -77,6 +96,17 @@ fn main() {
     let scan_interface = SpiInterface::new(scan_spi_device);
     let mut scanner = Mfrc522::new(scan_interface).init().unwrap();
 
+    let led_pin = pins.gpio5;
+    let channel = peripherals.rmt.channel0;
+    let mut led_strip = LedPixelEsp32Rmt::<RGB8, LedPixelColorGrb24>::new(channel, led_pin).unwrap();
+
+    let mut status_notifier = StatusNotifier {
+        led_strip,
+        leds: 8
+    };
+
+    status_notifier.idle();
+
     loop {
         if let Ok(answer) = scanner.reqa() {
             if let Ok(uid) =  scanner.select(&answer) {
@@ -91,6 +121,11 @@ fn main() {
                 request.write(format!("{};{}", hex::encode(uid.as_bytes()), app_config.auth_key).as_bytes());
                 if let Ok(response) = request.submit() {
                     log::info!("response code: {}", response.status());
+                    if response.status() == 200 {
+                        status_notifier.good();
+                    }
+                } else {
+
                 }
             }
         }
