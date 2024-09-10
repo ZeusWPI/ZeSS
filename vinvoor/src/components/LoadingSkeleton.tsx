@@ -14,7 +14,7 @@ export const LoadingSkeleton: FC<LoadingSkeletonProps> = ({
   ...props
 }) => {
   if (isError)
-    throw new Error("Error fetching data. Unable to reach the server");
+    throw new Error("Error fetching data, unable to reach the server");
 
   return isLoading ? <Skeleton {...props} /> : <>{children}</>;
 };

@@ -2,12 +2,10 @@ export type Optional<T> = T | undefined;
 
 export interface BaseJSON {
   id: number;
-  created_at: string;
 }
 
 export interface Base {
   id: number;
-  createdAt: Date;
 }
 
 export type TableOrder = "asc" | "desc";

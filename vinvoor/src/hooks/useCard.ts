@@ -5,7 +5,7 @@ import { getApi, patchApi } from "../util/fetch";
 const ENDPOINT = "cards";
 
 export const useCards = () =>
-  useQuery<Card[]>({
+  useQuery({
     queryKey: ["cards"],
     queryFn: () => getApi<Card[], CardJSON[]>(ENDPOINT, convertCardJSON),
     retry: 1,

@@ -8,12 +8,12 @@ import {
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { Cow, ExitRun, ShieldAccountOutline } from "mdi-material-ui";
-import { FC, MouseEvent, useContext, useState } from "react";
+import { FC, MouseEvent, useState } from "react";
 import { UnstyledLink } from "../components/UnstyledLink";
-import { UserContext } from "../providers/UserProvider";
-import { Login } from "../user/Login";
-import { Logout } from "../user/Logout";
+import { Login } from "../auth/Login";
+import { Logout } from "../auth/Logout";
 import { PageIcon } from "./NavBar";
+import { useUser } from "../hooks/useUser";
 
 interface NavBarUserMenuProps {
   pageIcons: readonly PageIcon[];
@@ -26,7 +26,7 @@ export const NavBarUserMenu: FC<NavBarUserMenuProps> = ({
   selectedPage,
   handleSelectedPage,
 }) => {
-  const { user } = useContext(UserContext);
+  const { data: user } = useUser();
   const theme = useTheme();
   const isBrowserView = useMediaQuery(theme.breakpoints.up("sm"));
   const [anchorElUser, setAnchorElUser] = useState<HTMLElement | undefined>(
@@ -59,7 +59,7 @@ export const NavBarUserMenu: FC<NavBarUserMenuProps> = ({
             }}
           >
             <ShieldAccountOutline sx={{ mr: "3px" }} />
-            <Typography variant="h6">{user.username}</Typography>
+            <Typography variant="h6">{user.name}</Typography>
           </Button>
           <Menu
             sx={{ mt: "45px" }}

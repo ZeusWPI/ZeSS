@@ -1,18 +1,17 @@
 import { MoveDown } from "@mui/icons-material";
 import { Button, Toolbar, Typography } from "@mui/material";
-import { useContext } from "react";
 import { HashLink } from "react-router-hash-link";
-import { UserContext } from "../providers/UserProvider";
+import { useUser } from "../hooks/useUser";
 
 export const LeaderboardTableToolbar = () => {
-  const { user } = useContext(UserContext);
+  const { data: user } = useUser();
 
   return (
     <Toolbar sx={{ p: { xs: 1, sm: 2 }, m: { xs: 1, sm: 2 } }}>
       <Typography sx={{ flex: "1" }} variant="h4" fontWeight="bold">
         Ranking
       </Typography>
-      <HashLink to={`/leaderboard#${user!.username}`}>
+      <HashLink to={`/leaderboard#${user!.name}`}>
         <Button variant="contained">
           <MoveDown sx={{ mr: "2%" }} />
           <Typography>Jump</Typography>

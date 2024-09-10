@@ -7,6 +7,7 @@ export interface CardJSON extends BaseJSON {
   name: string;
   last_used: string;
   amount_used: number;
+  created_at: string;
 }
 
 export interface CardPostResponseJSON {
@@ -28,6 +29,7 @@ export interface Card extends Base {
   name: string;
   lastUsed: Date;
   amountUsed: number;
+  createdAt: Date;
 }
 
 export interface CardPostResponse {

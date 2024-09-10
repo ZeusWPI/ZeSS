@@ -1,10 +1,22 @@
-import { Settings } from "./settings";
+// External
 
-// External / Internal
+export interface UserJSON {
+  id: number;
+  name: string;
+  admin: boolean;
+}
+
+// Internal
 
 export interface User {
   id: number;
-  username: string;
+  name: string;
   admin: boolean;
-  settings: Settings;
 }
+
+// Converters
+
+export const convertUserJSON = (userJSON: UserJSON): User => ({ ...userJSON });
+
+// TODO: Rename user directory to auth
+// TODO: Convert user to tanstack query
