@@ -12,7 +12,7 @@ import { Streak } from "./streak/Streak";
 import { useScans } from "../hooks/useScan";
 
 export const Overview = () => {
-  const { data: scans, isLoading, isError } = useScans();
+  const scansQuery = useScans();
   const [checked, setChecked] = useState<boolean>(false);
   const daysRef = useRef<HTMLDivElement>(null);
   const [paperHeight, setPaperHeight] = useState<number>(0);
@@ -27,8 +27,8 @@ export const Overview = () => {
   });
 
   return (
-    <LoadingSkeleton isLoading={isLoading} isError={isError}>
-      {scans?.length ? (
+    <LoadingSkeleton queries={[scansQuery]}>
+      {scansQuery.data?.length ? (
         <Grid container spacing={2} justifyContent="space-between">
           <Grid item xs={8} md={4} lg={3}>
             <CheckIn />

@@ -6,14 +6,11 @@ import { useScans } from "../hooks/useScan";
 import { useCards } from "../hooks/useCard";
 
 export const Scans = () => {
-  const { isLoading: isLoadingScans, isError: isErrorScans } = useScans();
-  const { isLoading: isLoadingCards, isError: isErrorCards } = useCards();
+  const scansQuery = useScans();
+  const cardsQuery = useCards();
 
   return (
-    <LoadingSkeleton
-      isLoading={isLoadingScans || isLoadingCards}
-      isError={isErrorScans || isErrorCards}
-    >
+    <LoadingSkeleton queries={[scansQuery, cardsQuery]}>
       <Paper elevation={4}>
         <TableContainer>
           <Table>
