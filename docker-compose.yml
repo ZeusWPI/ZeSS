@@ -13,6 +13,7 @@ services:
       - "host.docker.internal:host-gateway"
 
   zess-backend:
+    env_file: "vingo/.env"
     build:
       context: vingo
       dockerfile: Dockerfile.dev

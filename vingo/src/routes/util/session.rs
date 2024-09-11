@@ -1,4 +1,7 @@
+use std::{env, sync::LazyLock};
+
 use axum::extract::State;
+use chrono::Local;
 use reqwest::StatusCode;
 use sea_orm::EntityTrait;
 use tower_sessions::Session;
@@ -8,6 +11,8 @@ use crate::{
     entities::{prelude::*, *},
     AppState,
 };
+
+static DEBUG_LOGIN: LazyLock<bool> = LazyLock::new(|| env::var("DEBUG_LOGIN").unwrap_or("".into()) == "TRUE");
 pub enum SessionKeys {
     User,
     Season,
@@ -23,6 +28,11 @@ impl SessionKeys {
 }
 
 pub async fn get_user(session: &Session) -> ResponseResult<user::Model> {
+    // act as always logged in
+    if *DEBUG_LOGIN {
+        return Ok(user::Model { id: 1, name: "vincentest".into(), admin: true, created_at: Local::now().fixed_offset() });
+    }
+
     session
         .get(SessionKeys::User.as_str())
         .await
