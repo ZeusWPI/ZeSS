@@ -1,27 +1,19 @@
 # Build backend
-FROM golang:1.22.1-alpine3.19 as build_backend
+FROM rust:1.81-alpine3.20 as build_backend
 
-RUN apk add upx alpine-sdk
+RUN apk add upx musl-dev
 
 WORKDIR /
 
-COPY vingo/go.sum  go.sum
+COPY vingo/Cargo.* .
 
-COPY vingo/go.mod go.mod
+COPY vingo/migration migration
 
-RUN go mod download
+COPY vingo/src src
 
-COPY vingo/main.go .
+RUN cargo build --release
 
-COPY vingo/database database
-
-COPY vingo/handlers handlers
-
-RUN CGO_ENABLED=1 go build -ldflags "-s -w" -v -tags musl vingo/.
-
-RUN upx --best --lzma vingo
-
-
+RUN upx --best --lzma target/release/vingo
 
 # Build frontend
 FROM node:20.15.1-alpine3.20 as build_frontend
@@ -40,14 +32,12 @@ COPY vinvoor/production.env .env
 
 RUN yarn run build
 
-
-
 # End container
 FROM alpine:3.19
 
 WORKDIR /
 
-COPY --from=build_backend vingo .
+COPY --from=build_backend target/release/vingo .
 COPY --from=build_frontend /dist public
 
 ENV DEVELOPMENT=false
