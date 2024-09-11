@@ -3,8 +3,10 @@ use axum::{
     Json,
 };
 use chrono::NaiveDate;
+
 use reqwest::StatusCode;
-use sea_orm::{ActiveModelTrait, EntityTrait, Set};
+use sea_orm::{sea_query::Expr, ColumnTrait};
+use sea_orm::{ActiveModelTrait, EntityTrait, FromQueryResult, QuerySelect, Set};
 use serde::{Deserialize, Serialize};
 
 use crate::{
@@ -14,11 +16,30 @@ use crate::{
 
 use super::util::errors::{ResponseResult, ResultAndLogError};
 
-pub async fn get(state: State<AppState>) -> ResponseResult<Json<Vec<season::Model>>> {
-    Ok(Json(Season::find().all(&state.db).await.or_log((
-        StatusCode::INTERNAL_SERVER_ERROR,
-        "failed to get seasons",
-    ))?))
+#[derive(Debug, FromQueryResult, Serialize, Deserialize)]
+pub struct SeasonGet {
+    id: i32,
+    name: String,
+    start: NaiveDate,
+    end: NaiveDate,
+    is_current: bool,
+}
+
+pub async fn get(state: State<AppState>) -> ResponseResult<Json<Vec<SeasonGet>>> {
+    Ok(Json(
+        Season::find()
+            .column_as(
+                Expr::col(season::Column::Start)
+                    .lte(Expr::current_date())
+                    .and(Expr::col(season::Column::End).gte(Expr::current_date()))
+                    .and(Expr::col(season::Column::Id).ne(1)),
+                "is_current",
+            )
+            .into_model::<SeasonGet>()
+            .all(&state.db)
+            .await
+            .or_log((StatusCode::INTERNAL_SERVER_ERROR, "failed to get seasons"))?,
+    ))
 }
 
 #[derive(Debug, Serialize, Deserialize)]
