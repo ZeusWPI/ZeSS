@@ -32,7 +32,7 @@ impl MigrationTrait for Migration {
         let insert = Query::insert()
         .into_table(Season::Table)
         .columns([Season::Name, Season::Start, Season::End])
-        .values_panic(["All".into(), NaiveDate::MIN.into(), NaiveDate::MAX.into()])
+        .values_panic(["All".into(), NaiveDate::from_ymd_opt(2000, 1, 1).unwrap().into(), NaiveDate::from_ymd_opt(3000, 1, 1).unwrap().into()])
         .to_owned();
 
         manager.exec_stmt(insert).await?;
