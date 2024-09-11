@@ -33,7 +33,7 @@ COPY vinvoor/production.env .env
 RUN yarn run build
 
 # End container
-FROM alpine:3.19
+FROM alpine:3.20
 
 WORKDIR /
 
