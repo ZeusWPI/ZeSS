@@ -1,3 +1,4 @@
+use smart_led_effects::strip::{Bounce, EffectIterator};
 use ws2812_esp32_rmt_driver::{driver::color::LedPixelColorGrb24, LedPixelEsp32Rmt, RGB8};
 use core::str;
 use std::time::Duration;
@@ -9,7 +10,6 @@ use esp_idf_svc::{
         prelude::Peripherals,
         spi::{
             self, SpiSingleDeviceDriver
-            //config::{DriverConfig, Config},
         },
     },
     http::client::{Configuration, EspHttpConnection},
@@ -20,6 +20,8 @@ use mfrc522::{
     comm::blocking::spi::SpiInterface,
     Mfrc522,
 };
+use palette::{self, Srgb};
+use rgb;
 
 use lib::wifi;
 
@@ -33,14 +35,20 @@ pub struct Config {
     auth_key: &'static str,
 }
 
+fn from_palette_rgb_to_rgb_rgb(value: &palette::rgb::Rgb<palette::encoding::Srgb, u8>) -> RGB8 {
+    let [red, green, blue] = [value.red, value.green, value.blue];
+    RGB8::new(red, green, blue)
+}
+
 struct StatusNotifier<'a> {
     led_strip: LedPixelEsp32Rmt::<'a, RGB8, LedPixelColorGrb24>,
     leds: usize,
+    idle_effect: Box<dyn EffectIterator>,
 }
 impl StatusNotifier<'_> {
     fn idle(&mut self) {
-        let pixels = std::iter::repeat(RGB8::new(0x00, 0x00, 0x00)).take(self.leds);
-        self.led_strip.write_nocopy(pixels);
+        let pixels = self.idle_effect.next().unwrap();
+        self.led_strip.write_nocopy(pixels.iter().map(|color| from_palette_rgb_to_rgb_rgb(color)));
     }
     fn processing(&mut self) {
         let pixels = std::iter::repeat(RGB8::new(0xff, 0xff, 0x00)).take(self.leds);
@@ -112,7 +120,8 @@ fn main() {
 
     let mut status_notifier = StatusNotifier {
         led_strip,
-        leds: 8
+        leds: 8,
+        idle_effect: Box::new(Bounce::new(8, Some(Srgb::new(1.0, 1.0, 1.0)), Some(1), None, None, None)),
     };
 
     status_notifier.idle();
