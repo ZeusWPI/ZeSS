@@ -10,7 +10,10 @@ import {
 import { useSnackbar } from "notistack";
 import { FC, ReactNode } from "react";
 import { Day, daysHeadCells } from "../../../types/days";
-import { useDays, useDeleteDay } from "../../../hooks/useDays";
+import {
+  useAdminDays,
+  useAdminDeleteDay,
+} from "../../../hooks/admin/useAdminDays";
 
 interface DaysTableBodyProps {
   rows: readonly Day[];
@@ -25,15 +28,15 @@ export const DaysTableBody: FC<DaysTableBodyProps> = ({
   isSelected,
   deleting,
 }) => {
-  const { refetch } = useDays();
-  const deleteCard = useDeleteDay();
+  const { refetch } = useAdminDays();
+  const deleteDay = useAdminDeleteDay();
 
   const { enqueueSnackbar } = useSnackbar();
 
   const handleClick = (id: number) => {
     if (isSelected(id)) handleSelect(id); // This will remove it from the selected list
 
-    deleteCard.mutate(id, {
+    deleteDay.mutate(id, {
       onSuccess: () => {
         enqueueSnackbar("Deleted streakday", { variant: "success" });
         void refetch();

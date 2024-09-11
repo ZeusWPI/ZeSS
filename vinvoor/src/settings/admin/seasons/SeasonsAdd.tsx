@@ -1,20 +1,19 @@
-import { Box, Button, Paper, Stack } from "@mui/material";
+import dayjs, { Dayjs } from "dayjs";
+import { useAdminAddSeason } from "../../../hooks/admin/useAdminSeason";
+import { useSeasons } from "../../../hooks/useSeasons";
+import { Dispatch, SetStateAction, useState } from "react";
+import { useSnackbar } from "notistack";
+import { Box, Button, Paper, Stack, TextField } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import dayjs, { Dayjs } from "dayjs";
-import { useSnackbar } from "notistack";
-import { Dispatch, SetStateAction, useState } from "react";
 import { TypographyG } from "../../../components/TypographyG";
-import {
-  useAdminAddDay,
-  useAdminDays,
-} from "../../../hooks/admin/useAdminDays";
 
-export const DaysAdd = () => {
-  const { refetch } = useAdminDays();
-  const addDay = useAdminAddDay();
+export const SeasonsAdd = () => {
+  const { refetch } = useSeasons();
+  const addSeason = useAdminAddSeason();
   const [startDate, setStartDate] = useState<Dayjs | null>(dayjs());
   const [endDate, setEndDate] = useState<Dayjs | null>(dayjs());
+  const [name, setName] = useState<string>("");
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -22,6 +21,9 @@ export const DaysAdd = () => {
     date: Dayjs | null,
     setter: Dispatch<SetStateAction<Dayjs | null>>,
   ) => setter(date);
+
+  const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) =>
+    setName(event.target.value);
 
   const handleOnClick = () => {
     if (!startDate || !endDate) {
@@ -31,18 +33,18 @@ export const DaysAdd = () => {
       return;
     }
 
-    addDay.mutate(
-      { startDate, endDate },
+    addSeason.mutate(
+      { name, startDate, endDate },
       {
         onSuccess: () => {
-          enqueueSnackbar("successfully saved days", {
+          enqueueSnackbar("successfully saved season", {
             variant: "success",
           });
           void refetch();
         },
         onError: error =>
           // This is the admin page so just show the error
-          enqueueSnackbar(`Failed to save days: ${error.message}`, {
+          enqueueSnackbar(`Failed to save seasib: ${error.message}`, {
             variant: "error",
           }),
       },
@@ -57,8 +59,8 @@ export const DaysAdd = () => {
         alignItems="center"
         spacing={4}
       >
-        <TypographyG variant="h4">Add days</TypographyG>
-        <Stack direction="row" spacing={2} paddingX={{ xs: 1, md: 0 }}>
+        <TypographyG variant="h4">Add Season</TypographyG>
+        <Stack direction="row" spacing={2} paddingX={1}>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DatePicker
               label="Start Date"
@@ -71,6 +73,12 @@ export const DaysAdd = () => {
               onChange={newValue => handleDateChange(newValue, setEndDate)}
             />
           </LocalizationProvider>
+          <TextField
+            label="Name"
+            value={name}
+            onChange={handleNameChange}
+            variant="outlined"
+          />
         </Stack>
         <Box
           display="flex"
