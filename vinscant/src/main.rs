@@ -1,4 +1,4 @@
-use smart_led_effects::strip::{Bounce, EffectIterator};
+use smart_led_effects::{strip::{Bounce, Collision, EffectIterator, Rainbow, Wipe}, Srgb};
 use ws2812_esp32_rmt_driver::{driver::color::LedPixelColorGrb24, LedPixelEsp32Rmt, RGB8};
 use core::str;
 use std::time::Duration;
@@ -20,7 +20,7 @@ use mfrc522::{
     comm::blocking::spi::SpiInterface,
     Mfrc522,
 };
-use palette::{self, Srgb};
+use palette;
 use rgb;
 
 use lib::wifi;
@@ -37,7 +37,7 @@ pub struct Config {
 
 fn from_palette_rgb_to_rgb_rgb(value: &palette::rgb::Rgb<palette::encoding::Srgb, u8>) -> RGB8 {
     let [red, green, blue] = [value.red, value.green, value.blue];
-    RGB8::new(red, green, blue)
+    RGB8::new(red / 8, green / 8, blue / 8)
 }
 
 struct StatusNotifier<'a> {
@@ -49,6 +49,7 @@ impl StatusNotifier<'_> {
     fn idle(&mut self) {
         let pixels = self.idle_effect.next().unwrap();
         self.led_strip.write_nocopy(pixels.iter().map(|color| from_palette_rgb_to_rgb_rgb(color)));
+        //std::thread::sleep(Duration::from_millis(100));
     }
     fn processing(&mut self) {
         let pixels = std::iter::repeat(RGB8::new(0xff, 0xff, 0x00)).take(self.leds);
@@ -121,7 +122,7 @@ fn main() {
     let mut status_notifier = StatusNotifier {
         led_strip,
         leds: 8,
-        idle_effect: Box::new(Bounce::new(8, Some(Srgb::new(1.0, 1.0, 1.0)), Some(1), None, None, None)),
+        idle_effect: Box::new(Rainbow::new(8, None)),
     };
 
     status_notifier.idle();
