@@ -1,8 +1,10 @@
 use ws2812_esp32_rmt_driver::{driver::color::LedPixelColorGrb24, LedPixelEsp32Rmt, RGB8};
 use core::str;
+use std::time::Duration;
 use embedded_svc::http::{client::Client, Method};
 use esp_idf_svc::{
-    eventloop::EspSystemEventLoop, hal::{
+    eventloop::EspSystemEventLoop,
+    hal::{
         gpio::{InputPin, OutputPin},
         prelude::Peripherals,
         spi::{
@@ -31,23 +33,31 @@ pub struct Config {
     auth_key: &'static str,
 }
 
-#[derive(Debug)]
 struct StatusNotifier<'a> {
     led_strip: LedPixelEsp32Rmt::<'a, RGB8, LedPixelColorGrb24>,
     leds: usize,
 }
 impl StatusNotifier<'_> {
     fn idle(&mut self) {
+        let pixels = std::iter::repeat(RGB8::new(0x00, 0x00, 0x00)).take(self.leds);
+        self.led_strip.write_nocopy(pixels);
+    }
+    fn processing(&mut self) {
         let pixels = std::iter::repeat(RGB8::new(0xff, 0xff, 0x00)).take(self.leds);
         self.led_strip.write_nocopy(pixels);
     }
     fn good(&mut self) {
         let pixels = std::iter::repeat(RGB8::new(0x00, 0xff, 0x00)).take(self.leds);
         self.led_strip.write_nocopy(pixels);
+        self.sleep();
     }
     fn bad(&mut self) {
         let pixels = std::iter::repeat(RGB8::new(0xff, 0x00, 0x00)).take(self.leds);
         self.led_strip.write_nocopy(pixels);
+        self.sleep();
+    }
+    fn sleep(&self) {
+        std::thread::sleep(Duration::from_millis(500));
     }
 }
 
@@ -106,10 +116,14 @@ fn main() {
     };
 
     status_notifier.idle();
+    
+    //let pixels = std::iter::repeat(RGB8::new(0x00, 0x00, 0xff)).take(8);
+    //led_strip.write_nocopy(pixels);
 
     loop {
         if let Ok(answer) = scanner.reqa() {
             if let Ok(uid) =  scanner.select(&answer) {
+                status_notifier.processing();
                 log::info!("Card found: {}", hex::encode(uid.as_bytes()));
                 let mut client = Client::wrap(EspHttpConnection::new(&Configuration {
                     use_global_ca_store: true,
@@ -123,11 +137,15 @@ fn main() {
                     log::info!("response code: {}", response.status());
                     if response.status() == 200 {
                         status_notifier.good();
+                    } else {
+                        status_notifier.bad();
                     }
                 } else {
-
+                    status_notifier.bad();
                 }
             }
+        } else {
+            status_notifier.idle();
         }
     };
 }
