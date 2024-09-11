@@ -4,10 +4,7 @@ use sea_orm::EntityTrait;
 use serde::{Deserialize, Serialize};
 use tower_sessions::Session;
 
-use crate::{
-    entities::prelude::*,
-    AppState,
-};
+use crate::{entities::prelude::*, AppState};
 
 use super::util::{
     errors::{ResponseResult, ResultAndLogError},
@@ -18,7 +15,10 @@ use super::util::{
 pub struct SettingsGetBody {
     season: i32,
 }
-pub async fn get(session: Session, state: State<AppState>) -> ResponseResult<Json<SettingsGetBody>> {
+pub async fn get(
+    session: Session,
+    state: State<AppState>,
+) -> ResponseResult<Json<SettingsGetBody>> {
     let season = get_season(&session, &state).await?;
     Ok(Json(SettingsGetBody { season: season.id }))
 }
