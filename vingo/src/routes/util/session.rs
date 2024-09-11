@@ -41,11 +41,11 @@ pub async fn get_season(
 
     let season_or_default = match season {
         Some(season_model) => season_model,
-        None => Season::find_by_id(0)
+        None => Season::find_by_id(1)
             .one(&state.db)
             .await
             .or_log((StatusCode::INTERNAL_SERVER_ERROR, "failed to get season"))?
-            .ok_or((StatusCode::INTERNAL_SERVER_ERROR, "no season 0"))?,
+            .ok_or((StatusCode::INTERNAL_SERVER_ERROR, "no season 1"))?,
     };
 
     Ok(season_or_default)
