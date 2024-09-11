@@ -1,6 +1,7 @@
 import { Alert, Grid, Typography } from "@mui/material";
 import { FC } from "react";
 import { Days } from "./days/Days";
+import { Seasons } from "./seasons/Seasons";
 
 export const Admin: FC = () => {
   return (
@@ -24,6 +25,9 @@ export const Admin: FC = () => {
       </Grid>
       <Grid item xs={12}>
         <Days />
+      </Grid>
+      <Grid item xs={12}>
+        <Seasons />
       </Grid>
     </Grid>
   );

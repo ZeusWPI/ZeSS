@@ -11,8 +11,8 @@ export const useSettings = () =>
     retry: 1,
   });
 
-export const usePatchSettings = () => {
-  return useMutation({
+export const usePatchSettings = () =>
+  useMutation({
     mutationFn: (args: {
       scanInOut: boolean;
       leaderboard: boolean;
@@ -24,4 +24,3 @@ export const usePatchSettings = () => {
         public: args.public,
       }),
   });
-};

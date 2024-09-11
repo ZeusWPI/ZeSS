@@ -22,6 +22,8 @@ export const convertDayJSON = (daysJSON: DayJSON[]): Day[] =>
     }))
     .sort((a, b) => a.date.getTime() - b.date.getTime());
 
+// Table
+
 export const daysHeadCells: readonly TableHeadCell<Day>[] = [
   {
     id: "date",

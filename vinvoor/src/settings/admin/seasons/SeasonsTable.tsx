@@ -1,57 +1,22 @@
 import { Paper, Stack, Table, TableContainer } from "@mui/material";
-import { useSnackbar } from "notistack";
-import { ChangeEvent, useEffect, useState } from "react";
 import { TypographyG } from "../../../components/TypographyG";
-import { Day } from "../../../types/days";
-import { Optional } from "../../../types/general";
+import { ChangeEvent, useState } from "react";
 import { randomInt } from "../../../util/util";
-import { DaysTableBody } from "./DaysTableBody";
-import { DaysTableHead } from "./DaysTableHead";
-import { DaysTableToolbar } from "./DaysTableToolbar";
-import {
-  useAdminDays,
-  useAdminDeleteDay,
-} from "../../../hooks/admin/useAdminDays";
+import { useSnackbar } from "notistack";
+import { useAdminDeleteSeason } from "../../../hooks/admin/useAdminSeason";
+import { useSeasons } from "../../../hooks/useSeasons";
+import { SeasonsTableHead } from "./SeasonsTableHead";
+import { SeasonsTableBody } from "./SeasonsTableBody";
 
-export const DaysTable = () => {
-  const { data: days, refetch } = useAdminDays();
-  if (!days) return null; // Can never happen
+export const SeasonsTable = () => {
+  const { data: seasons, refetch } = useSeasons();
+  if (!seasons) return null; // Can never happen
 
-  const deleteDay = useAdminDeleteDay();
-  const [rows, setRows] = useState<readonly Day[]>(days);
+  const deleteSeason = useAdminDeleteSeason();
   const [selected, setSelected] = useState<readonly number[]>([]);
   const [deleting, setDeleting] = useState<boolean>(false);
 
-  const [dateFilter, setDateFilter] = useState<
-    [Optional<Date>, Optional<Date>]
-  >([undefined, undefined]);
-  const [weekdaysFilter, setWeekdaysFilter] = useState<boolean>(false);
-  const [weekendsFilter, setWeekendsFilter] = useState<boolean>(false);
-
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
-
-  const filterDays = (): readonly Day[] => {
-    let filteredDays = [...days];
-    if (dateFilter[0] !== undefined && dateFilter[1] !== undefined) {
-      filteredDays = filteredDays.filter(
-        day =>
-          day.date.getTime() >= dateFilter[0]!.getTime() &&
-          day.date.getTime() <= dateFilter[1]!.getTime(),
-      );
-    }
-    if (weekdaysFilter) {
-      filteredDays = filteredDays.filter(
-        day => day.date.getDay() !== 0 && day.date.getDay() !== 6,
-      );
-    }
-    if (weekendsFilter) {
-      filteredDays = filteredDays.filter(
-        day => day.date.getDay() === 0 || day.date.getDay() === 6,
-      );
-    }
-
-    return filteredDays;
-  };
 
   const handleDelete = () => {
     setDeleting(true);
@@ -63,14 +28,11 @@ export const DaysTable = () => {
     });
 
     const promises = selected.map(id =>
-      deleteDay.mutate(id, {
+      deleteSeason.mutate(id, {
         onError: (error: Error) =>
-          enqueueSnackbar(
-            `Failed to delete streakday ${id}: ${error.message}`,
-            {
-              variant: "error",
-            },
-          ),
+          enqueueSnackbar(`Failed to delete season ${id}: ${error.message}`, {
+            variant: "error",
+          }),
       }),
     );
 
@@ -78,7 +40,7 @@ export const DaysTable = () => {
       .then(() => {
         closeSnackbar(key);
         enqueueSnackbar(
-          `Deleted ${selected.length} streakday${selected.length > 1 ? "s" : ""}`,
+          `Deleted ${selected.length} season${selected.length > 1 ? "s" : ""}`,
           {
             variant: "success",
           },
@@ -115,16 +77,11 @@ export const DaysTable = () => {
   };
 
   const handleSelectAll = (event: ChangeEvent<HTMLInputElement>) => {
-    if (event.target.checked) setSelected(rows.map(day => day.id));
+    if (event.target.checked) setSelected(seasons.map(season => season.id));
     else setSelected([]);
   };
 
   const isSelected = (id: number) => selected.includes(id);
-
-  useEffect(
-    () => setRows(filterDays()),
-    [days, dateFilter, weekdaysFilter, weekendsFilter],
-  );
 
   return (
     <Paper elevation={4} sx={{ width: "100%", py: 2 }}>
@@ -134,29 +91,18 @@ export const DaysTable = () => {
         alignItems="center"
         spacing={4}
       >
-        <TypographyG variant="h4">Edit Days</TypographyG>
-        <DaysTableToolbar
-          {...{
-            dateFilter,
-            setDateFilter,
-            weekdaysFilter,
-            setWeekdaysFilter,
-            weekendsFilter,
-            setWeekendsFilter,
-          }}
-        />
+        <TypographyG variant="h4">Edit Seasons</TypographyG>
         <Paper elevation={6} sx={{ width: "95%", m: 2 }}>
           <TableContainer sx={{ maxHeight: { xs: 400, md: 800 } }}>
             <Table stickyHeader>
-              <DaysTableHead
-                rowCount={days.length}
+              <SeasonsTableHead
+                rowCount={seasons.length}
                 numSelected={selected.length}
                 onSelectAll={handleSelectAll}
                 handleDelete={handleDelete}
                 deleting={deleting}
               />
-              <DaysTableBody
-                rows={rows}
+              <SeasonsTableBody
                 handleSelect={handleSelect}
                 isSelected={isSelected}
                 deleting={deleting}

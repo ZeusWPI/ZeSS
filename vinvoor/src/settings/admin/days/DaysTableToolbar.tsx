@@ -4,7 +4,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs, { Dayjs } from "dayjs";
 import { ChangeEvent, Dispatch, FC, SetStateAction, useState } from "react";
 import { Optional } from "../../../types/general";
-import { useDays } from "../../../hooks/useDays";
+import { useAdminDays } from "../../../hooks/admin/useAdminDays";
 
 interface DaysTableToolbarProps {
   dateFilter: [Optional<Date>, Optional<Date>];
@@ -23,7 +23,7 @@ export const DaysTableToolbar: FC<DaysTableToolbarProps> = ({
   weekendsFilter,
   setWeekendsFilter,
 }) => {
-  const { data: days } = useDays();
+  const { data: days } = useAdminDays();
   if (!days) return null; // Can never happen
 
   const [startDate, setStartDate] = useState<Dayjs | null>(
