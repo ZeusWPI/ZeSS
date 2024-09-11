@@ -1,5 +1,5 @@
-use sea_orm_migration::{prelude::*, schema::*};
 use chrono::NaiveDate;
+use sea_orm_migration::{prelude::*, schema::*};
 
 #[derive(DeriveMigrationName)]
 pub struct Migration;
@@ -27,13 +27,17 @@ impl MigrationTrait for Migration {
                     .to_owned(),
             )
             .await?;
-        
+
         // insert the first season (which is all data)
         let insert = Query::insert()
-        .into_table(Season::Table)
-        .columns([Season::Name, Season::Start, Season::End])
-        .values_panic(["All".into(), NaiveDate::from_ymd_opt(2000, 1, 1).unwrap().into(), NaiveDate::from_ymd_opt(3000, 1, 1).unwrap().into()])
-        .to_owned();
+            .into_table(Season::Table)
+            .columns([Season::Name, Season::Start, Season::End])
+            .values_panic([
+                "All".into(),
+                NaiveDate::from_ymd_opt(2000, 1, 1).unwrap().into(),
+                NaiveDate::from_ymd_opt(3000, 1, 1).unwrap().into(),
+            ])
+            .to_owned();
 
         manager.exec_stmt(insert).await?;
 

@@ -5,7 +5,7 @@ use axum::{
 use chrono::NaiveDate;
 
 use reqwest::StatusCode;
-use sea_orm::{sea_query::Expr, ColumnTrait};
+use sea_orm::sea_query::Expr;
 use sea_orm::{ActiveModelTrait, EntityTrait, FromQueryResult, QuerySelect, Set};
 use serde::{Deserialize, Serialize};
 
