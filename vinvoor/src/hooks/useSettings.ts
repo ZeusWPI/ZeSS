@@ -13,14 +13,6 @@ export const useSettings = () =>
 
 export const usePatchSettings = () =>
   useMutation({
-    mutationFn: (args: {
-      scanInOut: boolean;
-      leaderboard: boolean;
-      public: boolean;
-    }) =>
-      patchApi(ENDPOINT, {
-        scanInOut: args.scanInOut,
-        leaderboard: args.leaderboard,
-        public: args.public,
-      }),
+    mutationFn: (args: Record<string, string | number | boolean>) =>
+      patchApi(ENDPOINT, args),
   });

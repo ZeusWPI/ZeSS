@@ -1,11 +1,11 @@
 import { Grid } from "@mui/material";
 import { LoadingSkeleton } from "../../../components/LoadingSkeleton";
-import { useSeasons } from "../../../hooks/useSeasons";
 import { SeasonsTable } from "./SeasonsTable";
 import { SeasonsAdd } from "./SeasonsAdd";
+import { useAdminSeasons } from "../../../hooks/admin/useAdminSeason";
 
 export const Seasons = () => {
-  const seasonsQuery = useSeasons();
+  const seasonsQuery = useAdminSeasons();
 
   return (
     <LoadingSkeleton queries={[seasonsQuery]}>
