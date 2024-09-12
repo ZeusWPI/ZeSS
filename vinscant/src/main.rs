@@ -1,5 +1,5 @@
 use hex::ToHex;
-use smart_led_effects::{strip::{EffectIterator, Rainbow}, Srgb};
+use smart_led_effects::{strip::{EffectIterator, Wipe}, Srgb};
 use ws2812_esp32_rmt_driver::{driver::color::LedPixelColorGrb24, LedPixelEsp32Rmt, RGB8};
 use core::str;
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
@@ -124,7 +124,7 @@ fn main() {
     let mut status_notifier = StatusNotifier {
         led_strip,
         leds: 8,
-        idle_effect: Box::new(Rainbow::new(8, None)),
+        idle_effect: Box::new(Wipe::new(8, vec![Srgb::new(0x00, 0x00, 0x00), Srgb::new(0xff, 0x7f, 0x00)], true)),
     };
 
     let mut last_uid = hex::encode([0_u8]);
