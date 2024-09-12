@@ -12,9 +12,11 @@ import {
   useAdminDays,
   useAdminDeleteDay,
 } from "../../../hooks/admin/useAdminDays";
+import { useAdminSeasons } from "../../../hooks/admin/useAdminSeason";
 
 export const DaysTable = () => {
   const { data: days, refetch } = useAdminDays();
+  const { data: seasons } = useAdminSeasons();
   if (!days) return null; // Can never happen
 
   const deleteDay = useAdminDeleteDay();
@@ -25,6 +27,8 @@ export const DaysTable = () => {
   const [dateFilter, setDateFilter] = useState<
     [Optional<Date>, Optional<Date>]
   >([undefined, undefined]);
+  const [seasonsFilter, setSeasonsFilter] =
+    useState<Optional<number>>(undefined);
   const [weekdaysFilter, setWeekdaysFilter] = useState<boolean>(false);
   const [weekendsFilter, setWeekendsFilter] = useState<boolean>(false);
 
@@ -38,6 +42,14 @@ export const DaysTable = () => {
           day.date.getTime() >= dateFilter[0]!.getTime() &&
           day.date.getTime() <= dateFilter[1]!.getTime(),
       );
+    }
+    if (seasonsFilter) {
+      const season = seasons?.find(season => season.id === seasonsFilter);
+      if (season) {
+        filteredDays = filteredDays.filter(
+          day => day.date >= season.start && day.date <= season.end,
+        );
+      }
     }
     if (weekdaysFilter) {
       filteredDays = filteredDays.filter(
@@ -123,7 +135,7 @@ export const DaysTable = () => {
 
   useEffect(
     () => setRows(filterDays()),
-    [days, dateFilter, weekdaysFilter, weekendsFilter],
+    [days, dateFilter, seasonsFilter, weekdaysFilter, weekendsFilter],
   );
 
   return (
@@ -139,6 +151,8 @@ export const DaysTable = () => {
           {...{
             dateFilter,
             setDateFilter,
+            seasonsFilter,
+            setSeasonsFilter,
             weekdaysFilter,
             setWeekdaysFilter,
             weekendsFilter,

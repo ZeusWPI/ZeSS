@@ -23,10 +23,10 @@ export const Admin: FC = () => {
           </Typography>
         </Alert>
       </Grid>
-      <Grid item xs={12}>
+      <Grid item xs={12} md={6}>
         <Days />
       </Grid>
-      <Grid item xs={12}>
+      <Grid item xs={12} md={6}>
         <Seasons />
       </Grid>
     </Grid>

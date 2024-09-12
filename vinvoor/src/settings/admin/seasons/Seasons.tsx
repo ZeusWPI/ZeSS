@@ -13,13 +13,13 @@ export const Seasons = () => {
         container
         justifyContent="space-between"
         columnSpacing={4}
-        rowSpacing={4}
+        rowSpacing={6}
       >
-        <Grid item xs={12} md={6}>
-          <SeasonsTable />
-        </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12}>
           <SeasonsAdd />
+        </Grid>
+        <Grid item xs={12}>
+          <SeasonsTable />
         </Grid>
       </Grid>
     </LoadingSkeleton>
