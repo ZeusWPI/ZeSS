@@ -1,7 +1,8 @@
-use smart_led_effects::{strip::{Bounce, Collision, EffectIterator, Rainbow, Wipe}, Srgb};
+use hex::ToHex;
+use smart_led_effects::{strip::{EffectIterator, Rainbow}, Srgb};
 use ws2812_esp32_rmt_driver::{driver::color::LedPixelColorGrb24, LedPixelEsp32Rmt, RGB8};
 use core::str;
-use std::time::Duration;
+use std::time::{Duration, SystemTime, UNIX_EPOCH};
 use embedded_svc::http::{client::Client, Method};
 use esp_idf_svc::{
     eventloop::EspSystemEventLoop,
@@ -17,11 +18,9 @@ use esp_idf_svc::{
 };
 
 use mfrc522::{
-    comm::blocking::spi::SpiInterface,
-    Mfrc522,
+    comm::blocking::spi::SpiInterface, Mfrc522,
 };
 use palette;
-use rgb;
 
 use lib::wifi;
 
@@ -48,26 +47,29 @@ struct StatusNotifier<'a> {
 impl StatusNotifier<'_> {
     fn idle(&mut self) {
         let pixels = self.idle_effect.next().unwrap();
-        self.led_strip.write_nocopy(pixels.iter().map(|color| from_palette_rgb_to_rgb_rgb(color)));
-        //std::thread::sleep(Duration::from_millis(100));
+        let _ = self.led_strip.write_nocopy(pixels.iter().map(|color| from_palette_rgb_to_rgb_rgb(color)));
     }
     fn processing(&mut self) {
         let pixels = std::iter::repeat(RGB8::new(0xff, 0xff, 0x00)).take(self.leds);
-        self.led_strip.write_nocopy(pixels);
+        let _ = self.led_strip.write_nocopy(pixels);
     }
     fn good(&mut self) {
         let pixels = std::iter::repeat(RGB8::new(0x00, 0xff, 0x00)).take(self.leds);
-        self.led_strip.write_nocopy(pixels);
+        let _ = self.led_strip.write_nocopy(pixels);
         self.sleep();
     }
     fn bad(&mut self) {
         let pixels = std::iter::repeat(RGB8::new(0xff, 0x00, 0x00)).take(self.leds);
-        self.led_strip.write_nocopy(pixels);
+        let _ = self.led_strip.write_nocopy(pixels);
         self.sleep();
     }
     fn sleep(&self) {
         std::thread::sleep(Duration::from_millis(500));
     }
+}
+
+fn get_time() -> u64 {
+    SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs()
 }
 
 fn main() {
@@ -125,14 +127,20 @@ fn main() {
         idle_effect: Box::new(Rainbow::new(8, None)),
     };
 
-    status_notifier.idle();
-    
-    //let pixels = std::iter::repeat(RGB8::new(0x00, 0x00, 0xff)).take(8);
-    //led_strip.write_nocopy(pixels);
+    let mut last_uid = hex::encode([0_u8]);
+    let mut last_time = 0;
 
     loop {
         if let Ok(answer) = scanner.reqa() {
             if let Ok(uid) =  scanner.select(&answer) {
+                if hex::encode(uid.as_bytes()) == last_uid && get_time() - last_time <= 15 {
+                    log::error!("Card already seen!");
+                    last_time = get_time();
+                    status_notifier.bad();
+                    continue;
+                }
+                last_time = get_time();
+                last_uid = uid.as_bytes().encode_hex();
                 status_notifier.processing();
                 log::info!("Card found: {}", hex::encode(uid.as_bytes()));
                 let mut client = Client::wrap(EspHttpConnection::new(&Configuration {
@@ -142,7 +150,7 @@ fn main() {
                 }).unwrap());
 
                 let mut request = client.request(Method::Post, "https://zess.zeus.gent/api/scans".as_ref(), &[]).unwrap();
-                request.write(format!("{};{}", hex::encode(uid.as_bytes()), app_config.auth_key).as_bytes());
+                let _ = request.write(format!("{};{}", hex::encode(uid.as_bytes()), app_config.auth_key).as_bytes());
                 if let Ok(response) = request.submit() {
                     log::info!("response code: {}", response.status());
                     if response.status() == 200 {
