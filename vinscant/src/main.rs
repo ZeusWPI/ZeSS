@@ -22,7 +22,7 @@ use mfrc522::{
 };
 use palette;
 
-use lib::wifi;
+use lib::{ping_pong::PingPong, wifi};
 
 #[toml_cfg::toml_config]
 pub struct Config {
@@ -117,6 +117,9 @@ fn main() {
     let scan_interface = SpiInterface::new(scan_spi_device);
     let mut scanner = Mfrc522::new(scan_interface).init().unwrap();
 
+    // esp32s2
+    //let led_pin = pins.gpio?;
+    // esp32
     let led_pin = pins.gpio5;
     let channel = peripherals.rmt.channel0;
     let mut led_strip = LedPixelEsp32Rmt::<RGB8, LedPixelColorGrb24>::new(channel, led_pin).unwrap();
@@ -124,7 +127,7 @@ fn main() {
     let mut status_notifier = StatusNotifier {
         led_strip,
         leds: 8,
-        idle_effect: Box::new(Wipe::new(8, vec![Srgb::new(0x00, 0x00, 0x00), Srgb::new(0xff, 0x7f, 0x00)], true)),
+        idle_effect: Box::new(PingPong::new(8, vec![Srgb::new(0xff, 0x7f, 0x00)])),
     };
 
     let mut last_uid = hex::encode([0_u8]);
