@@ -70,7 +70,7 @@ export const DaysTableToolbar: FC<DaysTableToolbarProps> = ({
   };
 
   const handleSeasonChange = (event: SelectChangeEvent) =>
-    setSelectedSeason(Number(event.target.value));
+    setSelectedSeason(parseInt(event.target.value));
 
   const handleClickSeason = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) setSeasonFilter(selectedSeason);
@@ -116,10 +116,11 @@ export const DaysTableToolbar: FC<DaysTableToolbarProps> = ({
         <Checkbox onChange={handleClickSeason} />
         <Typography>Filter season</Typography>
         <Select
-          value={String(
-            seasons.find(season => season.id === selectedSeason)?.id ??
-              seasons[0].id,
-          )}
+          value={
+            seasons
+              .find(season => season.id === selectedSeason)
+              ?.id.toString() ?? seasons[0].id.toString()
+          }
           onChange={handleSeasonChange}
         >
           {seasons.map(season => (

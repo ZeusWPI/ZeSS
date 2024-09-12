@@ -1,21 +1,21 @@
-import { ChangeEvent, useState } from "react";
+import { useEffect, useState } from "react";
 import { usePatchSettings, useSettings } from "../hooks/useSettings";
 import { useSnackbar } from "notistack";
 import { useConfirm } from "material-ui-confirm";
 import {
   Box,
   Button,
-  Checkbox,
-  FormControl,
-  FormControlLabel,
   Grid,
+  MenuItem,
   Paper,
+  Select,
+  SelectChangeEvent,
   Stack,
   Tooltip,
   Typography,
 } from "@mui/material";
-import { adjustableSettings } from "../types/settings";
 import HelpCircleOutline from "mdi-material-ui/HelpCircleOutline";
+import { useSeasons } from "../hooks/useSeasons";
 
 const saveSuccess = "Settings saved successfully";
 const saveFailure = "Unable to save settings";
@@ -32,35 +32,28 @@ const handleDeleteContent = (
 
 export const Settings = () => {
   const { data: settingsTruth, refetch } = useSettings();
-  if (!settingsTruth) return null; // Can never happen
+  const { data: seasons } = useSeasons();
+  if (!settingsTruth || !seasons) return null; // Can never happen
 
   const patchSettings = usePatchSettings();
   const [settings, setSettings] = useState({ ...settingsTruth });
   const { enqueueSnackbar } = useSnackbar();
   const confirm = useConfirm();
 
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleSeasonChange = (event: SelectChangeEvent) =>
     setSettings({
       ...settings,
-      [event.target.name]: event.target.checked,
+      season: parseInt(event.target.value),
     });
-  };
 
   const handleSubmit = () => {
-    patchSettings.mutate(
-      {
-        scanInOut: settings.scanInOut,
-        leaderboard: settings.leaderboard,
-        public: settings.public,
+    patchSettings.mutate(settings, {
+      onSuccess: () => {
+        enqueueSnackbar(saveSuccess, { variant: "success" });
+        void refetch();
       },
-      {
-        onSuccess: () => {
-          enqueueSnackbar(saveSuccess, { variant: "success" });
-          void refetch();
-        },
-        onError: () => enqueueSnackbar(saveFailure, { variant: "error" }),
-      },
-    );
+      onError: () => enqueueSnackbar(saveFailure, { variant: "error" }),
+    });
   };
 
   const handleDelete = () => {
@@ -81,6 +74,10 @@ export const Settings = () => {
       });
   };
 
+  useEffect(() => {
+    setSettings({ ...settingsTruth, season: settingsTruth.season });
+  }, [settingsTruth.season]);
+
   return (
     <Grid
       container
@@ -91,34 +88,33 @@ export const Settings = () => {
     >
       <Grid item xs={6}>
         <Paper elevation={4} sx={{ p: "10px" }}>
-          <FormControl>
-            {adjustableSettings.map(setting => (
-              <FormControlLabel
-                value="end"
-                control={
-                  <Checkbox
-                    checked={settings[setting.id] as boolean}
-                    onChange={handleChange}
-                    name={setting.id}
-                  />
-                }
-                label={
-                  <Box display="flex" color="primary.contrastText">
-                    <Typography>{setting.name}</Typography>
-                    <Tooltip title={setting.description} placement="right">
-                      <HelpCircleOutline
-                        sx={{
-                          fontSize: "15px",
-                          ml: ".3rem",
-                        }}
-                      />
-                    </Tooltip>
-                  </Box>
-                }
-                key={setting.id}
+          <Stack direction="row" display="flex" alignItems="center">
+            <Tooltip title="Season to display data for" placement="right">
+              <HelpCircleOutline
+                sx={{
+                  fontSize: "15px",
+                }}
               />
-            ))}
-          </FormControl>
+            </Tooltip>
+            <Typography>Select season:</Typography>
+            <Select
+              value={
+                seasons
+                  .find(season => season.id === settings.season)
+                  ?.id.toString() ?? seasons[0].id.toString()
+              }
+              onChange={handleSeasonChange}
+              sx={{ ml: "20px" }}
+              size="small"
+              variant="standard"
+            >
+              {seasons.map(season => (
+                <MenuItem key={season.id} value={season.id}>
+                  {season.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </Stack>
         </Paper>
       </Grid>
       <Grid item xs={6}>
