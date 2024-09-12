@@ -1,6 +1,8 @@
 import dayjs, { Dayjs } from "dayjs";
-import { useAdminAddSeason } from "../../../hooks/admin/useAdminSeason";
-import { useSeasons } from "../../../hooks/useSeasons";
+import {
+  useAdminAddSeason,
+  useAdminSeasons,
+} from "../../../hooks/admin/useAdminSeason";
 import { Dispatch, SetStateAction, useState } from "react";
 import { useSnackbar } from "notistack";
 import { Box, Button, Paper, Stack, TextField } from "@mui/material";
@@ -9,7 +11,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { TypographyG } from "../../../components/TypographyG";
 
 export const SeasonsAdd = () => {
-  const { refetch } = useSeasons();
+  const { refetch } = useAdminSeasons();
   const addSeason = useAdminAddSeason();
   const [startDate, setStartDate] = useState<Dayjs | null>(dayjs());
   const [endDate, setEndDate] = useState<Dayjs | null>(dayjs());

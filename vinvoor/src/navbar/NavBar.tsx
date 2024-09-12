@@ -12,6 +12,7 @@ import { NavBarPages } from "./NavBarPages";
 import { NavBarSandwich } from "./NavBarSandwich";
 import { NavBarUserMenu } from "./NavBarUserMenu";
 import { useUser } from "../hooks/useUser";
+import { NavBarSeasons } from "./NavBarSeasons";
 
 export interface PageIcon {
   page: string;
@@ -73,6 +74,12 @@ export const NavBar = () => {
             )}
 
             <NavBarLogo sx={{ display: screenSize.mobile }} />
+          </Box>
+
+          {/* Display a season selector */}
+
+          <Box sx={{ flexGrow: 0, mr: "20px" }}>
+            <NavBarSeasons />
           </Box>
 
           {/* Display a dark mode switch and the user menu */}

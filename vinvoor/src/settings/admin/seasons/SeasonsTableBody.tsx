@@ -8,10 +8,12 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { FC, ReactNode } from "react";
-import { useSeasons } from "../../../hooks/useSeasons";
-import { seasonsHeadCells } from "../../../types/seasons";
 import { useSnackbar } from "notistack";
-import { useAdminDeleteSeason } from "../../../hooks/admin/useAdminSeason";
+import {
+  useAdminDeleteSeason,
+  useAdminSeasons,
+} from "../../../hooks/admin/useAdminSeason";
+import { seasonsHeadCells } from "../../../types/seasons";
 
 interface SeasonsTableBodyProps {
   handleSelect: (id: number) => void;
@@ -24,7 +26,7 @@ export const SeasonsTableBody: FC<SeasonsTableBodyProps> = ({
   isSelected,
   deleting,
 }) => {
-  const { data: seasons, refetch } = useSeasons();
+  const { data: seasons, refetch } = useAdminSeasons();
   if (!seasons) return null; // Can never happen
 
   const deleteSeason = useAdminDeleteSeason();

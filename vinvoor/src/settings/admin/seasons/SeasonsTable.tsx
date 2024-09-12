@@ -3,13 +3,15 @@ import { TypographyG } from "../../../components/TypographyG";
 import { ChangeEvent, useState } from "react";
 import { randomInt } from "../../../util/util";
 import { useSnackbar } from "notistack";
-import { useAdminDeleteSeason } from "../../../hooks/admin/useAdminSeason";
-import { useSeasons } from "../../../hooks/useSeasons";
+import {
+  useAdminDeleteSeason,
+  useAdminSeasons,
+} from "../../../hooks/admin/useAdminSeason";
 import { SeasonsTableHead } from "./SeasonsTableHead";
 import { SeasonsTableBody } from "./SeasonsTableBody";
 
 export const SeasonsTable = () => {
-  const { data: seasons, refetch } = useSeasons();
+  const { data: seasons, refetch } = useAdminSeasons();
   if (!seasons) return null; // Can never happen
 
   const deleteSeason = useAdminDeleteSeason();

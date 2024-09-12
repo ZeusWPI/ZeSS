@@ -1,8 +1,17 @@
-import { useMutation } from "@tanstack/react-query";
-import { deleteAPI, postApi } from "../../util/fetch";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { deleteAPI, getApi, postApi } from "../../util/fetch";
 import { Dayjs } from "dayjs";
+import { convertSeasonJSON, Season, SeasonJSON } from "../../types/seasons";
 
 const ENDPOINT = "admin/seasons";
+
+export const useAdminSeasons = () => {
+  return useQuery<Season[]>({
+    queryKey: ["adminSeasons"],
+    queryFn: () => getApi<Season[], SeasonJSON[]>("seasons", convertSeasonJSON),
+    retry: 1,
+  });
+};
 
 export const useAdminAddSeason = () =>
   useMutation({
