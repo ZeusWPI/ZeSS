@@ -5,8 +5,10 @@ use axum::{
 use chrono::NaiveDate;
 
 use reqwest::StatusCode;
-use sea_orm::sea_query::Expr;
-use sea_orm::{ActiveModelTrait, EntityTrait, FromQueryResult, QuerySelect, Set};
+use sea_orm::{sea_query::Expr, DatabaseConnection};
+use sea_orm::{
+    ActiveModelTrait, EntityTrait, FromQueryResult, QueryFilter, QuerySelect, QueryTrait, Set,
+};
 use serde::{Deserialize, Serialize};
 
 use crate::{
@@ -25,21 +27,30 @@ pub struct SeasonGet {
     is_current: bool,
 }
 
-pub async fn get(state: State<AppState>) -> ResponseResult<Json<Vec<SeasonGet>>> {
-    Ok(Json(
-        Season::find()
-            .column_as(
-                Expr::col(season::Column::Start)
-                    .lte(Expr::current_date())
-                    .and(Expr::col(season::Column::End).gte(Expr::current_date()))
-                    .and(Expr::col(season::Column::Id).ne(1)),
-                "is_current",
-            )
-            .into_model::<SeasonGet>()
-            .all(&state.db)
-            .await
-            .or_log((StatusCode::INTERNAL_SERVER_ERROR, "failed to get seasons"))?,
-    ))
+pub async fn get_until_now(state: State<AppState>) -> ResponseResult<Json<Vec<SeasonGet>>> {
+    Ok(Json(db_seasons(&state.db, false).await?))
+}
+
+pub async fn get_all(state: State<AppState>) -> ResponseResult<Json<Vec<SeasonGet>>> {
+    Ok(Json(db_seasons(&state.db, true).await?))
+}
+
+pub async fn db_seasons(db: &DatabaseConnection, future: bool) -> ResponseResult<Vec<SeasonGet>> {
+    Ok(Season::find()
+        .column_as(
+            Expr::col(season::Column::Start)
+                .lte(Expr::current_date())
+                .and(Expr::col(season::Column::End).gte(Expr::current_date()))
+                .and(Expr::col(season::Column::Id).ne(1)),
+            "is_current",
+        )
+        .apply_if(future.then_some(()), |query, _| {
+            query.filter(Expr::col(season::Column::Start).gt(Expr::current_date()))
+        })
+        .into_model::<SeasonGet>()
+        .all(db)
+        .await
+        .or_log((StatusCode::INTERNAL_SERVER_ERROR, "failed to get seasons"))?)
 }
 
 #[derive(Debug, Serialize, Deserialize)]
