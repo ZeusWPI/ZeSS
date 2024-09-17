@@ -4,6 +4,7 @@ import esp32
 import gc
 import time
 import urequests as req
+from umqtt.robust import MQTTClient
 
 from lib.mfrc522 import MFRC522
 import lib.term_color as tc
@@ -82,6 +83,9 @@ class StatusNotifier:
         Timer(0).init(period=500, mode=Timer.ONE_SHOT, callback=self.gotoSleep)
         if name:
             leddy.setText(f"Welkom {name}!")
+        mqtt = Mqtt()
+        mqtt.blink()
+        mqtt.close()
 
     def error(self):
         self.led.setColor(*StatusNotifier.colors[0])
@@ -89,7 +93,7 @@ class StatusNotifier:
         self.gotoSleep()
 
 class Leddy:
-    def __init__(self, address="http://10.0.2.3") -> None:
+    def __init__(self, address="http://leddy") -> None:
         self.address = address
 
     def _post(self, command: str):
@@ -102,11 +106,23 @@ class Leddy:
         watchdog.feed()
         self._post(f"Option autoResetMs {5 * 1000}")
         watchdog.feed()
-        time.sleep(.5)
+        time.sleep(1)
         watchdog.feed()
         self._post(f"ScrollingText {text}")
         watchdog.feed()
 
+class Mqtt:
+    def __init__(self, name="vinscant", host="korner", port="1883") -> None:
+        self.client = MQTTClient(name, host, port)
+        self.client.connect()
+
+    def blink(self):
+        topic = 'zigbee2mqtt/lights/set'
+        payload = '{"effect": "blink"}'
+        self.client.publish(bytes(topic, 'utf-8'), bytes(payload, 'utf-8'))
+
+    def close(self):
+        self.client.disconnect()
 
 print("Starting Vinscant...")
 
@@ -180,10 +196,10 @@ try:
         watchdog.feed()
         if 200 <= res.status_code < 300:
             name = res.text
-            print(f"vingo: {tc.GREEN}{name}{tc.RESET}")
+            print(f"vingo: {res.status_code} {tc.GREEN}{name}{tc.RESET}")
             notifier.good(name)
         else:
-            print(f"vingo: {tc.YELLOW}{res.text}{tc.RESET}")
+            print(f"vingo: {res.status_code} {tc.YELLOW}{res.text}{tc.RESET}")
             notifier.error()
         res.close() # does not support with statements
 
