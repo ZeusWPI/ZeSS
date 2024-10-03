@@ -1,6 +1,6 @@
 import { Box, Paper, Stack, Switch, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid";
-import { useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Tooltip } from "react-tooltip";
 import { BrowserView } from "../components/BrowserView";
 import { LoadingSkeleton } from "../components/LoadingSkeleton";
@@ -10,12 +10,20 @@ import { Heatmap } from "./heatmap/Heatmap";
 import { HeatmapVariant } from "./heatmap/types";
 import { Streak } from "./streak/Streak";
 import { useScans } from "../hooks/useScan";
+import { useSeasons } from "../hooks/useSeasons";
+import { useSettings } from "../hooks/useSettings";
 
 export const Overview = () => {
   const scansQuery = useScans();
+  const seasonsQuery = useSeasons();
+  const settingsQuery = useSettings();
   const [checked, setChecked] = useState<boolean>(false);
   const daysRef = useRef<HTMLDivElement>(null);
   const [paperHeight, setPaperHeight] = useState<number>(0);
+  const [heatmapDates, setHeatmapDates] = useState<[Date, Date]>([
+    new Date(),
+    new Date(),
+  ]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setChecked(event.target.checked);
@@ -26,8 +34,24 @@ export const Overview = () => {
       setPaperHeight(daysRef.current.getBoundingClientRect().height);
   });
 
+  useEffect(() => {
+    const currentSeason = seasonsQuery.data?.find(
+      season => season.id === settingsQuery.data?.season,
+    );
+
+    if (currentSeason) {
+      if (currentSeason.id === 1 && seasonsQuery.data) {
+        const seasons = [...seasonsQuery.data];
+        seasons.sort((a, b) => a.start.getTime() - b.start.getTime());
+        setHeatmapDates([seasons[1].start, new Date()]);
+      } else {
+        setHeatmapDates([currentSeason.start, currentSeason.end]);
+      }
+    }
+  }, [seasonsQuery.data, settingsQuery.data]);
+
   return (
-    <LoadingSkeleton queries={[scansQuery]}>
+    <LoadingSkeleton queries={[scansQuery, seasonsQuery, settingsQuery]}>
       {scansQuery.data?.length ? (
         <Grid container spacing={2} justifyContent="space-between">
           <Grid item xs={8} md={4} lg={3}>
@@ -61,8 +85,8 @@ export const Overview = () => {
                   </Stack>
                 </BrowserView>
                 <Heatmap
-                  startDate={new Date("2024-05-01")}
-                  endDate={new Date("2024-09-30")}
+                  startDate={heatmapDates[0]}
+                  endDate={heatmapDates[1]}
                   variant={
                     checked ? HeatmapVariant.DAYS : HeatmapVariant.MONTHS
                   }
