@@ -8,7 +8,7 @@ const ENDPOINT = "admin/seasons";
 export const useAdminSeasons = () => {
   return useQuery<Season[]>({
     queryKey: ["adminSeasons"],
-    queryFn: () => getApi<Season[], SeasonJSON[]>("seasons", convertSeasonJSON),
+    queryFn: () => getApi<Season[], SeasonJSON[]>(ENDPOINT, convertSeasonJSON),
     retry: 1,
   });
 };
