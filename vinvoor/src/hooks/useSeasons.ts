@@ -14,7 +14,7 @@ export const useSeasons = () => {
 };
 
 export const useSetSeason = () => {
-  const { mutate, ...rest } = usePatchSettings();
+  const { mutate, ...other } = usePatchSettings();
 
   const setSeason = (
     id: number,
@@ -26,5 +26,5 @@ export const useSetSeason = () => {
     >,
   ) => mutate({ season: id }, options);
 
-  return { setSeason, ...rest };
+  return { setSeason, ...other };
 };

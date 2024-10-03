@@ -89,7 +89,10 @@ export const Settings = () => {
       <Grid item xs={6}>
         <Paper elevation={4} sx={{ p: "10px" }}>
           <Stack direction="row" display="flex" alignItems="center">
-            <Tooltip title="Season to display data for" placement="right">
+            <Tooltip
+              title="Season for which to display data for"
+              placement="right"
+            >
               <HelpCircleOutline
                 sx={{
                   fontSize: "15px",
