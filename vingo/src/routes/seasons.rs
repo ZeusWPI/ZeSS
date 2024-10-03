@@ -44,8 +44,8 @@ pub async fn db_seasons(db: &DatabaseConnection, future: bool) -> ResponseResult
                 .and(Expr::col(season::Column::Id).ne(1)),
             "is_current",
         )
-        .apply_if(future.then_some(()), |query, _| {
-            query.filter(Expr::col(season::Column::Start).gt(Expr::current_date()))
+        .apply_if((!future).then_some(()), |query, _| {
+            query.filter(Expr::col(season::Column::Start).lt(Expr::current_date()))
         })
         .into_model::<SeasonGet>()
         .all(db)
