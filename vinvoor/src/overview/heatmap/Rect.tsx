@@ -1,6 +1,6 @@
 import { FC } from "react";
-import { HeatmapRectStyle } from "../../theme";
 import { RECT_RADIUS, RECT_SIZE, RECT_STROKE, SPACE } from "./utils";
+import { HeatmapRectStyle } from "../../themes/theme";
 
 interface RectProps {
   idx: number;
