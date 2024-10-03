@@ -23,6 +23,7 @@ services:
       - ./vingo:/backend
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    stop_grace_period: 1s
     depends_on:
       - zess-db
 
