@@ -47,6 +47,10 @@ pub async fn add(state: State<AppState>, body: String) -> ResponseResult<String>
         Err((StatusCode::UNAUTHORIZED, "invalid key"))?
     }
 
+    if !serial.chars().all(|ch| char::is_ascii_hexdigit(&ch)) {
+        return Err((StatusCode::BAD_REQUEST, "not valid hex"));
+    }
+
     let mut registering = state.registering.lock().await;
 
     // if someone is registering a card
@@ -66,19 +70,32 @@ pub async fn add(state: State<AppState>, body: String) -> ResponseResult<String>
         registering.last_success = db_result.is_ok();
 
         db_result.or_log((StatusCode::INTERNAL_SERVER_ERROR, "failed to insert card"))?;
-        Ok("card registered".to_string())
-    } else {
-        if !serial.chars().all(|ch| char::is_ascii_hexdigit(&ch)) {
-            return Err((StatusCode::BAD_REQUEST, "not valid hex"));
-        }
-        scan::ActiveModel {
-            card_serial: Set(serial.to_string()),
-            scan_time: Set(Local::now().fixed_offset()),
-            ..Default::default()
-        }
-        .insert(&state.db)
-        .await
-        .or_log((StatusCode::INTERNAL_SERVER_ERROR, "failed to insert scan"))?;
-        Ok("scanned".to_string())
     }
+
+    scan::ActiveModel {
+        card_serial: Set(serial.to_string()),
+        scan_time: Set(Local::now().fixed_offset()),
+        ..Default::default()
+    }
+    .insert(&state.db)
+    .await
+    .or_log((
+        StatusCode::INTERNAL_SERVER_ERROR,
+        "no card with that serial",
+    ))?;
+
+    let user = Card::find()
+        .filter(card::Column::Serial.eq(serial))
+        .find_also_related(User)
+        .one(&state.db)
+        .await
+        .or_log((
+            StatusCode::INTERNAL_SERVER_ERROR,
+            "failed to get user for card",
+        ))?
+        .ok_or((StatusCode::INTERNAL_SERVER_ERROR, "no card"))?
+        .1
+        .ok_or((StatusCode::INTERNAL_SERVER_ERROR, "no user for card"))?;
+
+    Ok(user.name)
 }
