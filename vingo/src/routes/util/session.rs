@@ -14,6 +14,7 @@ use crate::{
 
 static DEBUG_LOGIN: LazyLock<bool> =
     LazyLock::new(|| env::var("DEBUG_LOGIN").unwrap_or("".into()) == "TRUE");
+
 pub enum SessionKeys {
     User,
     Season,
