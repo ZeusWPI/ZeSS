@@ -40,7 +40,7 @@ WORKDIR /
 COPY --from=build_backend target/release/vingo .
 COPY --from=build_frontend /dist public
 
-ENV DEVELOPMENT=false
+ENV DEVELOPMENT=FALSE
 
 EXPOSE 4000
 

@@ -2,7 +2,7 @@ mod entities;
 mod middleware;
 mod routes;
 
-use std::sync::Arc;
+use std::{env, sync::Arc};
 
 use chrono::Local;
 use routes::{auth, cards, days, leaderboard, scans, seasons, settings};
@@ -15,7 +15,10 @@ use axum::{
 use sea_orm::{prelude::DateTimeWithTimeZone, Database, DatabaseConnection};
 use tokio::sync::Mutex;
 use tower_http::cors::CorsLayer;
-use tower_http::trace::TraceLayer;
+use tower_http::{
+    services::{ServeDir, ServeFile},
+    trace::TraceLayer,
+};
 use tower_sessions::{cookie::SameSite, MemoryStore, SessionManagerLayer};
 
 use migration::{Migrator, MigratorTrait};
@@ -60,12 +63,18 @@ async fn main() {
     };
 
     // build our application with a route
-    let app = Router::new()
+    let mut app = Router::new()
         .nest("/api", routes())
         .layer(sess_mw)
         .layer(CorsLayer::very_permissive())
         .layer(TraceLayer::new_for_http())
         .with_state(state);
+
+    if env::var("DEVELOPMENT").unwrap_or("".into()) != "TRUE" {
+        app = app.fallback_service(
+            ServeDir::new("public").not_found_service(ServeFile::new("public/index.html")),
+        );
+    };
 
     // run it
     let listener = tokio::net::TcpListener::bind("0.0.0.0:4000").await.unwrap();
