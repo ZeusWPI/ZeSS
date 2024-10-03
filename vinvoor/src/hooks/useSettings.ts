@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getApi, patchApi } from "../util/fetch";
 import { converSettingsJSON, Settings, SettingsJSON } from "../types/settings";
 
@@ -11,8 +11,15 @@ export const useSettings = () =>
     retry: 1,
   });
 
-export const usePatchSettings = () =>
-  useMutation({
+export const usePatchSettings = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
     mutationFn: (args: Record<string, string | number | boolean>) =>
       patchApi(ENDPOINT, args),
+    onSuccess: () =>
+      queryClient.invalidateQueries({
+        predicate: query => query.queryKey[0] !== "settings",
+      }),
   });
+};
