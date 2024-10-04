@@ -25,6 +25,10 @@ const CALLBACK_URL: LazyLock<String> =
     LazyLock::new(|| env::var("ZAUTH_CALLBACK_PATH").expect("ZAUTH_CALLBACK_PATH not present"));
 const FRONTEND_URL: LazyLock<String> =
     LazyLock::new(|| env::var("FRONTEND_URL").expect("FRONTEND_URL not present"));
+const ZAUTH_CLIENT_ID: LazyLock<String> =
+    LazyLock::new(|| env::var("ZAUTH_CLIENT_ID").expect("ZAUTH_CLIENT_ID not present"));
+const ZAUTH_CLIENT_SECRET: LazyLock<String> =
+    LazyLock::new(|| env::var("ZAUTH_CLIENT_SECRET").expect("ZAUTH_CLIENT_SECRET not present"));
 
 pub async fn current_user(session: Session) -> ResponseResult<Json<Model>> {
     let user = get_user(&session).await?;
@@ -41,7 +45,8 @@ pub async fn login(session: Session) -> ResponseResult<Redirect> {
     // redirect to zauth to authenticate
     let zauth_url = ZAUTH_URL.to_string();
     let callback_url = CALLBACK_URL.to_string();
-    Ok(Redirect::to(&format!("{zauth_url}/oauth/authorize?client_id=tomtest&response_type=code&state={state}&redirect_uri={callback_url}")))
+    let zauth_client_id = ZAUTH_CLIENT_ID.to_string();
+    Ok(Redirect::to(&format!("{zauth_url}/oauth/authorize?client_id={zauth_client_id}&response_type=code&state={state}&redirect_uri={callback_url}")))
 }
 
 pub async fn logout(session: Session) -> ResponseResult<Json<bool>> {
@@ -94,7 +99,10 @@ pub async fn callback(
     // get token from zauth with code
     let token = client
         .post(&format!("{zauth_url}/oauth/token"))
-        .basic_auth("tomtest", Some("blargh"))
+        .basic_auth(
+            ZAUTH_CLIENT_ID.to_string(),
+            Some(ZAUTH_CLIENT_SECRET.to_string()),
+        )
         .form(&form)
         .send()
         .await
