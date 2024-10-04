@@ -1,3 +1,6 @@
+use std::env;
+use std::sync::LazyLock;
+
 use axum::extract::{Query, State};
 use axum::response::Redirect;
 use axum::Json;
@@ -16,9 +19,12 @@ use crate::AppState;
 use super::util::errors::{ResponseResult, ResultAndLogError};
 use super::util::session::{get_user, SessionKeys};
 
-const ZAUTH_URL: &str = "https://zauth.zeus.gent";
-const CALLBACK_URL: &str = "http://localhost:4000/api/auth/callback";
-const FRONTEND_URL: &str = "http://localhost:5173";
+const ZAUTH_URL: LazyLock<String> =
+    LazyLock::new(|| env::var("ZAUTH_URL").expect("ZAUTH_URL not present"));
+const CALLBACK_URL: LazyLock<String> =
+    LazyLock::new(|| env::var("ZAUTH_CALLBACK_PATH").expect("ZAUTH_CALLBACK_PATH not present"));
+const FRONTEND_URL: LazyLock<String> =
+    LazyLock::new(|| env::var("FRONTEND_URL").expect("FRONTEND_URL not present"));
 
 pub async fn current_user(session: Session) -> ResponseResult<Json<Model>> {
     let user = get_user(&session).await?;
@@ -33,7 +39,9 @@ pub async fn login(session: Session) -> ResponseResult<Redirect> {
         "failed to insert state in session",
     ))?;
     // redirect to zauth to authenticate
-    Ok(Redirect::to(&format!("{ZAUTH_URL}/oauth/authorize?client_id=tomtest&response_type=code&state={state}&redirect_uri={CALLBACK_URL}")))
+    let zauth_url = ZAUTH_URL.to_string();
+    let callback_url = CALLBACK_URL.to_string();
+    Ok(Redirect::to(&format!("{zauth_url}/oauth/authorize?client_id=tomtest&response_type=code&state={state}&redirect_uri={callback_url}")))
 }
 
 pub async fn logout(session: Session) -> ResponseResult<Json<bool>> {
@@ -74,16 +82,18 @@ pub async fn callback(
         return Err((StatusCode::UNAUTHORIZED, "state does not match"));
     }
 
+    let callback_url = CALLBACK_URL.to_string();
     let client = reqwest::Client::new();
     let form = [
         ("grant_type", "authorization_code"),
         ("code", &params.code),
-        ("redirect_uri", CALLBACK_URL),
+        ("redirect_uri", &callback_url),
     ];
 
+    let zauth_url = ZAUTH_URL.to_string();
     // get token from zauth with code
     let token = client
-        .post(&format!("{ZAUTH_URL}/oauth/token"))
+        .post(&format!("{zauth_url}/oauth/token"))
         .basic_auth("tomtest", Some("blargh"))
         .form(&form)
         .send()
@@ -100,7 +110,7 @@ pub async fn callback(
 
     // get user info from zauth
     let zauth_user = client
-        .get(format!("{ZAUTH_URL}/current_user"))
+        .get(format!("{zauth_url}/current_user"))
         .header("Authorization", "Bearer ".to_owned() + &token.access_token)
         .send()
         .await
@@ -141,5 +151,6 @@ pub async fn callback(
             "failed to insert user in session",
         ))?;
 
-    Ok(Redirect::to(FRONTEND_URL))
+    let frontend_url = FRONTEND_URL.to_string();
+    Ok(Redirect::to(&frontend_url))
 }
