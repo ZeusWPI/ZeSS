@@ -43,7 +43,10 @@ export const Overview = () => {
       if (currentSeason.id === 1 && seasonsQuery.data) {
         const seasons = [...seasonsQuery.data];
         seasons.sort((a, b) => a.start.getTime() - b.start.getTime());
-        setHeatmapDates([seasons[1].start, new Date()]);
+        setHeatmapDates([
+          seasons.length > 1 ? seasons[1].start : seasons[0].start,
+          new Date(),
+        ]);
       } else {
         setHeatmapDates([currentSeason.start, currentSeason.end]);
       }
