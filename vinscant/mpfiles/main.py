@@ -16,7 +16,7 @@ def get_key():
 def uid_to_string(uid):
     ret = ""
     for i in uid:
-        ret = "%02X" % i + ret
+        ret += "%02X" % i
     return ret
 
 class Led:
