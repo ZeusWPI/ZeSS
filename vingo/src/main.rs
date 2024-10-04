@@ -2,7 +2,10 @@ mod entities;
 mod middleware;
 mod routes;
 
-use std::{env, sync::Arc};
+use std::{
+    env,
+    sync::{Arc, LazyLock},
+};
 
 use chrono::Local;
 use routes::{auth, cards, days, leaderboard, scans, seasons, settings};
@@ -23,7 +26,9 @@ use tower_sessions::{cookie::SameSite, MemoryStore, SessionManagerLayer};
 
 use migration::{Migrator, MigratorTrait};
 
-const DB_URL: &str = "postgres://postgres:zess@host.docker.internal/zess?sslmode=disable";
+const DB_URL: LazyLock<String> = LazyLock::new(|| {
+    env::var("POSTGRES_CONNECTION_STRING").expect("POSTGRES_CONNECTION_STRING not present")
+});
 
 #[derive(Clone, Debug)]
 struct AppState {
@@ -49,7 +54,7 @@ async fn main() {
         .with_same_site(SameSite::Lax)
         .with_http_only(false);
 
-    let db = Database::connect(DB_URL).await.unwrap();
+    let db = Database::connect(DB_URL.to_string()).await.unwrap();
     Migrator::up(&db, None).await.unwrap();
 
     let registering_state = RegisterState {
@@ -70,7 +75,9 @@ async fn main() {
         .layer(TraceLayer::new_for_http())
         .with_state(state);
 
-    if env::var("DEVELOPMENT").unwrap_or("".into()) != "TRUE" {
+    if env::var("DEVELOPMENT").unwrap_or("".into()) == "TRUE" {
+        println!("yay we are developing")
+    } else {
         app = app.fallback_service(
             ServeDir::new("public").not_found_service(ServeFile::new("public/index.html")),
         );
