@@ -1,3 +1,5 @@
+use std::{env, sync::LazyLock};
+
 use crate::{
     entities::{prelude::*, *},
     AppState,
@@ -17,7 +19,8 @@ use super::util::{
     session::{get_season, get_user},
 };
 
-const SCAN_KEY: &str = "bad_key";
+const SCAN_KEY: LazyLock<String> =
+    LazyLock::new(|| env::var("SCAN_KEY").expect("SCAN_KEY not present"));
 
 pub async fn get_for_current_user(
     session: Session,
@@ -43,7 +46,7 @@ pub async fn add(state: State<AppState>, body: String) -> ResponseResult<String>
     let (serial, key) = body
         .split_once(';')
         .ok_or((StatusCode::BAD_REQUEST, "invalid format: serial;key"))?;
-    if key != SCAN_KEY {
+    if key != SCAN_KEY.to_string() {
         Err((StatusCode::UNAUTHORIZED, "invalid key"))?
     }
 
