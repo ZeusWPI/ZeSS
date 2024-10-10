@@ -4,10 +4,14 @@ use reqwest::StatusCode;
 use serde::{Deserialize, Serialize};
 
 use sea_orm::{DbBackend, FromQueryResult, Statement};
+use tower_sessions::Session;
 
-use crate::AppState;
+use crate::{entities::season, AppState};
 
-use super::util::errors::{ResponseResult, ResultAndLogError};
+use super::util::{
+    errors::{ResponseResult, ResultAndLogError},
+    session::get_season,
+};
 
 #[derive(Debug, FromQueryResult, Serialize, Deserialize)]
 pub struct LeaderboardItem {
@@ -18,10 +22,18 @@ pub struct LeaderboardItem {
     position_change: Option<i64>,
 }
 
-pub async fn get(state: State<AppState>) -> ResponseResult<Json<Vec<LeaderboardItem>>> {
-    let mut leaderboard = leaderboard_from_db(&state, Local::now().fixed_offset()).await?;
-    let leaderboard_last_week =
-        leaderboard_from_db(&state, Local::now().fixed_offset() - TimeDelta::days(7)).await?;
+pub async fn get(
+    session: Session,
+    state: State<AppState>,
+) -> ResponseResult<Json<Vec<LeaderboardItem>>> {
+    let season = get_season(&session, &state).await?;
+    let mut leaderboard = leaderboard_from_db(&state, Local::now().fixed_offset(), &season).await?;
+    let leaderboard_last_week = leaderboard_from_db(
+        &state,
+        Local::now().fixed_offset() - TimeDelta::days(7),
+        &season,
+    )
+    .await?;
 
     for user in &mut leaderboard {
         let position_change = leaderboard_last_week
@@ -37,6 +49,7 @@ pub async fn get(state: State<AppState>) -> ResponseResult<Json<Vec<LeaderboardI
 async fn leaderboard_from_db(
     state: &State<AppState>,
     before: DateTime<FixedOffset>,
+    season: &season::Model,
 ) -> ResponseResult<Vec<LeaderboardItem>> {
     let result = LeaderboardItem::find_by_statement(Statement::from_sql_and_values(DbBackend::Postgres,"
             SELECT id, name, count as total_days, RANK() OVER (ORDER BY count desc) AS position
@@ -45,7 +58,9 @@ async fn leaderboard_from_db(
                         LEFT JOIN card ON card_serial = serial
                         LEFT JOIN \"user\" ON user_id = \"user\".id
                         WHERE scan_time < $1
-                        GROUP BY \"user\".name, \"user\".id);", [before.into()]))
+                            AND scan_time > $2
+                            AND scan_time < $3
+                        GROUP BY \"user\".name, \"user\".id);", [before.into(), season.start.into(), season.end.into()]))
         .all(&state.db)
         .await
         .or_log((StatusCode::INTERNAL_SERVER_ERROR, "could not select leaderboard items"))?;
