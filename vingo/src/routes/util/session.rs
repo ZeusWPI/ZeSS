@@ -3,7 +3,7 @@ use std::{env, sync::LazyLock};
 use axum::extract::State;
 use chrono::Local;
 use reqwest::StatusCode;
-use sea_orm::EntityTrait;
+use sea_orm::{sea_query::Expr, DatabaseConnection, EntityTrait, QueryFilter};
 use tower_sessions::Session;
 
 use super::errors::{ResponseResult, ResultAndLogError};
@@ -58,12 +58,31 @@ pub async fn get_season(
 
     let season_or_default = match season {
         Some(season_model) => season_model,
-        None => Season::find_by_id(1)
-            .one(&state.db)
-            .await
-            .or_log((StatusCode::INTERNAL_SERVER_ERROR, "failed to get season"))?
-            .ok_or((StatusCode::INTERNAL_SERVER_ERROR, "no season 1"))?,
+        None => get_current_season_or_all(&state.db).await?,
     };
 
     Ok(season_or_default)
+}
+
+async fn get_current_season_or_all(db: &DatabaseConnection) -> ResponseResult<season::Model> {
+    let curr_season = Season::find()
+        .filter(
+            Expr::col(season::Column::Id)
+                .ne(1)
+                .and(Expr::col(season::Column::End).gte(Expr::current_date()))
+                .and(Expr::col(season::Column::Start).lte(Expr::current_date())),
+        )
+        .one(db)
+        .await
+        .or_log((StatusCode::INTERNAL_SERVER_ERROR, "failed to get season"))?;
+
+    if let Some(curr_season) = curr_season {
+        Ok(curr_season)
+    } else {
+        Ok(Season::find_by_id(1)
+            .one(db)
+            .await
+            .or_log((StatusCode::INTERNAL_SERVER_ERROR, "failed to get season"))?
+            .ok_or((StatusCode::INTERNAL_SERVER_ERROR, "no season 1"))?)
+    }
 }
