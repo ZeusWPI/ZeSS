@@ -6,13 +6,13 @@ import {
   Typography,
 } from "@mui/material";
 import { alpha, Theme, useTheme } from "@mui/material/styles";
+import { useLeaderboardItems } from "../hooks/useLeaderboard";
+import { useUser } from "../hooks/useUser";
 import { TableHeadCell } from "../types/general";
 import { leaderboardHeadCells, LeaderboardItem } from "../types/leaderboard";
 import FirstPlaceIcon from "/first_place.svg";
 import SecondPlaceIcon from "/second_place.svg";
 import ThirdPlaceIcon from "/third_place.svg";
-import { useLeaderboardItems } from "../hooks/useLeaderboard";
-import { useUser } from "../hooks/useUser";
 
 const leaderboardColors = [
   (theme: Theme) => theme.leaderboard.first,
@@ -124,7 +124,7 @@ export const LeaderboardTableBody = () => {
                     theme.palette.action.activatedOpacity,
                   ),
               }),
-              ...getLeaderboardColor(index, theme),
+              ...getLeaderboardColor(row.position - 1, theme),
             }}
           >
             {leaderboardHeadCells.map(headCell => (
