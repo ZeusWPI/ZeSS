@@ -3,7 +3,7 @@ services:
         image: postgres:alpine3.20
         environment:
             - POSTGRES_PASSWORD=zess
-            - POSTGRES_USER=postgres
+            - POSTGRES_USER=zess
             - POSTGRES_DB=zess
         volumes:
             - db-data:/var/lib/postgresql/data
