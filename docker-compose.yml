@@ -23,7 +23,7 @@ services:
             - 4000:4000
         volumes:
             - ./vingo:/backend
-            - backend-compile:/target
+            - backend-target:/target
         extra_hosts:
             - "host.docker.internal:host-gateway"
         stop_grace_period: 1s
@@ -43,6 +43,5 @@ services:
             - "host.docker.internal:host-gateway"
 
 volumes:
-    backend-compile:
-    backend-packages:
+    backend-target:
     db-data:
