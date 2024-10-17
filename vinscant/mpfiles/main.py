@@ -81,11 +81,11 @@ class StatusNotifier:
         self.led.setColor(*StatusNotifier.colors[2])
         self.buzzer.start(500)
         Timer(0).init(period=500, mode=Timer.ONE_SHOT, callback=self.gotoSleep)
-        if name:
-            leddy.setText(f"Welkom {name}!")
         mqtt = Mqtt()
         mqtt.blink()
         mqtt.close()
+        if name:
+            leddy.setText(f"Welkom {name}!")
 
     def error(self):
         self.led.setColor(*StatusNotifier.colors[0])
@@ -104,11 +104,11 @@ class Leddy:
 
     def setText(self, text: str):
         watchdog.feed()
-        self._post(f"Option autoResetMs {5 * 1000}")
-        watchdog.feed()
-        time.sleep(1)
-        watchdog.feed()
         self._post(f"ScrollingText {text}")
+        watchdog.feed()
+        time.sleep(3)
+        watchdog.feed()
+        self._post(f"Option autoResetMs {5 * 1000}")
         watchdog.feed()
 
 class Mqtt:
