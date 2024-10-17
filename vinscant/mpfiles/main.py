@@ -117,8 +117,8 @@ class Mqtt:
         self.client.connect()
 
     def blink(self):
-        topic = 'zigbee2mqtt/lights/set'
-        payload = '{"effect": "blink"}'
+        topic = 'zigbee2mqtt/bulb_0_0/set'
+        payload = '{"effect": "okay"}'
         self.client.publish(bytes(topic, 'utf-8'), bytes(payload, 'utf-8'))
 
     def close(self):
