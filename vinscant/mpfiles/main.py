@@ -112,7 +112,7 @@ class Leddy:
         watchdog.feed()
 
 class Mqtt:
-    def __init__(self, name="vinscant", host="korner", port="1883") -> None:
+    def __init__(self, name="vinscant", host="koin", port="1883") -> None:
         self.client = MQTTClient(name, host, port)
         self.client.connect()
 
