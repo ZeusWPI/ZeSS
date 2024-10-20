@@ -78,8 +78,8 @@ const getPosition = (position: number) => {
   }
 };
 
-const getScanned = (scanned: boolean) => {
-  if (scanned)
+const getScanned = (checkedIn: boolean) => {
+  if (checkedIn)
     return <Chip label="Checked In" variant="outlined" color="success" />;
 
   return <></>;
@@ -94,7 +94,7 @@ const getCell = (
       return getPositionChange(row[headCell.id]);
     case "position":
       return getPosition(row[headCell.id]);
-    case "scanned":
+    case "checkedIn":
       return getScanned(row[headCell.id]);
     default:
       return (
