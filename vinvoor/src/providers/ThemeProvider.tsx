@@ -21,7 +21,9 @@ export const ThemeContext = createContext<ThemeContextProps>({
 
 export const ThemeProvider: FC<ThemeProviderProps> = ({ children }) => {
   const [themeMode, setThemeMode] = useState<ThemeMode>(
-    window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light",
+    window.matchMedia("(prefers-color-scheme: dark)").matches
+      ? "dark"
+      : "light",
   );
 
   const setTheme = (theme: ThemeMode) => {
