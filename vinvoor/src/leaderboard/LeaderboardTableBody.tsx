@@ -82,8 +82,13 @@ function getPosition(position: number) {
   }
 }
 
+<<<<<<< HEAD
 function getScanned(scanned: boolean) {
   if (scanned)
+=======
+const getScanned = (checkedIn: boolean) => {
+  if (checkedIn)
+>>>>>>> 6b63abc (vinvoor: small refactor)
     return <Chip label="Checked In" variant="outlined" color="success" />;
 
   return <></>;
@@ -95,7 +100,7 @@ function getCell(row: LeaderboardItem, headCell: TableHeadCell<LeaderboardItem>)
       return getPositionChange(row[headCell.id]);
     case "position":
       return getPosition(row[headCell.id]);
-    case "scanned":
+    case "checkedIn":
       return getScanned(row[headCell.id]);
     default:
       return (
