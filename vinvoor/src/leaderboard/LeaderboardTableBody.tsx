@@ -1,4 +1,5 @@
 import {
+  Chip,
   Icon,
   TableBody,
   TableCell,
@@ -77,6 +78,13 @@ const getPosition = (position: number) => {
   }
 };
 
+const getScanned = (scanned: boolean) => {
+  if (scanned)
+    return <Chip label="Checked In" variant="outlined" color="success" />;
+
+  return <></>;
+};
+
 const getCell = (
   row: LeaderboardItem,
   headCell: TableHeadCell<LeaderboardItem>,
@@ -86,6 +94,8 @@ const getCell = (
       return getPositionChange(row[headCell.id]);
     case "position":
       return getPosition(row[headCell.id]);
+    case "scanned":
+      return getScanned(row[headCell.id]);
     default:
       return (
         <Typography
@@ -105,6 +115,8 @@ export const LeaderboardTableBody = () => {
 
   const theme = useTheme();
   const { data: user } = useUser();
+
+  console.log(rows);
 
   return (
     <TableBody>
