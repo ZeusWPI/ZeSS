@@ -2,12 +2,13 @@ import { Box, Container } from "@mui/material";
 import { useState } from "react";
 import { Navigate, Outlet, useOutlet } from "react-router-dom";
 import { LoadingSkeleton } from "./components/LoadingSkeleton";
+import { Footer } from "./footer/Footer";
+import { useUser } from "./hooks/useUser";
 import { NavBar } from "./navbar/NavBar";
 import { Overview } from "./overview/Overview";
-import { WelcomePage } from "./WelcomePage";
-import { randomInt } from "./util/util";
 import "./themes/background.css";
-import { useUser } from "./hooks/useUser";
+import { randomInt } from "./util/util";
+import { WelcomePage } from "./WelcomePage";
 
 export const App = () => {
   const userQuery = useUser();
@@ -16,11 +17,19 @@ export const App = () => {
   const [backgroundSix] = useState(() => randomInt(0, 50) === 1);
 
   return (
-    <Box className={backgroundSix ? "Six" : ""}>
+    <Box
+      className={backgroundSix ? "Six" : ""}
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        minHeight: "100vh",
+      }}
+    >
       <NavBar />
       <Container
         maxWidth="xl"
         sx={{
+          flexGrow: 1,
           my: "2%",
         }}
       >
@@ -39,6 +48,7 @@ export const App = () => {
           )}
         </LoadingSkeleton>
       </Container>
+      <Footer />
     </Box>
   );
 };
