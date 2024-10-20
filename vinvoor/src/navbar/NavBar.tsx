@@ -7,12 +7,12 @@ import {
 } from "mdi-material-ui";
 import { useState } from "react";
 import { DarkModeToggle } from "../components/DarkModeToggle";
+import { useUser } from "../hooks/useUser";
 import { NavBarLogo } from "./NavBarLogo";
 import { NavBarPages } from "./NavBarPages";
 import { NavBarSandwich } from "./NavBarSandwich";
-import { NavBarUserMenu } from "./NavBarUserMenu";
-import { useUser } from "../hooks/useUser";
 import { NavBarSeasons } from "./NavBarSeasons";
+import { NavBarUserMenu } from "./NavBarUserMenu";
 
 export interface PageIcon {
   page: string;
@@ -78,7 +78,15 @@ export const NavBar = () => {
 
           {/* Display a season selector */}
 
-          <Box sx={{ flexGrow: 0, mr: "20px" }}>
+          <Box
+            sx={{
+              flexGrow: 0,
+              mr: "20px",
+              minWidth: "180px",
+              display: "flex",
+              justifyContent: "end",
+            }}
+          >
             <NavBarSeasons />
           </Box>
 
