@@ -2,6 +2,7 @@ import type { Theme } from "@mui/material/styles";
 import type { TableHeadCell } from "../types/general";
 import type { LeaderboardItem } from "../types/leaderboard";
 import {
+  Chip,
   Icon,
   TableBody,
   TableCell,
@@ -81,12 +82,21 @@ function getPosition(position: number) {
   }
 }
 
+function getScanned(scanned: boolean) {
+  if (scanned)
+    return <Chip label="Checked In" variant="outlined" color="success" />;
+
+  return <></>;
+}
+
 function getCell(row: LeaderboardItem, headCell: TableHeadCell<LeaderboardItem>) {
   switch (headCell.id) {
     case "positionChange":
       return getPositionChange(row[headCell.id]);
     case "position":
       return getPosition(row[headCell.id]);
+    case "scanned":
+      return getScanned(row[headCell.id]);
     default:
       return (
         <Typography
@@ -105,8 +115,7 @@ export function LeaderboardTableBody() {
   const theme = useTheme();
   const { data: user } = useUser();
 
-  if (!rows)
-    return null; // Can never happen
+  console.log(rows);
 
   return (
     <TableBody>
