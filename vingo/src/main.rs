@@ -8,7 +8,7 @@ use std::{
 };
 
 use chrono::Local;
-use routes::{auth, cards, days, leaderboard, scans, seasons, settings};
+use routes::{auth, cards, days, info, leaderboard, scans, seasons, settings};
 
 use axum::{
     middleware::from_fn,
@@ -102,6 +102,7 @@ fn open_routes() -> Router<AppState> {
         .route("/login", post(auth::login))
         .route("/auth/callback", get(auth::callback))
         .route("/scans", post(scans::add))
+        .route("/version", get(info::version))
 }
 
 fn authenticated_routes() -> Router<AppState> {
