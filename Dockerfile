@@ -5,11 +5,11 @@ RUN apk add upx musl-dev
 
 WORKDIR /
 
-COPY vingo/Cargo.* .
+COPY vingo/Cargo.* ./
 
-COPY vingo/migration migration
+COPY vingo/migration migration/
 
-COPY vingo/src src
+COPY vingo/src src/
 
 RUN cargo build --release
 
@@ -20,17 +20,19 @@ FROM node:20.15.1-alpine3.20 as build_frontend
 
 WORKDIR /
 
+RUN npm install -g pnpm
+
 COPY vinvoor/package.json package.json
 
-COPY vinvoor/yarn.lock yarn.lock
+COPY vinvoor/pnpm-lock.yaml pnpm-lock.yaml
 
-RUN yarn install
+RUN pnpm install
 
-COPY vinvoor/ .
+COPY vinvoor/ ./
 
 COPY vinvoor/production.env .env
 
-RUN yarn run build
+RUN pnpm run build
 
 # End container
 FROM alpine:3.20
