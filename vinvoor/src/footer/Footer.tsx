@@ -43,10 +43,7 @@ export const Footer = () => {
             </Icon>
           </Link>
         </TypographyG>
-        <Link
-          href="https://github.com/ZeusWPI/ZeSS"
-          textAlign="end"
-        >
+        <Link href="https://github.com/ZeusWPI/ZeSS" textAlign="end">
           © 2024
         </Link>
       </Box>
