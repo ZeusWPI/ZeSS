@@ -2,6 +2,8 @@ FROM node:20.15.1-alpine3.20
 
 WORKDIR /frontend
 
-COPY package.json yarn.lock ./
+RUN npm install -g pnpm
 
-CMD yarn install && yarn run host
+COPY package.json pnpm-lock.yaml ./
+
+CMD pnpm install && pnpm run host

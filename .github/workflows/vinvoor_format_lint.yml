@@ -19,17 +19,17 @@ jobs:
         with:
           node-version: 20.15.1
 
-      - name: Install yarn
-        run: npm install -g yarn
+      - name: Install pnpm
+        run: npm install -g pnpm
 
       - name: Install dependencies
-        run: yarn install
+        run: pnpm install
         working-directory: vinvoor/
 
       - name: Run formatter
-        run: yarn prettier --check .
+        run: pnpm prettier --check .
         working-directory: vinvoor/
 
       - name: Run Linter
-        run: yarn eslint . --max-warnings=0
+        run: pnpm eslint . --max-warnings=0
         working-directory: vinvoor/

@@ -116,6 +116,9 @@ importers:
       prettier:
         specifier: 3.3.3
         version: 3.3.3
+      simple-git-hooks:
+        specifier: ^2.11.1
+        version: 2.11.1
       typescript:
         specifier: ^5.6.3
         version: 5.6.3
@@ -2662,6 +2665,13 @@ packages:
       }
     engines: { node: ">=8" }
 
+  simple-git-hooks@2.11.1:
+    resolution:
+      {
+        integrity: sha512-tgqwPUMDcNDhuf1Xf6KTUsyeqGdgKMhzaH4PAZZuzguOgTl5uuyeYe/8mWgAr6IBxB5V06uqEf6Dy37gIWDtDg==,
+      }
+    hasBin: true
+
   slash@3.0.0:
     resolution:
       {
@@ -4461,6 +4471,8 @@ snapshots:
       shebang-regex: 3.0.0
 
   shebang-regex@3.0.0: {}
+
+  simple-git-hooks@2.11.1: {}
 
   slash@3.0.0: {}
 
