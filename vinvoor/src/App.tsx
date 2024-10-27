@@ -49,7 +49,7 @@ export const App = () => {
         </LoadingSkeleton>
       </Container>
       <Container sx={{ my: "2%" }}>
-          <Footer />
+        <Footer />
       </Container>
     </Box>
   );
