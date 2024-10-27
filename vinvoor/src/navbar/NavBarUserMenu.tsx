@@ -9,11 +9,12 @@ import {
 import { useTheme } from "@mui/material/styles";
 import { Cow, ExitRun, ShieldAccountOutline } from "mdi-material-ui";
 import { FC, MouseEvent, useState } from "react";
-import { UnstyledLink } from "../components/UnstyledLink";
 import { Login } from "../auth/Login";
 import { Logout } from "../auth/Logout";
-import { PageIcon } from "./NavBar";
+import { BrowserView } from "../components/BrowserView";
+import { UnstyledLink } from "../components/UnstyledLink";
 import { useUser } from "../hooks/useUser";
+import { PageIcon } from "./NavBar";
 
 interface NavBarUserMenuProps {
   pageIcons: readonly PageIcon[];
@@ -59,7 +60,9 @@ export const NavBarUserMenu: FC<NavBarUserMenuProps> = ({
             }}
           >
             <ShieldAccountOutline sx={{ mr: "3px" }} />
-            <Typography variant="h6">{user.name}</Typography>
+            <BrowserView>
+              <Typography variant="h6">{user.name}</Typography>
+            </BrowserView>
           </Button>
           <Menu
             sx={{ mt: "45px" }}

@@ -15,13 +15,12 @@ export const Footer = () => {
           alignItems: "center",
         }}
       >
-        <TypographyG width="33%">{version?.version ?? ""}</TypographyG>
+        <TypographyG>v {version?.version ?? ""}</TypographyG>
         <TypographyG
           sx={{
             height: "100%",
             display: "flex",
             alignItems: "center",
-            width: "33%",
             justifyContent: "center",
           }}
         >
@@ -46,10 +45,9 @@ export const Footer = () => {
         </TypographyG>
         <Link
           href="https://github.com/ZeusWPI/ZeSS"
-          width="33%"
           textAlign="end"
         >
-          Github © 2024
+          © 2024
         </Link>
       </Box>
     </Container>
