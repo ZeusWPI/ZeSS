@@ -1,4 +1,4 @@
-import { Box, Container, Icon, Link } from "@mui/material";
+import { Box, Icon, Link } from "@mui/material";
 import { TypographyG } from "../components/TypographyG";
 import { useVersion } from "../hooks/useVersion";
 import ZeusIcon from "/zeus.svg";
@@ -7,7 +7,6 @@ export const Footer = () => {
   const { data: version } = useVersion();
 
   return (
-    <Container disableGutters maxWidth="xl">
       <Box
         sx={{
           display: "flex",
@@ -47,6 +46,5 @@ export const Footer = () => {
           © 2024
         </Link>
       </Box>
-    </Container>
   );
 };

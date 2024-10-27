@@ -48,7 +48,7 @@ export const App = () => {
           )}
         </LoadingSkeleton>
       </Container>
-      <Container sx={{ my: "2%" }}>
+      <Container maxWidth="xl">
         <Footer />
       </Container>
     </Box>
