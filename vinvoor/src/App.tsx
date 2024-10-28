@@ -25,7 +25,9 @@ export const App = () => {
         minHeight: "100vh",
       }}
     >
-      <NavBar />
+      <Container sx={{ padding: 0 }}>
+        <NavBar />
+      </Container>
       <Container
         maxWidth="xl"
         sx={{
