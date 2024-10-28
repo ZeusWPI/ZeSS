@@ -1,5 +1,5 @@
 import { LeaderboardOutlined } from "@mui/icons-material";
-import { AppBar, Box, Toolbar, useMediaQuery } from "@mui/material";
+import { AppBar, Box, Container, Toolbar, useMediaQuery } from "@mui/material";
 import {
   CogOutline,
   CreditCardMultipleOutline,
@@ -44,68 +44,70 @@ export const NavBar = () => {
 
   return (
     <AppBar position="static">
-      <Toolbar disableGutters>
-        {/* Display either the ZeSS logo or a sandwich menu */}
+      <Container maxWidth="xl">
+        <Toolbar disableGutters>
+          {/* Display either the ZeSS logo or a sandwich menu */}
 
-        <Box sx={{ flexGrow: 1 }}>
-          <NavBarLogo
-            sx={{ display: screenSize.desktop }}
-            selectedPage={selectedPage}
-            handleSelectedPage={handleSelectedPage}
-          />
-
-          {user && (
-            <NavBarSandwich
-              pageIcons={navBarPages}
-              sx={{ display: screenSize.mobile }}
-            />
-          )}
-        </Box>
-
-        {/* Display either all the pages or the ZeSS logo */}
-
-        <Box sx={{ flexGrow: 1 }}>
-          {user && (
-            <NavBarPages
-              pageIcons={navBarPages}
+          <Box sx={{ flexGrow: 1 }}>
+            <NavBarLogo
               sx={{ display: screenSize.desktop }}
               selectedPage={selectedPage}
               handleSelectedPage={handleSelectedPage}
             />
+
+            {user && (
+              <NavBarSandwich
+                pageIcons={navBarPages}
+                sx={{ display: screenSize.mobile }}
+              />
+            )}
+          </Box>
+
+          {/* Display either all the pages or the ZeSS logo */}
+
+          <Box sx={{ flexGrow: 1 }}>
+            {user && (
+              <NavBarPages
+                pageIcons={navBarPages}
+                sx={{ display: screenSize.desktop }}
+                selectedPage={selectedPage}
+                handleSelectedPage={handleSelectedPage}
+              />
+            )}
+
+            <NavBarLogo sx={{ display: screenSize.mobile }} />
+          </Box>
+
+          {/* Display a season selector */}
+
+          {showSeasons && (
+            <Box
+              sx={{
+                flexGrow: 0,
+                mr: "20px",
+                minWidth: "180px",
+                display: "flex",
+                justifyContent: "end",
+              }}
+            >
+              <NavBarSeasons />
+            </Box>
           )}
 
-          <NavBarLogo sx={{ display: screenSize.mobile }} />
-        </Box>
+          {/* Display a dark mode switch and the user menu */}
 
-        {/* Display a season selector */}
-
-        {showSeasons && (
-          <Box
-            sx={{
-              flexGrow: 0,
-              mr: "20px",
-              minWidth: "180px",
-              display: "flex",
-              justifyContent: "end",
-            }}
-          >
-            <NavBarSeasons />
+          <Box>
+            <BrowserView>
+              <DarkModeToggle />
+            </BrowserView>
+            <NavBarUserMenu
+              pageIcons={userMenuPages}
+              selectedPage={selectedPage}
+              handleSelectedPage={handleSelectedPage}
+            />
           </Box>
-        )}
-
-        {/* Display a dark mode switch and the user menu */}
-
-        <Box>
-          <BrowserView>
-            <DarkModeToggle />
-          </BrowserView>
-          <NavBarUserMenu
-            pageIcons={userMenuPages}
-            selectedPage={selectedPage}
-            handleSelectedPage={handleSelectedPage}
-          />
-        </Box>
-      </Toolbar>
+        </Toolbar>
+      </Container>
     </AppBar>
   );
 };
