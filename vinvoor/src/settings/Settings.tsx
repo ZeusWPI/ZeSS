@@ -1,7 +1,3 @@
-import { useEffect, useState } from "react";
-import { usePatchSettings, useSettings } from "../hooks/useSettings";
-import { useSnackbar } from "notistack";
-import { useConfirm } from "material-ui-confirm";
 import {
   Box,
   Button,
@@ -14,8 +10,12 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
+import { useConfirm } from "material-ui-confirm";
 import HelpCircleOutline from "mdi-material-ui/HelpCircleOutline";
+import { useSnackbar } from "notistack";
+import { useEffect, useState } from "react";
 import { useSeasons } from "../hooks/useSeasons";
+import { usePatchSettings, useSettings } from "../hooks/useSettings";
 
 const saveSuccess = "Settings saved successfully";
 const saveFailure = "Unable to save settings";
@@ -86,7 +86,7 @@ export const Settings = () => {
       columnSpacing={4}
       rowSpacing={1}
     >
-      <Grid item xs={6}>
+      <Grid item xs={12} sm={6}>
         <Paper elevation={4} sx={{ p: "10px" }}>
           <Stack direction="row" display="flex" alignItems="center">
             <Tooltip
@@ -120,7 +120,7 @@ export const Settings = () => {
           </Stack>
         </Paper>
       </Grid>
-      <Grid item xs={6}>
+      <Grid item xs={12} sm={6}>
         <Paper elevation={4} sx={{ p: "10px", height: "100%" }}>
           <Stack
             display="flex"
