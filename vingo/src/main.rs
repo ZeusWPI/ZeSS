@@ -26,7 +26,7 @@ use tower_sessions::{cookie::SameSite, MemoryStore, SessionManagerLayer};
 
 use migration::{Migrator, MigratorTrait};
 
-const DB_URL: LazyLock<String> = LazyLock::new(|| {
+static DB_URL: LazyLock<String> = LazyLock::new(|| {
     env::var("POSTGRES_CONNECTION_STRING").expect("POSTGRES_CONNECTION_STRING not present")
 });
 

@@ -36,7 +36,7 @@ pub async fn get_all(state: State<AppState>) -> ResponseResult<Json<Vec<SeasonGe
 }
 
 pub async fn db_seasons(db: &DatabaseConnection, future: bool) -> ResponseResult<Vec<SeasonGet>> {
-    Ok(Season::find()
+    Season::find()
         .column_as(
             Expr::col(season::Column::Start)
                 .lte(Expr::current_date())
@@ -50,7 +50,7 @@ pub async fn db_seasons(db: &DatabaseConnection, future: bool) -> ResponseResult
         .into_model::<SeasonGet>()
         .all(db)
         .await
-        .or_log((StatusCode::INTERNAL_SERVER_ERROR, "failed to get seasons"))?)
+        .or_log((StatusCode::INTERNAL_SERVER_ERROR, "failed to get seasons"))
 }
 
 #[derive(Debug, Serialize, Deserialize)]
