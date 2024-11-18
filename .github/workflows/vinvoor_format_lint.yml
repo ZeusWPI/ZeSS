@@ -4,7 +4,13 @@ on:
   push:
     branches:
       - main
+    paths:
+      - .github/workflows/vinvoor_format_lint.yml
+      - 'vinvoor/**'
   pull_request:
+    paths:
+      - .github/workflows/vinvoor_format_lint.yml
+      - 'vinvoor/**'
 
 jobs:
   format-and-lint:

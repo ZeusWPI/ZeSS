@@ -8,7 +8,7 @@ pub struct Migration;
 enum Scan {
     Table,
     Id,
-    ScanTime,
+    Time,
     CardSerial,
 }
 
@@ -22,9 +22,7 @@ impl MigrationTrait for Migration {
                     .table(Scan::Table)
                     .col(pk_auto(Scan::Id))
                     .col(text(Scan::CardSerial))
-                    .col(
-                        timestamp_with_time_zone(Scan::ScanTime).default(Expr::current_timestamp()),
-                    )
+                    .col(timestamp_with_time_zone(Scan::Time).default(Expr::current_timestamp()))
                     .foreign_key(
                         ForeignKey::create()
                             .from(Scan::Table, Scan::CardSerial)

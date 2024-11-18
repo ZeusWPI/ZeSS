@@ -19,7 +19,7 @@ use super::util::{
     session::{get_season, get_user},
 };
 
-const SCAN_KEY: LazyLock<String> =
+static SCAN_KEY: LazyLock<String> =
     LazyLock::new(|| env::var("SCAN_KEY").expect("SCAN_KEY not present"));
 
 pub async fn get_for_current_user(

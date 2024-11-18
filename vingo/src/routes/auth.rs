@@ -19,15 +19,15 @@ use crate::AppState;
 use super::util::errors::{ResponseResult, ResultAndLogError};
 use super::util::session::{get_user, SessionKeys};
 
-const ZAUTH_URL: LazyLock<String> =
+static ZAUTH_URL: LazyLock<String> =
     LazyLock::new(|| env::var("ZAUTH_URL").expect("ZAUTH_URL not present"));
-const CALLBACK_URL: LazyLock<String> =
+static CALLBACK_URL: LazyLock<String> =
     LazyLock::new(|| env::var("ZAUTH_CALLBACK_PATH").expect("ZAUTH_CALLBACK_PATH not present"));
-const FRONTEND_URL: LazyLock<String> =
+static FRONTEND_URL: LazyLock<String> =
     LazyLock::new(|| env::var("FRONTEND_URL").expect("FRONTEND_URL not present"));
-const ZAUTH_CLIENT_ID: LazyLock<String> =
+static ZAUTH_CLIENT_ID: LazyLock<String> =
     LazyLock::new(|| env::var("ZAUTH_CLIENT_ID").expect("ZAUTH_CLIENT_ID not present"));
-const ZAUTH_CLIENT_SECRET: LazyLock<String> =
+static ZAUTH_CLIENT_SECRET: LazyLock<String> =
     LazyLock::new(|| env::var("ZAUTH_CLIENT_SECRET").expect("ZAUTH_CLIENT_SECRET not present"));
 
 pub async fn current_user(session: Session) -> ResponseResult<Json<Model>> {
@@ -98,7 +98,7 @@ pub async fn callback(
     let zauth_url = ZAUTH_URL.to_string();
     // get token from zauth with code
     let token = client
-        .post(&format!("{zauth_url}/oauth/token"))
+        .post(format!("{zauth_url}/oauth/token"))
         .basic_auth(
             ZAUTH_CLIENT_ID.to_string(),
             Some(ZAUTH_CLIENT_SECRET.to_string()),

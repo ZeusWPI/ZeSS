@@ -39,7 +39,7 @@ pub async fn get(
         let position_change = leaderboard_last_week
             .iter()
             .find(|v| v.id == user.id)
-            .and_then(|v| Some(v.position - user.position));
+            .map(|v| v.position - user.position);
         user.position_change = position_change;
     }
 

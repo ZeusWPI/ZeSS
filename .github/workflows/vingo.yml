@@ -1,0 +1,46 @@
+---
+name: Vingo format and clipy check
+
+on: 
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/vingo.yml
+      - 'vingo/**/*.rs'
+  pull_request:
+    paths:
+      - .github/workflows/vingo.yml
+      - 'vingo/**/*.rs'
+  workflow_dispatch:
+
+jobs:
+
+  formatting:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Install latest rust toolchain
+      uses: actions-rs/toolchain@v1.0.6
+      with:
+        toolchain: stable
+        components: rustfmt
+        override: true
+
+    - name: Check formatting
+      working-directory: vingo/
+      run: cargo fmt -- --check
+
+  clipy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Install latest rust toolchain
+      uses: actions-rs/toolchain@v1.0.6
+      with:
+        toolchain: stable
+        components: clippy
+        override: true
+    - name: Clippy check
+      working-directory: vingo/
+      run: cargo clippy --locked --all-targets --all-features
