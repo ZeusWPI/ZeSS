@@ -1,8 +1,15 @@
-import { Theme } from "@mui/material";
-import { Scan } from "../../types/scans";
-import { HeatmapValue, HeatmapVariant } from "./types";
+import type { Theme } from "@mui/material";
+import type { Scan } from "../../types/scans";
+import type { HeatmapValue } from "./types";
+import { HeatmapVariant } from "./types";
 
-export const getColumnCountDays = (startDate: Date, endDate: Date) => {
+// Consts
+
+export const DAYS_IN_WEEK = 7;
+export const WEEKS_IN_MONTH = 5;
+export const MILLISECONDS_IN_DAY = 1000 * 60 * 60 * 24;
+
+export function getColumnCountDays(startDate: Date, endDate: Date) {
   const startOfWeek = new Date(startDate);
   startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
 
@@ -12,43 +19,44 @@ export const getColumnCountDays = (startDate: Date, endDate: Date) => {
   else endOfWeek.setDate(endOfWeek.getDate() - endOfWeek.getDay() + 6);
 
   return Math.ceil(
-    (endOfWeek.getTime() - startOfWeek.getTime()) /
-      (DAYS_IN_WEEK * MILLISECONDS_IN_DAY),
+    (endOfWeek.getTime() - startOfWeek.getTime())
+    / (DAYS_IN_WEEK * MILLISECONDS_IN_DAY),
   );
-};
+}
 
-export const getColumnCountMonths = (startDate: Date, endDate: Date) => {
+export function getColumnCountMonths(startDate: Date, endDate: Date) {
   return (
-    (endDate.getFullYear() - startDate.getFullYear()) * 12 +
-    endDate.getMonth() -
-    startDate.getMonth() +
-    1
+    (endDate.getFullYear() - startDate.getFullYear()) * 12
+    + endDate.getMonth()
+    - startDate.getMonth()
+    + 1
   );
-};
+}
 
 export const getMondayIndexedDay = (date: Date) => (date.getDay() + 6) % 7;
 
-const getNormalizedTime = (date: Date) => {
+function getNormalizedTime(date: Date) {
   const result = new Date(date);
   result.setHours(0, 0, 0, 0);
   return result;
-};
+}
 
-export const formatData = (scans: Scan[]) => {
+export function formatData(scans: Scan[]) {
   const result: Record<number, HeatmapValue> = {};
-  scans.forEach(scan => {
+  scans.forEach((scan) => {
     const date = getNormalizedTime(scan.scanTime);
     result[date.getTime()] = {
-      date: date,
+      date,
       count: 1,
     };
   });
 
   return result;
-};
+}
 
-export const isDayVariant = (variant: HeatmapVariant) =>
-  variant === HeatmapVariant.DAYS;
+export function isDayVariant(variant: HeatmapVariant) {
+  return variant === HeatmapVariant.DAYS;
+}
 
 export const styleMonth = [
   (theme: Theme) => theme.heatmap.color0,
@@ -96,9 +104,3 @@ export const DATE_FORMATTER = new Intl.DateTimeFormat("en-GB", {
   month: "short",
   day: "numeric",
 });
-
-// Consts
-
-export const DAYS_IN_WEEK = 7;
-export const WEEKS_IN_MONTH = 5;
-export const MILLISECONDS_IN_DAY = 1000 * 60 * 60 * 24;

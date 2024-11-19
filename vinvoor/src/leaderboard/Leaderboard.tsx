@@ -1,10 +1,10 @@
 import { Divider, Paper, Table, TableContainer } from "@mui/material";
 import { LoadingSkeleton } from "../components/LoadingSkeleton";
+import { useLeaderboardItems } from "../hooks/useLeaderboard";
 import { LeaderboardTableBody } from "./LeaderboardTableBody";
 import { LeaderboardTableToolbar } from "./LeaderboardTableToolbar";
-import { useLeaderboardItems } from "../hooks/useLeaderboard";
 
-export const Leaderboard = () => {
+export function Leaderboard() {
   const leaderboardQuery = useLeaderboardItems();
 
   return (
@@ -20,4 +20,4 @@ export const Leaderboard = () => {
       </Paper>
     </LoadingSkeleton>
   );
-};
+}

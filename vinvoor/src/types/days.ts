@@ -1,4 +1,4 @@
-import { Base, BaseJSON, TableHeadCell } from "./general";
+import type { Base, BaseJSON, TableHeadCell } from "./general";
 
 // External
 
@@ -14,13 +14,14 @@ export interface Day extends Base {
 
 // Converters
 
-export const convertDayJSON = (daysJSON: DayJSON[]): Day[] =>
-  daysJSON
+export function convertDayJSON(daysJSON: DayJSON[]): Day[] {
+  return daysJSON
     .map(dayJSON => ({
       ...dayJSON,
       date: new Date(dayJSON.date),
     }))
     .sort((a, b) => a.date.getTime() - b.date.getTime());
+}
 
 // Table
 

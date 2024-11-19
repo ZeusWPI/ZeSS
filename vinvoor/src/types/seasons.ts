@@ -1,4 +1,4 @@
-import { Base, BaseJSON, TableHeadCell } from "./general";
+import type { Base, BaseJSON, TableHeadCell } from "./general";
 
 // External
 
@@ -20,13 +20,14 @@ export interface Season extends Base {
 
 // Converters
 
-export const convertSeasonJSON = (seasonsJSON: SeasonJSON[]): Season[] =>
-  seasonsJSON.map(seasonJSON => ({
+export function convertSeasonJSON(seasonsJSON: SeasonJSON[]): Season[] {
+  return seasonsJSON.map(seasonJSON => ({
     ...seasonJSON,
     start: new Date(seasonJSON.start),
     end: new Date(seasonJSON.end),
     isCurrent: seasonJSON.is_current,
   }));
+}
 
 // Table
 

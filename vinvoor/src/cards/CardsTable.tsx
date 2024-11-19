@@ -1,37 +1,34 @@
+import type { ChangeEvent, MouseEvent } from "react";
+import type { Card } from "../types/cards";
+import type { TableOrder } from "../types/general";
 import { Paper, Table, TableContainer, TablePagination } from "@mui/material";
-import { ChangeEvent, MouseEvent, useMemo, useState } from "react";
-import { Card } from "../types/cards";
-import { TableOrder } from "../types/general";
+import { useMemo, useState } from "react";
+import { useCards } from "../hooks/useCard";
 import { CardsTableBody } from "./CardsTableBody";
 import { CardsTableHead } from "./CardsTableHead";
 import { CardsTableToolbar } from "./CardsTableToolbar";
-import { useCards } from "../hooks/useCard";
 
 const rowsPerPageOptions = [10, 25, 50];
 
-const descendingComparator = <T,>(a: T, b: T, orderBy: keyof T) => {
-  if (b[orderBy] < a[orderBy]) return -1;
-  if (b[orderBy] > a[orderBy]) return 1;
+function descendingComparator<T,>(a: T, b: T, orderBy: keyof T) {
+  if (b[orderBy] < a[orderBy])
+    return -1;
+  if (b[orderBy] > a[orderBy])
+    return 1;
 
   return 0;
-};
+}
 
-const getComparator = <Key extends keyof Card>(
-  order: TableOrder,
-  orderBy: Key,
-): ((
+function getComparator<Key extends keyof Card>(order: TableOrder, orderBy: Key): ((
   a: Record<Key, number | string | Date>,
   b: Record<Key, number | string | Date>,
-) => number) => {
+) => number) {
   return order === "desc"
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy);
-};
+}
 
-const stableSort = <T,>(
-  array: readonly T[],
-  comparator: (a: T, b: T) => number,
-) => {
+function stableSort<T,>(array: readonly T[], comparator: (a: T, b: T) => number) {
   const stabilized = array.map((el, index) => [el, index] as [T, number]);
   stabilized.sort((a, b) => {
     const order = comparator(a[0], b[0]);
@@ -41,17 +38,28 @@ const stableSort = <T,>(
     return a[1] - b[1];
   });
   return stabilized.map(el => el[0]);
-};
+}
 
-export const CardsTable = () => {
+export function CardsTable() {
   const { data: cards } = useCards();
-  if (!cards) return null; // Can never happen
 
   const [order, setOrder] = useState<TableOrder>("asc");
   const [orderBy, setOrderBy] = useState<keyof Card>("serial");
   const [selected, setSelected] = useState<readonly string[]>([]);
   const [page, setPage] = useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
+
+  const visibleRows = useMemo(
+    () =>
+      stableSort<Card>(cards ?? [], getComparator(order, orderBy)).slice(
+        page * rowsPerPage,
+        page * rowsPerPage + rowsPerPage,
+      ),
+    [cards, order, orderBy, page, rowsPerPage],
+  );
+
+  if (!cards)
+    return null; // Can never happen
 
   const handleRequestSort = (
     _: MouseEvent<HTMLButtonElement>,
@@ -106,23 +114,14 @@ export const CardsTable = () => {
   ) => setPage(newPage);
 
   const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
+    setRowsPerPage(Number.parseInt(event.target.value, 10));
     setPage(0);
   };
 
   const isSelected = (serial: string) => selected.includes(serial);
 
-  const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - cards.length) : 0;
-
-  const visibleRows = useMemo(
-    () =>
-      stableSort<Card>(cards, getComparator(order, orderBy)).slice(
-        page * rowsPerPage,
-        page * rowsPerPage + rowsPerPage,
-      ),
-    [cards, order, orderBy, page, rowsPerPage],
-  );
+  const emptyRows
+    = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - cards.length) : 0;
 
   return (
     <Paper elevation={4} sx={{ width: "100%", mb: 2 }}>
@@ -156,4 +155,4 @@ export const CardsTable = () => {
       />
     </Paper>
   );
-};
+}

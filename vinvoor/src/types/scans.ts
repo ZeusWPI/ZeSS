@@ -1,6 +1,6 @@
+import type { Card } from "./cards";
+import type { Base, BaseJSON, TableHeadCell } from "./general";
 import { dateTimeFormat } from "../util/util";
-import { Card } from "./cards";
-import { Base, BaseJSON, TableHeadCell } from "./general";
 
 // External
 
@@ -25,8 +25,8 @@ export interface ScanCard {
 
 // Converters
 
-export const convertScanJSON = (scansJSON: ScanJSON[]): Scan[] =>
-  scansJSON
+export function convertScanJSON(scansJSON: ScanJSON[]): Scan[] {
+  return scansJSON
     .map(scanJSON => ({
       ...scanJSON,
       scanTime: new Date(scanJSON.scan_time),
@@ -34,6 +34,7 @@ export const convertScanJSON = (scansJSON: ScanJSON[]): Scan[] =>
       createdAt: new Date(scanJSON.created_at),
     }))
     .sort((a, b) => a.scanTime.getTime() - b.scanTime.getTime());
+}
 
 // Table
 
@@ -56,11 +57,9 @@ export const scanCardHeadCells: readonly TableHeadCell<ScanCard>[] = [
 
 // Other
 
-export const mergeScansCards = (
-  scans: readonly Scan[],
-  cards: readonly Card[],
-): ScanCard[] =>
-  scans.map(scan => ({
+export function mergeScansCards(scans: readonly Scan[], cards: readonly Card[]): ScanCard[] {
+  return scans.map(scan => ({
     scanTime: scan.scanTime,
     card: cards.find(card => card.serial === scan.cardSerial),
   }));
+}

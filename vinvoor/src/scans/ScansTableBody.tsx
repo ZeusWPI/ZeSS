@@ -1,28 +1,31 @@
+import type { ScanCard } from "../types/scans";
 import { TableBody, TableCell, TableRow, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
-import { mergeScansCards, ScanCard, scanCardHeadCells } from "../types/scans";
 import { useCards } from "../hooks/useCard";
 import { useScans } from "../hooks/useScan";
+import { mergeScansCards, scanCardHeadCells } from "../types/scans";
 
-export const ScansTableBody = () => {
+export function ScansTableBody() {
   const { data: scans } = useScans();
   const { data: cards } = useCards();
-  if (!scans || !cards) return null; // Can never happen
 
   const [scanCards, setScanCards] = useState<readonly ScanCard[]>([]);
 
   useEffect(() => {
-    const mergedScansCards = mergeScansCards(scans, cards);
+    const mergedScansCards = mergeScansCards(scans ?? [], cards ?? []);
     mergedScansCards.sort(
       (a, b) => b.scanTime.getTime() - a.scanTime.getTime(),
     );
     setScanCards(mergedScansCards);
   }, [scans, cards]);
 
+  if (!scans || !cards)
+    return null; // Can never happen
+
   return (
     <TableBody>
-      {scanCards.map((scanCard, index) => (
-        <TableRow key={index}>
+      {scanCards.map(scanCard => (
+        <TableRow key={scanCard.card?.id}>
           {scanCardHeadCells.map(headCell => (
             <TableCell
               key={headCell.id}
@@ -38,4 +41,4 @@ export const ScansTableBody = () => {
       ))}
     </TableBody>
   );
-};
+}

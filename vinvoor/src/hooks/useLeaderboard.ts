@@ -1,20 +1,23 @@
-import { useQuery } from "@tanstack/react-query";
-import { getApi } from "../util/fetch";
-import {
-  convertLeaderboardItemJSON,
+import type {
   LeaderboardItem,
   LeaderboardItemJSON,
 } from "../types/leaderboard";
+import { useQuery } from "@tanstack/react-query";
+import {
+  convertLeaderboardItemJSON,
+} from "../types/leaderboard";
+import { getApi } from "../util/fetch";
 
 const ENDPOINT = "leaderboard";
 
-export const useLeaderboardItems = () =>
-  useQuery({
+export function useLeaderboardItems() {
+  return useQuery({
     queryKey: ["leaderboard"],
-    queryFn: () =>
+    queryFn: async () =>
       getApi<LeaderboardItem[], LeaderboardItemJSON[]>(
         ENDPOINT,
         convertLeaderboardItemJSON,
       ),
     retry: 1,
   });
+}

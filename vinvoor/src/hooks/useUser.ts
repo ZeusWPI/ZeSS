@@ -1,18 +1,20 @@
+import type { User, UserJSON } from "../types/user";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { convertUserJSON } from "../types/user";
 import { getApi, isResponseNot200Error, postApi } from "../util/fetch";
-import { convertUserJSON, User, UserJSON } from "../types/user";
 
 const ENDPOINT = "user";
 
-export const useUser = () =>
-  useQuery({
+export function useUser() {
+  return useQuery({
     queryKey: ["user"],
     queryFn: async () => {
       let user = {} as User;
 
       try {
         user = await getApi<User, UserJSON>(ENDPOINT, convertUserJSON);
-      } catch (error) {
+      }
+      catch (error) {
         if (!isResponseNot200Error(error))
           throw new Error("Failed to fetch user");
       }
@@ -21,15 +23,16 @@ export const useUser = () =>
     },
     retry: 1,
   });
+}
 
-export const useLogout = () => {
+export function useLogout() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: () => postApi("logout"),
-    onSuccess: () =>
+    mutationFn: async () => postApi("logout"),
+    onSuccess: async () =>
       queryClient.invalidateQueries({
         queryKey: ["user"],
       }),
   });
-};
+}

@@ -1,11 +1,11 @@
 import { Paper, Table, TableContainer } from "@mui/material";
 import { LoadingSkeleton } from "../components/LoadingSkeleton";
+import { useCards } from "../hooks/useCard";
+import { useScans } from "../hooks/useScan";
 import { ScansTableBody } from "./ScansTableBody";
 import { ScansTableHead } from "./ScansTableHead";
-import { useScans } from "../hooks/useScan";
-import { useCards } from "../hooks/useCard";
 
-export const Scans = () => {
+export function Scans() {
   const scansQuery = useScans();
   const cardsQuery = useCards();
 
@@ -21,4 +21,4 @@ export const Scans = () => {
       </Paper>
     </LoadingSkeleton>
   );
-};
+}

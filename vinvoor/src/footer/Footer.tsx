@@ -3,7 +3,7 @@ import { TypographyG } from "../components/TypographyG";
 import { useVersion } from "../hooks/useVersion";
 import ZeusIcon from "/zeus.svg";
 
-export const Footer = () => {
+export function Footer() {
   const { data: version } = useVersion();
 
   return (
@@ -14,7 +14,10 @@ export const Footer = () => {
         alignItems: "center",
       }}
     >
-      <TypographyG>v {version?.version ?? ""}</TypographyG>
+      <TypographyG>
+        v
+        {version?.version ?? ""}
+      </TypographyG>
       <TypographyG
         sx={{
           height: "100%",
@@ -47,4 +50,4 @@ export const Footer = () => {
       </Link>
     </Box>
   );
-};
+}

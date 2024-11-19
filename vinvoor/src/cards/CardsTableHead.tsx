@@ -1,3 +1,6 @@
+import type { ChangeEvent, FC, MouseEvent } from "react";
+import type { Card } from "../types/cards";
+import type { TableOrder } from "../types/general";
 import {
   Checkbox,
   TableCell,
@@ -6,9 +9,7 @@ import {
   TableSortLabel,
   Typography,
 } from "@mui/material";
-import { ChangeEvent, FC, MouseEvent } from "react";
-import { Card, cardsHeadCells } from "../types/cards";
-import { TableOrder } from "../types/general";
+import { cardsHeadCells } from "../types/cards";
 
 interface CardTableHeadProps {
   numSelected: number;
@@ -30,8 +31,8 @@ export const CardsTableHead: FC<CardTableHeadProps> = ({
   orderBy,
   rowCount,
 }) => {
-  const createSortHandler =
-    (property: keyof Card) => (event: MouseEvent<HTMLButtonElement>) =>
+  const createSortHandler
+    = (property: keyof Card) => (event: MouseEvent<HTMLButtonElement>) =>
       onRequestSort(event, property);
 
   return (

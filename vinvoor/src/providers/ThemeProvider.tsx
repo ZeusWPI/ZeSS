@@ -1,7 +1,12 @@
+import type { FC, ReactNode } from "react";
+import type { ThemeMode } from "../themes/theme";
 import { ThemeProvider as MUIThemeProvider } from "@mui/material";
 import Cookies from "js-cookie";
-import { createContext, FC, ReactNode, useEffect, useState } from "react";
-import { ThemeMode, themeModes } from "../themes/theme";
+import { createContext, useEffect, useState } from "react";
+import { themeModes } from "../themes/theme";
+
+/* eslint-disable  react-refresh/only-export-components, react/no-unstable-context-value */
+// TODO
 
 interface ThemeProviderProps {
   children: ReactNode;

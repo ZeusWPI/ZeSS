@@ -1,6 +1,6 @@
+import type { FC } from "react";
 import { Toolbar, Typography } from "@mui/material";
 import { alpha } from "@mui/material/styles";
-import { FC } from "react";
 import { CardsAdd } from "./CardsAdd";
 import { CardsDelete } from "./CardsDelete";
 
@@ -24,25 +24,29 @@ export const CardsTableToolbar: FC<CardTableToolbarProps> = ({ selected }) => {
         }),
       }}
     >
-      {numSelected > 0 ? (
-        <>
-          <Typography
-            sx={{ flex: "1" }}
-            variant="subtitle1"
-            fontWeight="medium"
-          >
-            {numSelected} selected
-          </Typography>
-          <CardsDelete selected={selected} />
-        </>
-      ) : (
-        <>
-          <Typography sx={{ flex: "1" }} variant="h5" fontWeight="bold">
-            Cards
-          </Typography>
-          <CardsAdd />
-        </>
-      )}
+      {numSelected > 0
+        ? (
+            <>
+              <Typography
+                sx={{ flex: "1" }}
+                variant="subtitle1"
+                fontWeight="medium"
+              >
+                {numSelected}
+                {" "}
+                selected
+              </Typography>
+              <CardsDelete selected={selected} />
+            </>
+          )
+        : (
+            <>
+              <Typography sx={{ flex: "1" }} variant="h5" fontWeight="bold">
+                Cards
+              </Typography>
+              <CardsAdd />
+            </>
+          )}
     </Toolbar>
   );
 };

@@ -1,7 +1,8 @@
-import { Box, Button, SxProps, Theme, Typography } from "@mui/material";
-import { FC } from "react";
+import type { SxProps, Theme } from "@mui/material";
+import type { FC } from "react";
+import type { PageIcon } from "./NavBar";
+import { Box, Button, Typography } from "@mui/material";
 import { UnstyledLink } from "../components/UnstyledLink";
-import { PageIcon } from "./NavBar";
 
 interface NavBarPagesProps {
   pageIcons: readonly PageIcon[];

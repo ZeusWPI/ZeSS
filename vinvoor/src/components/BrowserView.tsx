@@ -1,5 +1,6 @@
+import type { FC } from "react";
 import { useMediaQuery, useTheme } from "@mui/material";
-import { FC, useEffect } from "react";
+import { useEffect } from "react";
 
 interface BrowserViewProps {
   onMobileView?: () => void;
@@ -16,11 +17,13 @@ export const BrowserView: FC<BrowserViewProps> = ({
   const isMobileView = useMediaQuery(theme.breakpoints.down("md"));
 
   useEffect(() => {
-    if (isMobileView) onMobileView?.();
+    if (isMobileView)
+      onMobileView?.();
     else onBrowserView?.();
   }, [isMobileView]);
 
-  if (isMobileView) return null;
+  if (isMobileView)
+    return null;
 
   return isMobileView ? null : children;
 };

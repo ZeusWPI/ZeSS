@@ -5,7 +5,6 @@ import {
   MenuItem,
   Paper,
   Select,
-  SelectChangeEvent,
   Stack,
   Tooltip,
   Typography,
@@ -30,20 +29,26 @@ const handleDeleteContent = (
   </Box>
 );
 
-export const Settings = () => {
+export function Settings() {
   const { data: settingsTruth, refetch } = useSettings();
   const { data: seasons } = useSeasons();
-  if (!settingsTruth || !seasons) return null; // Can never happen
 
   const patchSettings = usePatchSettings();
   const [settings, setSettings] = useState({ ...settingsTruth });
   const { enqueueSnackbar } = useSnackbar();
   const confirm = useConfirm();
 
+  useEffect(() => {
+    setSettings({ ...settingsTruth, season: settingsTruth?.season });
+  }, [settingsTruth?.season]);
+
+  if (!settingsTruth || !seasons)
+    return null; // Can never happen
+
   const handleSeasonChange = (event: SelectChangeEvent) =>
     setSettings({
       ...settings,
-      season: parseInt(event.target.value),
+      season: Number.parseInt(event.target.value),
     });
 
   const handleSubmit = () => {
@@ -74,10 +79,6 @@ export const Settings = () => {
       });
   };
 
-  useEffect(() => {
-    setSettings({ ...settingsTruth, season: settingsTruth.season });
-  }, [settingsTruth.season]);
-
   return (
     <Grid
       container
@@ -104,7 +105,8 @@ export const Settings = () => {
               value={
                 seasons
                   .find(season => season.id === settings.season)
-                  ?.id.toString() ?? seasons[0].id.toString()
+                  ?.id
+                  .toString() ?? seasons[0].id.toString()
               }
               onChange={handleSeasonChange}
               sx={{ ml: "20px" }}
@@ -150,4 +152,4 @@ export const Settings = () => {
       </Grid>
     </Grid>
   );
-};
+}

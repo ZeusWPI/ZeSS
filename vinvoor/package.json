@@ -1,8 +1,8 @@
 {
   "name": "vinvoor",
-  "private": true,
-  "version": "0.0.0",
   "type": "module",
+  "version": "0.0.0",
+  "private": true,
   "scripts": {
     "dev": "vite",
     "host": "vite --host",
@@ -42,8 +42,6 @@
     "@types/node": "^22.9.0",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
-    "@typescript-eslint/eslint-plugin": "^7.18.0",
-    "@typescript-eslint/parser": "^7.18.0",
     "@vitejs/plugin-react-swc": "^3.7.1",
     "eslint": "^9.15.0",
     "eslint-config-prettier": "^9.1.0",

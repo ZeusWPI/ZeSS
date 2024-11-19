@@ -1,4 +1,4 @@
-import { Base, BaseJSON, TableHeadCell } from "./general";
+import type { Base, BaseJSON, TableHeadCell } from "./general";
 
 // External
 
@@ -46,28 +46,29 @@ export interface CardGetRegisterResponse {
 
 // Converters
 
-export const convertCardJSON = (cardsJSON: CardJSON[]): Card[] =>
-  cardsJSON.map(cardJSON => ({
+export function convertCardJSON(cardsJSON: CardJSON[]): Card[] {
+  return cardsJSON.map(cardJSON => ({
     ...cardJSON,
     lastUsed: new Date(cardJSON.last_used),
     amountUsed: cardJSON.amount_used,
     createdAt: new Date(cardJSON.created_at),
   }));
+}
 
-export const convertCardPostResponseJSON = (
-  cardJSON: CardPostResponseJSON,
-): CardPostResponse => ({
-  isCurrentUser: cardJSON.is_current_user,
-});
+export function convertCardPostResponseJSON(cardJSON: CardPostResponseJSON): CardPostResponse {
+  return {
+    isCurrentUser: cardJSON.is_current_user,
+  };
+}
 
-export const convertCardGetRegisterResponseJSON = (
-  cardJSON: CardGetRegisterResponseJSON,
-): CardGetRegisterResponse => ({
-  ...cardJSON,
-  isCurrentUser: cardJSON.is_current_user,
-  timeRemaining: cardJSON.time_remaining,
-  timePercentage: cardJSON.time_percentage,
-});
+export function convertCardGetRegisterResponseJSON(cardJSON: CardGetRegisterResponseJSON): CardGetRegisterResponse {
+  return {
+    ...cardJSON,
+    isCurrentUser: cardJSON.is_current_user,
+    timeRemaining: cardJSON.time_remaining,
+    timePercentage: cardJSON.time_percentage,
+  };
+}
 
 // Table
 
@@ -90,7 +91,8 @@ export const cardsHeadCells: readonly TableHeadCell<Card>[] = [
     align: "right",
     padding: "normal",
     convert: (value: Date) => {
-      if (value.getFullYear() === 1) return "Not used";
+      if (value.getFullYear() === 1)
+        return "Not used";
       else return value.toDateString();
     },
   } as TableHeadCell<Card>,

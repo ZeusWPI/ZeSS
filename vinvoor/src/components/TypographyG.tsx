@@ -1,6 +1,7 @@
-import { Typography, TypographyProps } from "@mui/material";
-import { FC } from "react";
+import type { TypographyProps } from "@mui/material";
+import type { FC } from "react";
+import { Typography } from "@mui/material";
 
-export const TypographyG: FC<TypographyProps> = props => {
+export const TypographyG: FC<TypographyProps> = (props) => {
   return <Typography {...props} gutterBottom />;
 };

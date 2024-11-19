@@ -30,7 +30,7 @@ const userMenuPages: PageIcon[] = [
   { page: "Settings", icon: <CogOutline sx={{ mr: ".3rem" }} /> },
 ];
 
-export const NavBar = () => {
+export function NavBar() {
   const { data: user } = useUser();
   const [selectedPage, setSelectedPage] = useState<string>("");
   const showSeasons = useMediaQuery("(min-width:400px)");
@@ -110,4 +110,4 @@ export const NavBar = () => {
       </Container>
     </AppBar>
   );
-};
+}

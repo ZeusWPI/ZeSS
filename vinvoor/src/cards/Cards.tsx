@@ -3,7 +3,7 @@ import { useCards } from "../hooks/useCard";
 import { CardsEmpty } from "./CardsEmpty";
 import { CardsTable } from "./CardsTable";
 
-export const Cards = () => {
+export function Cards() {
   const cardsQuery = useCards();
 
   return (
@@ -11,4 +11,4 @@ export const Cards = () => {
       {cardsQuery.data?.length ? <CardsTable /> : <CardsEmpty />}
     </LoadingSkeleton>
   );
-};
+}

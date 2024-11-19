@@ -1,8 +1,8 @@
 import { GitHub } from "@mui/icons-material";
 import { Box, Button, Typography } from "@mui/material";
 import { ShakerOutline } from "mdi-material-ui";
-import { TypographyG } from "./components/TypographyG";
 import { Login } from "./auth/Login";
+import { TypographyG } from "./components/TypographyG";
 
 declare module "@mui/material/Button" {
   interface ButtonPropsColorOverrides {
@@ -10,7 +10,7 @@ declare module "@mui/material/Button" {
   }
 }
 
-export const WelcomePage = () => {
+export function WelcomePage() {
   const handleClick = () => {
     window.location.replace("https://github.com/ZeusWPI/ZeSS");
   };
@@ -46,4 +46,4 @@ export const WelcomePage = () => {
       </Box>
     </Box>
   );
-};
+}

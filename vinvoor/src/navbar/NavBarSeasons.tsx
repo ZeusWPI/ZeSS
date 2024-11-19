@@ -1,10 +1,11 @@
-import { useState, MouseEvent } from "react";
+import type { MouseEvent } from "react";
+import { ArrowDropDown, Refresh } from "@mui/icons-material";
+import { Button, IconButton, Menu, MenuItem, Typography } from "@mui/material";
+import { useState } from "react";
 import { useSeasons, useSetSeason } from "../hooks/useSeasons";
 import { useSettings } from "../hooks/useSettings";
-import { Button, IconButton, Menu, MenuItem, Typography } from "@mui/material";
-import { ArrowDropDown, Refresh } from "@mui/icons-material";
 
-export const NavBarSeasons = () => {
+export function NavBarSeasons() {
   const { data: seasons } = useSeasons();
   const { data: settings, refetch } = useSettings();
   const { setSeason } = useSetSeason();
@@ -89,4 +90,4 @@ export const NavBarSeasons = () => {
       )}
     </>
   );
-};
+}

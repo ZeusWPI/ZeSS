@@ -1,21 +1,22 @@
+import type { ApexOptions } from "apexcharts";
+import type { Scan } from "../../types/scans";
 import { useTheme } from "@mui/material";
-import { ApexOptions } from "apexcharts";
 import Chart from "react-apexcharts";
-import { Scan } from "../../types/scans";
 import { useScans } from "../../hooks/useScan";
 
-const getDayCount = (scans: readonly Scan[]) => {
+function getDayCount(scans: readonly Scan[]) {
   const days = [0, 0, 0, 0, 0, 0, 0];
-  scans.forEach(scan => {
+  scans.forEach((scan) => {
     days[scan.scanTime.getDay() - 1]++;
   });
   return days.slice(0, -2) as ApexNonAxisChartSeries;
-};
+}
 
-export const Days = () => {
+export function Days() {
   const theme = useTheme();
   const { data: scans } = useScans();
-  if (!scans) return null; // Can never happen
+  if (!scans)
+    return null; // Can never happen
 
   const state = {
     options: {
@@ -65,4 +66,4 @@ export const Days = () => {
   return (
     <Chart options={state.options} series={state.series} type="polarArea" />
   );
-};
+}

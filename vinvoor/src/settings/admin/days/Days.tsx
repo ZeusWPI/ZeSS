@@ -1,10 +1,10 @@
 import { Grid } from "@mui/material";
 import { LoadingSkeleton } from "../../../components/LoadingSkeleton";
+import { useAdminDays } from "../../../hooks/admin/useAdminDays";
 import { DaysAdd } from "./DaysAdd";
 import { DaysTable } from "./DaysTable";
-import { useAdminDays } from "../../../hooks/admin/useAdminDays";
 
-export const Days = () => {
+export function Days() {
   const daysQuery = useAdminDays();
 
   return (
@@ -24,4 +24,4 @@ export const Days = () => {
       </Grid>
     </LoadingSkeleton>
   );
-};
+}

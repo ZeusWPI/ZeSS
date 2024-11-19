@@ -1,8 +1,8 @@
+import type { FC } from "react";
+import type { HeatmapVariant } from "./types";
 import { useMediaQuery, useTheme } from "@mui/material";
-import { FC } from "react";
 import { Day } from "./Day";
 import { LabelsMonth } from "./LabelsMonth";
-import { HeatmapVariant } from "./types";
 import {
   DAYS_IN_WEEK,
   getColumnCountDays,
@@ -35,12 +35,12 @@ export const Heatmap: FC<HeatmapProps> = ({ startDate, endDate, variant }) => {
   return (
     <svg
       viewBox={`0 0 ${
-        columnCount * (RECT_SIZE(isSmallView) + SPACE(isSmallView)) +
-        LEFT_PAD(isSmallView)
+        columnCount * (RECT_SIZE(isSmallView) + SPACE(isSmallView))
+        + LEFT_PAD(isSmallView)
       } ${
-        (isDayVariant(variant) ? DAYS_IN_WEEK : WEEKS_IN_MONTH) *
-          (RECT_SIZE(isSmallView) + SPACE(isSmallView)) +
-        TOP_PAD(isSmallView)
+        (isDayVariant(variant) ? DAYS_IN_WEEK : WEEKS_IN_MONTH)
+        * (RECT_SIZE(isSmallView) + SPACE(isSmallView))
+        + TOP_PAD(isSmallView)
       }`}
     >
       <LabelsMonth

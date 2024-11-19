@@ -1,16 +1,20 @@
+import type {
+  SelectChangeEvent,
+} from "@mui/material";
+import type { Dayjs } from "dayjs";
+import type { ChangeEvent, Dispatch, FC, SetStateAction } from "react";
+import type { Optional } from "../../../types/general";
 import {
   Checkbox,
   MenuItem,
   Select,
-  SelectChangeEvent,
   Stack,
   Typography,
 } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import dayjs, { Dayjs } from "dayjs";
-import { ChangeEvent, Dispatch, FC, SetStateAction, useState } from "react";
-import { Optional } from "../../../types/general";
+import dayjs from "dayjs";
+import { useState } from "react";
 import { useAdminDays } from "../../../hooks/admin/useAdminDays";
 import { useAdminSeasons } from "../../../hooks/admin/useAdminSeason";
 
@@ -37,17 +41,19 @@ export const DaysTableToolbar: FC<DaysTableToolbarProps> = ({
 }) => {
   const { data: days } = useAdminDays();
   const { data: seasons } = useAdminSeasons();
-  if (!days || !seasons) return null; // Can never happen
 
   const [startDate, setStartDate] = useState<Dayjs | null>(
-    days.length ? dayjs(days[0].date) : dayjs(),
+    days?.length ? dayjs(days[0].date) : dayjs(),
   );
   const [endDate, setEndDate] = useState<Dayjs | null>(
-    days.length ? dayjs(days[days.length - 1].date) : dayjs(),
+    days?.length ? dayjs(days[days.length - 1].date) : dayjs(),
   );
 
-  const [selectedSeason, setSelectedSeason] =
-    useState<Optional<number>>(seasonFilter);
+  const [selectedSeason, setSelectedSeason]
+    = useState<Optional<number>>(seasonFilter);
+
+  if (!days || !seasons)
+    return null; // Can never happen
 
   const handleDateChange = (
     date: Dayjs | null,
@@ -70,10 +76,11 @@ export const DaysTableToolbar: FC<DaysTableToolbarProps> = ({
   };
 
   const handleSeasonChange = (event: SelectChangeEvent) =>
-    setSelectedSeason(parseInt(event.target.value));
+    setSelectedSeason(Number.parseInt(event.target.value));
 
   const handleClickSeason = (event: ChangeEvent<HTMLInputElement>) => {
-    if (event.target.checked) setSeasonFilter(selectedSeason);
+    if (event.target.checked)
+      setSeasonFilter(selectedSeason);
     else setSeasonFilter(undefined);
   };
 
@@ -119,7 +126,8 @@ export const DaysTableToolbar: FC<DaysTableToolbarProps> = ({
           value={
             seasons
               .find(season => season.id === selectedSeason)
-              ?.id.toString() ?? seasons[0].id.toString()
+              ?.id
+              .toString() ?? seasons[0].id.toString()
           }
           onChange={handleSeasonChange}
         >

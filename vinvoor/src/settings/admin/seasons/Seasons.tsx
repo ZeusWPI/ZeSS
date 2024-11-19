@@ -1,10 +1,10 @@
 import { Grid } from "@mui/material";
 import { LoadingSkeleton } from "../../../components/LoadingSkeleton";
-import { SeasonsTable } from "./SeasonsTable";
-import { SeasonsAdd } from "./SeasonsAdd";
 import { useAdminSeasons } from "../../../hooks/admin/useAdminSeason";
+import { SeasonsAdd } from "./SeasonsAdd";
+import { SeasonsTable } from "./SeasonsTable";
 
-export const Seasons = () => {
+export function Seasons() {
   const seasonsQuery = useAdminSeasons();
 
   return (
@@ -24,4 +24,4 @@ export const Seasons = () => {
       </Grid>
     </LoadingSkeleton>
   );
-};
+}

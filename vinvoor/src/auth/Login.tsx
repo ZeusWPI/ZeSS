@@ -1,7 +1,8 @@
-import { Button, ButtonProps } from "@mui/material";
-import { FC } from "react";
+import type { ButtonProps } from "@mui/material";
+import type { FC } from "react";
+import { Button } from "@mui/material";
 
-export const Login: FC<ButtonProps> = props => {
+export const Login: FC<ButtonProps> = (props) => {
   const url = import.meta.env.VITE_BACKEND_URL as string;
 
   const handleClick = () => {

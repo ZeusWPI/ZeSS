@@ -1,25 +1,27 @@
+import type { Settings, SettingsJSON } from "../types/settings";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { converSettingsJSON } from "../types/settings";
 import { getApi, patchApi } from "../util/fetch";
-import { converSettingsJSON, Settings, SettingsJSON } from "../types/settings";
 
 const ENDPOINT = "settings";
 
-export const useSettings = () =>
-  useQuery({
+export function useSettings() {
+  return useQuery({
     queryKey: ["settings"],
-    queryFn: () => getApi<Settings, SettingsJSON>(ENDPOINT, converSettingsJSON),
+    queryFn: async () => getApi<Settings, SettingsJSON>(ENDPOINT, converSettingsJSON),
     retry: 1,
   });
+}
 
-export const usePatchSettings = () => {
+export function usePatchSettings() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (args: Record<string, string | number | boolean>) =>
+    mutationFn: async (args: Record<string, string | number | boolean>) =>
       patchApi(ENDPOINT, args),
-    onSuccess: () =>
+    onSuccess: async () =>
       queryClient.invalidateQueries({
         predicate: query => query.queryKey[0] !== "settings",
       }),
   });
-};
+}

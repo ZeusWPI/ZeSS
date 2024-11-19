@@ -1,3 +1,5 @@
+import type { FC, ReactNode } from "react";
+import DeleteIcon from "@mui/icons-material/Delete";
 import {
   Checkbox,
   IconButton,
@@ -6,8 +8,6 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
-import { FC, ReactNode } from "react";
 import { useSnackbar } from "notistack";
 import {
   useAdminDeleteSeason,
@@ -27,14 +27,15 @@ export const SeasonsTableBody: FC<SeasonsTableBodyProps> = ({
   deleting,
 }) => {
   const { data: seasons, refetch } = useAdminSeasons();
-  if (!seasons) return null; // Can never happen
-
   const deleteSeason = useAdminDeleteSeason();
   const { enqueueSnackbar } = useSnackbar();
 
+  if (!seasons)
+    return null; // Can never happen
+
   const handleClick = (id: number) => {
-    console.log("Hi");
-    if (isSelected(id)) handleSelect(id); // This will remove it from the selected list
+    if (isSelected(id))
+      handleSelect(id); // This will remove it from the selected list
 
     deleteSeason.mutate(id, {
       onSuccess: () => {

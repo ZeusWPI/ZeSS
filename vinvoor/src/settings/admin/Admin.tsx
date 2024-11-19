@@ -1,5 +1,5 @@
+import type { FC } from "react";
 import { Alert, Grid, Typography } from "@mui/material";
-import { FC } from "react";
 import { Days } from "./days/Days";
 import { Seasons } from "./seasons/Seasons";
 
