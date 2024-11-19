@@ -1,3 +1,4 @@
+import type { ChangeEvent, FC } from "react";
 import {
   Box,
   Button,
@@ -7,7 +8,6 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import { ChangeEvent, FC } from "react";
 import { seasonsHeadCells } from "../../../types/seasons";
 
 interface SeasonsTableHeadProps {
@@ -50,9 +50,11 @@ export const SeasonsTableHead: FC<SeasonsTableHeadProps> = ({
               variant="outlined"
               disabled={numSelected === 0 || deleting}
               onClick={handleDelete}
-            >{`Delet${deleting ? "ing" : "e"} ${numSelected} ${
-              deleting ? "..." : ""
-            }`}</Button>
+            >
+              {`Delet${deleting ? "ing" : "e"} ${numSelected} ${
+                deleting ? "..." : ""
+              }`}
+            </Button>
           </Box>
         </TableCell>
       </TableRow>

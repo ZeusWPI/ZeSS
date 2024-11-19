@@ -12,6 +12,8 @@ export interface Version {
 
 // Converters
 
-export const convertVersionJSON = (versionJSON: VersionJSON): Version => ({
-  ...versionJSON,
-});
+export function convertVersionJSON(versionJSON: VersionJSON): Version {
+  return {
+    ...versionJSON,
+  };
+}

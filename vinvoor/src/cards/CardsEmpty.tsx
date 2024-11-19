@@ -2,7 +2,7 @@ import { Paper } from "@mui/material";
 import { TypographyG } from "../components/TypographyG";
 import { CardsAdd } from "./CardsAdd";
 
-export const CardsEmpty = () => {
+export function CardsEmpty() {
   return (
     <Paper
       elevation={4}
@@ -28,4 +28,4 @@ export const CardsEmpty = () => {
       <CardsAdd />
     </Paper>
   );
-};
+}

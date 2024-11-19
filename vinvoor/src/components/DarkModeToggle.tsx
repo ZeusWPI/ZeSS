@@ -3,7 +3,7 @@ import { IconButton, Tooltip } from "@mui/material";
 import { useContext } from "react";
 import { ThemeContext } from "../providers/ThemeProvider";
 
-export const DarkModeToggle = () => {
+export function DarkModeToggle() {
   const { themeMode, setTheme } = useContext(ThemeContext);
 
   const handleThemeChange = () =>
@@ -19,4 +19,4 @@ export const DarkModeToggle = () => {
       </IconButton>
     </Tooltip>
   );
-};
+}

@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# some (*)nix distros dont have /bin/bash
+
+echo "Frontend linting"
+(cd vinvoor && pnpm --silent run precommit:lint)
+if [ $? -ne 0 ]; then
+    echo "Frontend linting failed. Please fix the errors before committing."
+    exit 1
+fi
+
+echo "Frontend typecheck"
+(cd vinvoor && pnpm --silent run precommit:typecheck)
+if [ $? -ne 0 ]; then
+    echo "Frontend type checking failed. Please fix the errors before committing."
+    exit 1
+fi

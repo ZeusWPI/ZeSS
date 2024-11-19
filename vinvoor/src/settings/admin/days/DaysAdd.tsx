@@ -1,16 +1,18 @@
+import type { Dayjs } from "dayjs";
+import type { Dispatch, SetStateAction } from "react";
 import { Box, Button, Paper, Stack } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import dayjs, { Dayjs } from "dayjs";
+import dayjs from "dayjs";
 import { useSnackbar } from "notistack";
-import { Dispatch, SetStateAction, useState } from "react";
+import { useState } from "react";
 import { TypographyG } from "../../../components/TypographyG";
 import {
   useAdminAddDay,
   useAdminDays,
 } from "../../../hooks/admin/useAdminDays";
 
-export const DaysAdd = () => {
+export function DaysAdd() {
   const { refetch } = useAdminDays();
   const addDay = useAdminAddDay();
   const [startDate, setStartDate] = useState<Dayjs | null>(dayjs());
@@ -85,4 +87,4 @@ export const DaysAdd = () => {
       </Stack>
     </Paper>
   );
-};
+}

@@ -1,31 +1,32 @@
+import type { ChangeEvent } from "react";
 import { Paper, Stack, Table, TableContainer } from "@mui/material";
-import { TypographyG } from "../../../components/TypographyG";
-import { ChangeEvent, useState } from "react";
-import { randomInt } from "../../../util/util";
 import { useSnackbar } from "notistack";
+import { useState } from "react";
+import { TypographyG } from "../../../components/TypographyG";
 import {
   useAdminDeleteSeason,
   useAdminSeasons,
 } from "../../../hooks/admin/useAdminSeason";
-import { SeasonsTableHead } from "./SeasonsTableHead";
+import { randomInt } from "../../../util/util";
 import { SeasonsTableBody } from "./SeasonsTableBody";
+import { SeasonsTableHead } from "./SeasonsTableHead";
 
-export const SeasonsTable = () => {
+export function SeasonsTable() {
   const { data: seasons, refetch } = useAdminSeasons();
-  if (!seasons) return null; // Can never happen
-
   const deleteSeason = useAdminDeleteSeason();
   const [selected, setSelected] = useState<readonly number[]>([]);
   const [deleting, setDeleting] = useState<boolean>(false);
-
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+
+  if (!seasons)
+    return null; // Can never happen
 
   const handleDelete = () => {
     setDeleting(true);
     const key = randomInt();
     enqueueSnackbar("Deleting...", {
       variant: "info",
-      key: key,
+      key,
       persist: true,
     });
 
@@ -79,7 +80,8 @@ export const SeasonsTable = () => {
   };
 
   const handleSelectAll = (event: ChangeEvent<HTMLInputElement>) => {
-    if (event.target.checked) setSelected(seasons.map(season => season.id));
+    if (event.target.checked)
+      setSelected(seasons.map(season => season.id));
     else setSelected([]);
   };
 
@@ -115,4 +117,4 @@ export const SeasonsTable = () => {
       </Stack>
     </Paper>
   );
-};
+}

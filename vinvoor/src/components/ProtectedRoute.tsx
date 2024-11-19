@@ -1,4 +1,4 @@
-import { FC, ReactNode } from "react";
+import type { FC, ReactNode } from "react";
 import { Navigate } from "react-router-dom";
 import { useUser } from "../hooks/useUser";
 
@@ -9,7 +9,8 @@ interface ProtectedRouteProps {
 export const ProtectedRoute: FC<ProtectedRouteProps> = ({ children }) => {
   const { data: user } = useUser();
 
-  if (!user?.admin) return <Navigate to="/" replace />;
+  if (!user?.admin)
+    return <Navigate to="/" replace />;
 
   return children;
 };

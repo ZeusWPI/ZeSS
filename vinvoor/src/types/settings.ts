@@ -12,6 +12,8 @@ export interface Settings {
 
 // Converters
 
-export const converSettingsJSON = (settingsJSON: SettingsJSON): Settings => ({
-  ...settingsJSON,
-});
+export function converSettingsJSON(settingsJSON: SettingsJSON): Settings {
+  return {
+    ...settingsJSON,
+  };
+}

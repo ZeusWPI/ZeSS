@@ -1,6 +1,8 @@
-import { Box, Button, SxProps, Theme, Typography } from "@mui/material";
+import type { SxProps, Theme } from "@mui/material";
+import type { FC } from "react";
+import { Box, Button, Typography } from "@mui/material";
 import { HexagonSlice6 } from "mdi-material-ui";
-import { FC, useContext } from "react";
+import { useContext } from "react";
 import { UnstyledLink } from "../components/UnstyledLink";
 import { ThemeContext } from "../providers/ThemeProvider";
 
@@ -23,18 +25,21 @@ export const NavBarLogo: FC<NavBarLogoProps> = ({
 }) => {
   const { setTheme } = useContext(ThemeContext);
   const handleClick = () => {
-    if (handleSelectedPage) handleSelectedPage("home");
+    if (handleSelectedPage)
+      handleSelectedPage("home");
 
     if (pressedAmount < CLICK_AMOUNT) {
-      if (pressedAmount === 0) startTimePress = Date.now();
+      if (pressedAmount === 0)
+        startTimePress = Date.now();
 
       pressedAmount++;
 
       if (
-        pressedAmount === CLICK_AMOUNT &&
-        Date.now() - startTimePress <= CLICK_TIME_MS
-      )
+        pressedAmount === CLICK_AMOUNT
+        && Date.now() - startTimePress <= CLICK_TIME_MS
+      ) {
         setTheme("kak");
+      }
     }
   };
 

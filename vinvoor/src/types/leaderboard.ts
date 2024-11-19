@@ -1,4 +1,4 @@
-import { TableHeadCell } from "./general";
+import type { TableHeadCell } from "./general";
 
 // External
 
@@ -22,14 +22,13 @@ export interface LeaderboardItem {
 
 // Converters
 
-export const convertLeaderboardItemJSON = (
-  leaderboardItems: LeaderboardItemJSON[],
-): LeaderboardItem[] =>
-  leaderboardItems.map(leaderboardItem => ({
+export function convertLeaderboardItemJSON(leaderboardItems: LeaderboardItemJSON[]): LeaderboardItem[] {
+  return leaderboardItems.map(leaderboardItem => ({
     ...leaderboardItem,
     totalDays: leaderboardItem.total_days,
     positionChange: leaderboardItem.position_change,
   }));
+}
 
 // Table
 

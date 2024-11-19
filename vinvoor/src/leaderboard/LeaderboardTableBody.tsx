@@ -1,3 +1,6 @@
+import type { Theme } from "@mui/material/styles";
+import type { TableHeadCell } from "../types/general";
+import type { LeaderboardItem } from "../types/leaderboard";
 import {
   Icon,
   TableBody,
@@ -5,11 +8,10 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import { alpha, Theme, useTheme } from "@mui/material/styles";
+import { alpha, useTheme } from "@mui/material/styles";
 import { useLeaderboardItems } from "../hooks/useLeaderboard";
 import { useUser } from "../hooks/useUser";
-import { TableHeadCell } from "../types/general";
-import { leaderboardHeadCells, LeaderboardItem } from "../types/leaderboard";
+import { leaderboardHeadCells } from "../types/leaderboard";
 import FirstPlaceIcon from "/first_place.svg";
 import SecondPlaceIcon from "/second_place.svg";
 import ThirdPlaceIcon from "/third_place.svg";
@@ -26,21 +28,23 @@ const leaderboardText = [
   { fontSize: "18px", fontWeight: "bold" },
 ];
 
-const getLeaderboardColor = (index: number, theme: Theme) =>
-  leaderboardColors[index]
+function getLeaderboardColor(index: number, theme: Theme) {
+  return leaderboardColors[index]
     ? { backgroundColor: leaderboardColors[index](theme) }
     : {};
+}
 
 const getLeaderboardText = (index: number) => leaderboardText[index] || {};
 
-const getPositionChange = (positionChange: number) => {
+function getPositionChange(positionChange: number) {
   let color = "text.primary";
   let prefix = "";
 
   if (positionChange > 0) {
     color = "success.light";
     prefix = "+";
-  } else if (positionChange < 0) {
+  }
+  else if (positionChange < 0) {
     color = "error.light";
   }
 
@@ -50,9 +54,9 @@ const getPositionChange = (positionChange: number) => {
       {positionChange !== 0 && positionChange}
     </Typography>
   );
-};
+}
 
-const getPosition = (position: number) => {
+function getPosition(position: number) {
   switch (position) {
     case 1:
       return (
@@ -75,12 +79,9 @@ const getPosition = (position: number) => {
     default:
       return <Typography fontWeight="bold">{position}</Typography>;
   }
-};
+}
 
-const getCell = (
-  row: LeaderboardItem,
-  headCell: TableHeadCell<LeaderboardItem>,
-) => {
+function getCell(row: LeaderboardItem, headCell: TableHeadCell<LeaderboardItem>) {
   switch (headCell.id) {
     case "positionChange":
       return getPositionChange(row[headCell.id]);
@@ -97,14 +98,15 @@ const getCell = (
         </Typography>
       );
   }
-};
+}
 
-export const LeaderboardTableBody = () => {
+export function LeaderboardTableBody() {
   const { data: rows } = useLeaderboardItems();
-  if (!rows) return null; // Can never happen
-
   const theme = useTheme();
   const { data: user } = useUser();
+
+  if (!rows)
+    return null; // Can never happen
 
   return (
     <TableBody>
@@ -141,4 +143,4 @@ export const LeaderboardTableBody = () => {
       })}
     </TableBody>
   );
-};
+}

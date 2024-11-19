@@ -2,20 +2,23 @@ import { Box, Typography } from "@mui/material";
 import { isRouteErrorResponse, useRouteError } from "react-router-dom";
 import CursesSob from "/cursed_sob.png";
 
-const get_error = (error: unknown) => {
+function get_error(error: unknown) {
   if (isRouteErrorResponse(error)) {
     return `${error.status} ${error.statusText}`;
-  } else if (error instanceof Error) {
+  }
+  else if (error instanceof Error) {
     return error.message;
-  } else if (typeof error === "string") {
+  }
+  else if (typeof error === "string") {
     return error;
-  } else {
+  }
+  else {
     console.error(error);
     return "Unknown error";
   }
-};
+}
 
-export const ErrorPage = () => {
+export function ErrorPage() {
   const error = useRouteError();
 
   return (
@@ -42,4 +45,4 @@ export const ErrorPage = () => {
       </Typography>
     </Box>
   );
-};
+}

@@ -1,4 +1,5 @@
-import { createTheme, ThemeOptions } from "@mui/material";
+import type { ThemeOptions } from "@mui/material";
+import { createTheme } from "@mui/material";
 
 const baseTheme: ThemeOptions = {
   palette: {
@@ -134,7 +135,7 @@ export const kakTheme = createTheme({
     MuiButton: {
       styleOverrides: {
         outlined: {
-          borderWidth: "2px",
+          "borderWidth": "2px",
           "&:hover": {
             borderWidth: "2px",
           },

@@ -1,6 +1,7 @@
+import type { FC } from "react";
+import type { DayLabel, HeatmapVariant, LabelData } from "./types";
 import { useTheme } from "@mui/material/styles";
-import { FC, useMemo } from "react";
-import { DayLabel, HeatmapVariant, LabelData } from "./types";
+import { useMemo } from "react";
 import {
   DAYS_IN_WEEK,
   FONT_SIZE,
@@ -75,13 +76,13 @@ export const LabelsMonth: FC<LablesMonthProps> = ({
       {(isDayVariant(variant) ? data.day : data.month).map((item, idx) => {
         return (
           <text
-            key={idx}
+            key={idx} // eslint-disable-line react/no-array-index-key
             x={2 * SPACE(isSmallView) + LEFT_PAD(isSmallView)}
             y={MONTH_RECT_Y(isSmallView)}
             dx={
-              (isDayVariant(variant) ? (item as DayLabel).col : idx * 2) *
-                (RECT_SIZE(isSmallView) + SPACE(isSmallView)) -
-              SPACE(isSmallView)
+              (isDayVariant(variant) ? (item as DayLabel).col : idx * 2)
+              * (RECT_SIZE(isSmallView) + SPACE(isSmallView))
+              - SPACE(isSmallView)
             }
             style={{
               textAnchor: "middle",

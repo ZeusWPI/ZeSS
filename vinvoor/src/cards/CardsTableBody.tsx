@@ -1,3 +1,5 @@
+import type { ChangeEvent, FC, MouseEvent } from "react";
+import type { Card } from "../types/cards";
 import { EditOutlined } from "@mui/icons-material";
 import {
   Checkbox,
@@ -10,9 +12,8 @@ import {
 } from "@mui/material";
 import { useConfirm } from "material-ui-confirm";
 import { useSnackbar } from "notistack";
-import { ChangeEvent, FC, MouseEvent } from "react";
-import { Card, cardsHeadCells } from "../types/cards";
 import { useCards, usePatchCards } from "../hooks/useCard";
+import { cardsHeadCells } from "../types/cards";
 
 interface CardsTableBodyProps {
   rows: readonly Card[];
@@ -47,9 +48,9 @@ export const CardsTableBody: FC<CardsTableBodyProps> = ({
           variant="standard"
           defaultValue={name}
           onChange={(event: ChangeEvent<HTMLInputElement>) =>
-            (newName = event.target.value)
-          }
-        ></TextField>
+            (newName = event.target.value)}
+        >
+        </TextField>
       ),
       confirmationText: "Save",
     })
@@ -60,7 +61,7 @@ export const CardsTableBody: FC<CardsTableBodyProps> = ({
         }
 
         patchCard.mutate(
-          { id: id, newName: newName },
+          { id, newName },
           {
             onSuccess: () => {
               enqueueSnackbar(nameSaveSuccess, {
@@ -86,7 +87,7 @@ export const CardsTableBody: FC<CardsTableBodyProps> = ({
 
   return (
     <TableBody>
-      {rows.map(row => {
+      {rows.map((row) => {
         const isSelected = isRowSelected(row.serial);
 
         return (

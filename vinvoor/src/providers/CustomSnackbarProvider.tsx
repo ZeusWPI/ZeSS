@@ -1,10 +1,12 @@
+import type {
+  SnackbarProviderProps,
+} from "notistack";
+import type { FC } from "react";
 import { styled, useTheme } from "@mui/material/styles";
 import {
   MaterialDesignContent,
   SnackbarProvider,
-  SnackbarProviderProps,
 } from "notistack";
-import { FC } from "react";
 
 export const CustomSnackbarProvider: FC<SnackbarProviderProps> = ({
   children,

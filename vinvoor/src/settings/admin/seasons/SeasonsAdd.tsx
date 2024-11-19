@@ -1,16 +1,18 @@
-import dayjs, { Dayjs } from "dayjs";
+import type { Dayjs } from "dayjs";
+import type { Dispatch, SetStateAction } from "react";
+import { Box, Button, Paper, Stack, TextField } from "@mui/material";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
+import { useSnackbar } from "notistack";
+import { useState } from "react";
+import { TypographyG } from "../../../components/TypographyG";
 import {
   useAdminAddSeason,
   useAdminSeasons,
 } from "../../../hooks/admin/useAdminSeason";
-import { Dispatch, SetStateAction, useState } from "react";
-import { useSnackbar } from "notistack";
-import { Box, Button, Paper, Stack, TextField } from "@mui/material";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { TypographyG } from "../../../components/TypographyG";
 
-export const SeasonsAdd = () => {
+export function SeasonsAdd() {
   const { refetch } = useAdminSeasons();
   const addSeason = useAdminAddSeason();
   const [startDate, setStartDate] = useState<Dayjs | null>(dayjs());
@@ -95,4 +97,4 @@ export const SeasonsAdd = () => {
       </Stack>
     </Paper>
   );
-};
+}

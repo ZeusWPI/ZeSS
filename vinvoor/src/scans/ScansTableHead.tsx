@@ -1,7 +1,7 @@
 import { TableCell, TableHead, TableRow, Typography } from "@mui/material";
 import { scanCardHeadCells } from "../types/scans";
 
-export const ScansTableHead = () => {
+export function ScansTableHead() {
   return (
     <TableHead>
       <TableRow>
@@ -13,4 +13,4 @@ export const ScansTableHead = () => {
       </TableRow>
     </TableHead>
   );
-};
+}

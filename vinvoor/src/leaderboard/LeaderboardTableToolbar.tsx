@@ -3,7 +3,7 @@ import { Button, Toolbar, Typography } from "@mui/material";
 import { HashLink } from "react-router-hash-link";
 import { useUser } from "../hooks/useUser";
 
-export const LeaderboardTableToolbar = () => {
+export function LeaderboardTableToolbar() {
   const { data: user } = useUser();
 
   return (
@@ -19,4 +19,4 @@ export const LeaderboardTableToolbar = () => {
       </HashLink>
     </Toolbar>
   );
-};
+}

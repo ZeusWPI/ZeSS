@@ -1,19 +1,21 @@
-import { MutateOptions, useQuery } from "@tanstack/react-query";
+import type { MutateOptions } from "@tanstack/react-query";
+import type { Season, SeasonJSON } from "../types/seasons";
+import { useQuery } from "@tanstack/react-query";
+import { convertSeasonJSON } from "../types/seasons";
 import { getApi } from "../util/fetch";
-import { convertSeasonJSON, Season, SeasonJSON } from "../types/seasons";
 import { usePatchSettings } from "./useSettings";
 
 const ENDPOINT = "seasons";
 
-export const useSeasons = () => {
+export function useSeasons() {
   return useQuery<Season[]>({
     queryKey: ["seasons"],
-    queryFn: () => getApi<Season[], SeasonJSON[]>(ENDPOINT, convertSeasonJSON),
+    queryFn: async () => getApi<Season[], SeasonJSON[]>(ENDPOINT, convertSeasonJSON),
     retry: 1,
   });
-};
+}
 
-export const useSetSeason = () => {
+export function useSetSeason() {
   const { mutate, ...other } = usePatchSettings();
 
   const setSeason = (
@@ -27,4 +29,4 @@ export const useSetSeason = () => {
   ) => mutate({ season: id }, options);
 
   return { setSeason, ...other };
-};
+}

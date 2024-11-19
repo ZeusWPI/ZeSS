@@ -1,16 +1,10 @@
-name: Format and linting
+name: Vinvoor Format, Lint & Typecheck
 
 on:
   push:
     branches:
       - main
-    paths:
-      - .github/workflows/vinvoor_format_lint.yml
-      - 'vinvoor/**'
   pull_request:
-    paths:
-      - .github/workflows/vinvoor_format_lint.yml
-      - 'vinvoor/**'
 
 jobs:
   format-and-lint:
@@ -20,10 +14,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 20.15.1
+          node-version: 22.8.0
 
       - name: Install pnpm
         run: npm install -g pnpm
@@ -32,10 +26,10 @@ jobs:
         run: pnpm install
         working-directory: vinvoor/
 
-      - name: Run formatter
-        run: pnpm prettier --check .
+      - name: Run format & lint
+        run: pnpm eslint .
         working-directory: vinvoor/
 
-      - name: Run Linter
-        run: pnpm eslint . --max-warnings=0
+      - name: Run typecheck
+        run: pnpm tsc --noEmit
         working-directory: vinvoor/

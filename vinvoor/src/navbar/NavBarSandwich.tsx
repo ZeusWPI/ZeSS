@@ -1,16 +1,19 @@
+import type {
+  SxProps,
+  Theme,
+} from "@mui/material";
+import type { FC, MouseEvent } from "react";
+import type { PageIcon } from "./NavBar";
 import MenuIcon from "@mui/icons-material/Menu";
 import {
   Box,
   IconButton,
   Menu,
   MenuItem,
-  SxProps,
-  Theme,
   Typography,
 } from "@mui/material";
-import { FC, MouseEvent, useState } from "react";
+import { useState } from "react";
 import { UnstyledLink } from "../components/UnstyledLink";
-import { PageIcon } from "./NavBar";
 
 interface NavBarSandwichProps {
   pageIcons: readonly PageIcon[];

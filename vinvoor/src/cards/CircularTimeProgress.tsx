@@ -1,5 +1,5 @@
+import type { FC } from "react";
 import { Box, CircularProgress, Typography } from "@mui/material";
-import { FC } from "react";
 
 export interface CircularTimeProgressProps {
   time: number;

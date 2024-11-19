@@ -1,3 +1,5 @@
+import type { FC, ReactNode } from "react";
+import type { Day } from "../../../types/days";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
   Checkbox,
@@ -8,12 +10,11 @@ import {
   Typography,
 } from "@mui/material";
 import { useSnackbar } from "notistack";
-import { FC, ReactNode } from "react";
-import { Day, daysHeadCells } from "../../../types/days";
 import {
   useAdminDays,
   useAdminDeleteDay,
 } from "../../../hooks/admin/useAdminDays";
+import { daysHeadCells } from "../../../types/days";
 
 interface DaysTableBodyProps {
   rows: readonly Day[];
@@ -34,7 +35,8 @@ export const DaysTableBody: FC<DaysTableBodyProps> = ({
   const { enqueueSnackbar } = useSnackbar();
 
   const handleClick = (id: number) => {
-    if (isSelected(id)) handleSelect(id); // This will remove it from the selected list
+    if (isSelected(id))
+      handleSelect(id); // This will remove it from the selected list
 
     deleteDay.mutate(id, {
       onSuccess: () => {

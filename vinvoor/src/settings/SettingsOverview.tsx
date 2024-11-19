@@ -2,7 +2,7 @@ import { LoadingSkeleton } from "../components/LoadingSkeleton";
 import { useSettings } from "../hooks/useSettings";
 import { Settings } from "./Settings";
 
-export const SettingsOverview = () => {
+export function SettingsOverview() {
   const settingsQuery = useSettings();
 
   return (
@@ -10,4 +10,4 @@ export const SettingsOverview = () => {
       <Settings />
     </LoadingSkeleton>
   );
-};
+}

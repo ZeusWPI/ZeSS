@@ -1,24 +1,28 @@
+import type {
+  CardGetRegisterResponse,
+  CardGetRegisterResponseJSON,
+  CardPostResponse,
+  CardPostResponseJSON,
+} from "../types/cards";
+import type { Optional } from "../types/general";
+import type {
+  CircularTimeProgressProps,
+} from "./CircularTimeProgress";
 import { Add } from "@mui/icons-material";
 import { Button, Typography } from "@mui/material";
 import { useConfirm } from "material-ui-confirm";
 import { useSnackbar } from "notistack";
 import { useEffect, useState } from "react";
+import { useCards } from "../hooks/useCard";
 import {
-  CardGetRegisterResponse,
-  CardGetRegisterResponseJSON,
-  CardPostResponse,
-  CardPostResponseJSON,
   convertCardGetRegisterResponseJSON,
   convertCardPostResponseJSON,
 } from "../types/cards";
-import { Optional } from "../types/general";
 import { getApi, isResponseNot200Error, postApi } from "../util/fetch";
 import { randomInt } from "../util/util";
 import {
   CircularTimeProgress,
-  CircularTimeProgressProps,
 } from "./CircularTimeProgress";
-import { useCards } from "../hooks/useCard";
 
 const CHECK_INTERVAL = 1000;
 const REGISTER_TIME = 60000;
@@ -37,19 +41,19 @@ const confirmContent = `
 
 const requestSuccess = "Register your card by holding it to vinscant";
 const requestYou = "You are already registering a card!";
-const requestOther =
-  "Failed to start the card registering process because another user is already registering a card. Please try again later.";
-const requestFail =
-  "Failed to start the card registration process. Please try again later or contact a sysadmin";
+const requestOther
+  = "Failed to start the card registering process because another user is already registering a card. Please try again later.";
+const requestFail
+  = "Failed to start the card registration process. Please try again later or contact a sysadmin";
 
 const registerSucces = "Card registered successfully";
 const registerFail = "Failed to register card";
 
-export const CardsAdd = () => {
+export function CardsAdd() {
   const { refetch } = useCards();
   const [registering, setRegistering] = useState<boolean>(false);
-  const [progressProps, setProgressProps] =
-    useState<CircularTimeProgressProps>(defaultProgressProps);
+  const [progressProps, setProgressProps]
+    = useState<CircularTimeProgressProps>(defaultProgressProps);
   const confirm = useConfirm();
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
@@ -78,7 +82,7 @@ export const CardsAdd = () => {
       REGISTER_ENDPOINT,
       convertCardGetRegisterResponseJSON,
     )
-      .then(async response => {
+      .then(async (response) => {
         let started = false;
         if (!response.registering && start) {
           await postApi<CardPostResponse, CardPostResponseJSON>(
@@ -87,25 +91,31 @@ export const CardsAdd = () => {
             convertCardPostResponseJSON,
           )
             .then(() => (started = true))
-            .catch(error => {
+            .catch((error) => {
               if (isResponseNot200Error(error)) {
                 void error.response
                   .json()
                   .then((response: CardPostResponse) => {
-                    if (response.isCurrentUser)
+                    if (response.isCurrentUser) {
                       enqueueSnackbar(requestYou, {
                         variant: "warning",
                       });
-                    else
+                    }
+                    else {
                       enqueueSnackbar(requestOther, {
                         variant: "error",
                       });
+                    }
                   });
-              } else throw new Error(error as string);
+              }
+              else {
+                throw new Error(error as string);
+              }
             });
         }
 
-        if (response.registering && response.isCurrentUser) started = true;
+        if (response.registering && response.isCurrentUser)
+          started = true;
 
         if (started) {
           setRegistering(true);
@@ -121,9 +131,9 @@ export const CardsAdd = () => {
           }
 
           void checkCardsChange()
-            .then(scanned => {
+            .then((scanned) => {
               setRegistering(false);
-              if (id) {
+              if (id !== undefined) {
                 closeSnackbar(id);
 
                 if (scanned) {
@@ -131,10 +141,12 @@ export const CardsAdd = () => {
                     variant: "success",
                   });
                   void refetch();
-                } else
+                }
+                else {
                   enqueueSnackbar(registerFail, {
                     variant: "error",
                   });
+                }
               }
             })
             .finally(() => setProgressProps(defaultProgressProps));
@@ -170,4 +182,4 @@ export const CardsAdd = () => {
       <Typography>Register new card</Typography>
     </Button>
   );
-};
+}

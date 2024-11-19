@@ -1,46 +1,46 @@
+import type { ChangeEvent } from "react";
+import type { Day } from "../../../types/days";
+import type { Optional } from "../../../types/general";
 import { Paper, Stack, Table, TableContainer } from "@mui/material";
 import { useSnackbar } from "notistack";
-import { ChangeEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { TypographyG } from "../../../components/TypographyG";
-import { Day } from "../../../types/days";
-import { Optional } from "../../../types/general";
-import { randomInt } from "../../../util/util";
-import { DaysTableBody } from "./DaysTableBody";
-import { DaysTableHead } from "./DaysTableHead";
-import { DaysTableToolbar } from "./DaysTableToolbar";
 import {
   useAdminDays,
   useAdminDeleteDay,
 } from "../../../hooks/admin/useAdminDays";
 import { useAdminSeasons } from "../../../hooks/admin/useAdminSeason";
+import { randomInt } from "../../../util/util";
+import { DaysTableBody } from "./DaysTableBody";
+import { DaysTableHead } from "./DaysTableHead";
+import { DaysTableToolbar } from "./DaysTableToolbar";
 
-export const DaysTable = () => {
+export function DaysTable() {
   const { data: days, refetch } = useAdminDays();
   const { data: seasons } = useAdminSeasons();
-  if (!days) return null; // Can never happen
 
   const deleteDay = useAdminDeleteDay();
-  const [rows, setRows] = useState<readonly Day[]>(days);
+  const [rows, setRows] = useState<readonly Day[]>(days ?? []);
   const [selected, setSelected] = useState<readonly number[]>([]);
   const [deleting, setDeleting] = useState<boolean>(false);
 
   const [dateFilter, setDateFilter] = useState<
     [Optional<Date>, Optional<Date>]
   >([undefined, undefined]);
-  const [seasonsFilter, setSeasonsFilter] =
-    useState<Optional<number>>(undefined);
+  const [seasonsFilter, setSeasonsFilter]
+    = useState<Optional<number>>(undefined);
   const [weekdaysFilter, setWeekdaysFilter] = useState<boolean>(false);
   const [weekendsFilter, setWeekendsFilter] = useState<boolean>(false);
 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   const filterDays = (): readonly Day[] => {
-    let filteredDays = [...days];
+    let filteredDays = [...days ?? []];
     if (dateFilter[0] !== undefined && dateFilter[1] !== undefined) {
       filteredDays = filteredDays.filter(
         day =>
-          day.date.getTime() >= dateFilter[0]!.getTime() &&
-          day.date.getTime() <= dateFilter[1]!.getTime(),
+          day.date.getTime() >= dateFilter[0]!.getTime()
+          && day.date.getTime() <= dateFilter[1]!.getTime(),
       );
     }
     if (seasonsFilter) {
@@ -65,12 +65,20 @@ export const DaysTable = () => {
     return filteredDays;
   };
 
+  useEffect(
+    () => setRows(filterDays()),
+    [days, dateFilter, seasonsFilter, weekdaysFilter, weekendsFilter],
+  );
+
+  if (!days)
+    return null; // Can never happen
+
   const handleDelete = () => {
     setDeleting(true);
     const key = randomInt();
     enqueueSnackbar("Deleting...", {
       variant: "info",
-      key: key,
+      key,
       persist: true,
     });
 
@@ -127,16 +135,12 @@ export const DaysTable = () => {
   };
 
   const handleSelectAll = (event: ChangeEvent<HTMLInputElement>) => {
-    if (event.target.checked) setSelected(rows.map(day => day.id));
+    if (event.target.checked)
+      setSelected(rows.map(day => day.id));
     else setSelected([]);
   };
 
   const isSelected = (id: number) => selected.includes(id);
-
-  useEffect(
-    () => setRows(filterDays()),
-    [days, dateFilter, seasonsFilter, weekdaysFilter, weekendsFilter],
-  );
 
   return (
     <Paper elevation={4} sx={{ width: "100%", py: 2 }}>
@@ -181,4 +185,4 @@ export const DaysTable = () => {
       </Stack>
     </Paper>
   );
-};
+}
