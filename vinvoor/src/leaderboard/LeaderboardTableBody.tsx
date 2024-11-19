@@ -82,16 +82,9 @@ function getPosition(position: number) {
   }
 }
 
-<<<<<<< HEAD
-function getScanned(scanned: boolean) {
-  if (scanned)
-=======
-const getScanned = (checkedIn: boolean) => {
+function getScanned(checkedIn: boolean) {
   if (checkedIn)
->>>>>>> 6b63abc (vinvoor: small refactor)
     return <Chip label="Checked In" variant="outlined" color="success" />;
-
-  return <></>;
 }
 
 function getCell(row: LeaderboardItem, headCell: TableHeadCell<LeaderboardItem>) {
@@ -120,7 +113,8 @@ export function LeaderboardTableBody() {
   const theme = useTheme();
   const { data: user } = useUser();
 
-  console.log(rows);
+  if (!rows)
+    return;
 
   return (
     <TableBody>
