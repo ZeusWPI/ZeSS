@@ -103,6 +103,8 @@ fn open_routes() -> Router<AppState> {
         .route("/auth/callback", get(auth::callback))
         .route("/scans", post(scans::add))
         .route("/version", get(info::version))
+        .route("/recent_scans", get(scans::recent))
+        .route("/seasons", get(seasons::get_until_now))
 }
 
 fn authenticated_routes() -> Router<AppState> {
@@ -118,7 +120,6 @@ fn authenticated_routes() -> Router<AppState> {
         )
         .route("/scans", get(scans::get_for_current_user))
         .route("/leaderboard", get(leaderboard::get))
-        .route("/seasons", get(seasons::get_until_now))
         .route("/settings", get(settings::get).patch(settings::update))
         .route_layer(from_fn(middleware::is_logged_in))
 }

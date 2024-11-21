@@ -6,11 +6,13 @@ use crate::{
 };
 
 use axum::{extract::State, Json};
-use chrono::Local;
+use chrono::{Local, Duration};
 use reqwest::StatusCode;
+use serde::{Serialize};
 use sea_orm::{
     ActiveModelTrait, ColumnTrait, EntityTrait, JoinType::InnerJoin, QueryFilter, QuerySelect,
-    RelationTrait, Set,
+    RelationTrait, Set, FromQueryResult, entity::prelude::DateTimeWithTimeZone, Statement, DbBackend,
+    Value
 };
 use tower_sessions::Session;
 
@@ -101,4 +103,29 @@ pub async fn add(state: State<AppState>, body: String) -> ResponseResult<String>
         .ok_or((StatusCode::INTERNAL_SERVER_ERROR, "no user for card"))?;
 
     Ok(user.name)
+}
+
+#[derive(Debug, FromQueryResult, Serialize)]
+pub struct RecentScanItem {
+    id: i32,
+    scan_time: DateTimeWithTimeZone,
+}
+
+pub async fn recent(state: State<AppState>) -> ResponseResult<Json<Vec<RecentScanItem>>> {
+    let fourteen_days_ago = (Local::now() - Duration::days(14)).naive_local();
+    let scans = RecentScanItem::find_by_statement(Statement::from_sql_and_values(DbBackend::Postgres, "
+        SELECT DISTINCT ON (s.user_id, DATE(s.scan_time)) s.id, s.scan_time
+        FROM (
+            SELECT scan.id, scan.scan_time, \"user\".id as user_id
+            FROM scan
+            INNER JOIN card ON card.serial = scan.card_serial
+            INNER JOIN \"user\" ON \"user\".id = card.user_id
+            WHERE scan.scan_time > $1
+        ) s
+        ORDER BY s.user_id, DATE(s.scan_time), s.id;", [Value::ChronoDateTime(Some(Box::new(fourteen_days_ago)))]))
+    .all(&state.db)
+    .await
+    .or_log((StatusCode::INTERNAL_SERVER_ERROR, "could not get all recent scans"))?;
+
+    Ok(Json(scans))
 }
