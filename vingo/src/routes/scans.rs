@@ -6,14 +6,16 @@ use crate::{
 };
 
 use axum::{extract::State, Json};
-use chrono::{Local, Duration};
+use chrono::{Duration, Local};
+use migration::Expr;
 use reqwest::StatusCode;
-use serde::{Serialize};
 use sea_orm::{
-    ActiveModelTrait, ColumnTrait, EntityTrait, JoinType::InnerJoin, QueryFilter, QuerySelect,
-    RelationTrait, Set, FromQueryResult, entity::prelude::DateTimeWithTimeZone, Statement, DbBackend,
-    Value
+    entity::prelude::DateTimeWithTimeZone,
+    ActiveModelTrait, ColumnTrait, EntityTrait, FromQueryResult, IdenStatic,
+    JoinType::{self, InnerJoin},
+    QueryFilter, QueryOrder, QuerySelect, RelationTrait, Set,
 };
+use serde::Serialize;
 use tower_sessions::Session;
 
 use super::util::{
@@ -113,19 +115,31 @@ pub struct RecentScanItem {
 
 pub async fn recent(state: State<AppState>) -> ResponseResult<Json<Vec<RecentScanItem>>> {
     let fourteen_days_ago = (Local::now() - Duration::days(14)).naive_local();
-    let scans = RecentScanItem::find_by_statement(Statement::from_sql_and_values(DbBackend::Postgres, "
-        SELECT DISTINCT ON (s.user_id, DATE(s.scan_time)) s.id, s.scan_time
-        FROM (
-            SELECT scan.id, scan.scan_time, \"user\".id as user_id
-            FROM scan
-            INNER JOIN card ON card.serial = scan.card_serial
-            INNER JOIN \"user\" ON \"user\".id = card.user_id
-            WHERE scan.scan_time > $1
-        ) s
-        ORDER BY s.user_id, DATE(s.scan_time), s.id;", [Value::ChronoDateTime(Some(Box::new(fourteen_days_ago)))]))
-    .all(&state.db)
-    .await
-    .or_log((StatusCode::INTERNAL_SERVER_ERROR, "could not get all recent scans"))?;
+    let scans = Scan::find()
+        .select_only()
+        .expr(Expr::cust(format!(
+            "DISTINCT ON ({}, DATE({})) scan.{}, scan.{}", //NOTE: this is a pain
+            card::Column::UserId.as_str(),
+            scan::Column::ScanTime.as_str(),
+            scan::Column::Id.as_str(),
+            scan::Column::ScanTime.as_str(),
+        )))
+        .join(JoinType::InnerJoin, scan::Relation::Card.def())
+        .join(JoinType::InnerJoin, card::Relation::User.def())
+        .filter(scan::Column::ScanTime.gt(fourteen_days_ago))
+        .order_by_asc(card::Column::UserId)
+        .order_by_asc(Expr::cust(format!(
+            "DATE({})",
+            scan::Column::ScanTime.as_str()
+        )))
+        .order_by_asc(scan::Column::Id)
+        .into_model::<RecentScanItem>()
+        .all(&state.db)
+        .await
+        .or_log((
+            StatusCode::INTERNAL_SERVER_ERROR,
+            "could not get all recent scans",
+        ))?;
 
     Ok(Json(scans))
 }
