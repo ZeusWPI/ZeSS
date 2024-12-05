@@ -1,6 +1,8 @@
 import { Box, Icon, Link } from "@mui/material";
 import { TypographyG } from "../components/TypographyG";
 import { useVersion } from "../hooks/useVersion";
+import FerrisIcon from "/ferris.svg";
+import ReactIcon from "/react.svg";
 import ZeusIcon from "/zeus.svg";
 
 export function Footer() {
@@ -15,8 +17,28 @@ export function Footer() {
       }}
     >
       <TypographyG>
+        <Icon sx={{
+          pr: "4px",
+          pl: "6px",
+          alignItems: "center",
+          overflow: "visible",
+        }}
+        >
+          <img src={FerrisIcon} />
+        </Icon>
         v
         {version?.version ?? ""}
+        <Icon sx={{
+          pr: "4px",
+          pl: "6px",
+          alignItems: "center",
+          overflow: "visible",
+        }}
+        >
+          <img src={ReactIcon} />
+        </Icon>
+        v
+        {import.meta.env.VITE_APP_VERSION}
       </TypographyG>
       <TypographyG
         sx={{
