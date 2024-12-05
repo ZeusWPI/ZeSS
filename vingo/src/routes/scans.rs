@@ -125,14 +125,11 @@ pub async fn recent(state: State<AppState>) -> ResponseResult<Json<Vec<RecentSca
             scan::Column::ScanTime.as_str(),
         )))
         .join(JoinType::InnerJoin, scan::Relation::Card.def())
-        .join(JoinType::InnerJoin, card::Relation::User.def())
         .filter(scan::Column::ScanTime.gt(fourteen_days_ago))
-        .order_by_asc(card::Column::UserId)
         .order_by_asc(Expr::cust(format!(
             "DATE({})",
             scan::Column::ScanTime.as_str()
         )))
-        .order_by_asc(scan::Column::Id)
         .into_model::<RecentScanItem>()
         .all(&state.db)
         .await
