@@ -9,7 +9,13 @@ cover_thickness = 2;
 
 part = "enclosure"; // [enclosure:Enclosure, cover:Cover, both:Enclosure and Cover]
 
-print_part();
+// print_part();
+diffuser();
+
+module diffuser() {
+	cube([5-0.25, 49-0.25, 1]);
+	translate([-0.5, -0.5, -1]) cube([5+1-0.25, 49-0.25+1, 1]);
+}
 
 module print_part() {
 	if (part == "enclosure") {
