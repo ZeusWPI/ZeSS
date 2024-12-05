@@ -1,4 +1,4 @@
-import { Box, Icon, Link } from "@mui/material";
+import { Box, Icon, Link, Tooltip } from "@mui/material";
 import { TypographyG } from "../components/TypographyG";
 import { useVersion } from "../hooks/useVersion";
 import FerrisIcon from "/ferris.svg";
@@ -16,29 +16,37 @@ export function Footer() {
         alignItems: "center",
       }}
     >
-      <TypographyG>
-        <Icon sx={{
-          pr: "4px",
-          pl: "6px",
-          alignItems: "center",
-          overflow: "visible",
-        }}
-        >
-          <img src={FerrisIcon} />
-        </Icon>
-        v
-        {version?.version ?? ""}
-        <Icon sx={{
-          pr: "4px",
-          pl: "6px",
-          alignItems: "center",
-          overflow: "visible",
-        }}
-        >
-          <img src={ReactIcon} />
-        </Icon>
-        v
-        {import.meta.env.VITE_APP_VERSION}
+      <TypographyG sx={{ display: "flex" }}>
+        <Tooltip title="Backend version" arrow>
+          <Link href="https://github.com/ZeusWPI/ZeSS/tree/main/vingo" style={{ color: "inherit" }} underline="hover">
+            <Icon sx={{
+              pr: "4px",
+              pl: "5px",
+              alignItems: "center",
+              overflow: "visible",
+            }}
+            >
+              <img src={FerrisIcon} />
+            </Icon>
+            v
+            {version?.version ?? ""}
+          </Link>
+        </Tooltip>
+        <Tooltip title="Frontend version" arrow>
+          <Link href="https://github.com/ZeusWPI/ZeSS/tree/main/vinvoor" style={{ color: "inherit" }} underline="hover">
+            <Icon sx={{
+              pr: "4px",
+              pl: "5px",
+              alignItems: "center",
+              overflow: "visible",
+            }}
+            >
+              <img src={ReactIcon} />
+            </Icon>
+            v
+            {import.meta.env.VITE_APP_VERSION}
+          </Link>
+        </Tooltip>
       </TypographyG>
       <TypographyG
         sx={{
