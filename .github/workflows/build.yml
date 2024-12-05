@@ -7,7 +7,7 @@ on:
   pull_request:
 
 concurrency:
-  group: docker-main
+  group: docker-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
