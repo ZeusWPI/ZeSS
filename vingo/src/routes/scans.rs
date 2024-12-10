@@ -109,7 +109,7 @@ pub async fn add(state: State<AppState>, body: String) -> ResponseResult<String>
 
 #[derive(Debug, FromQueryResult, Serialize)]
 pub struct RecentScanItem {
-    id: i32,
+    scan_id: i32,
     scan_time: DateTimeWithTimeZone,
 }
 
@@ -118,7 +118,7 @@ pub async fn recent(state: State<AppState>) -> ResponseResult<Json<Vec<RecentSca
     let scans = Scan::find()
         .select_only()
         .expr(Expr::cust(format!(
-            "DISTINCT ON ({}, DATE({})) scan.{}, scan.{}", //NOTE: this is a pain
+            "DISTINCT ON ({}, DATE({})) scan.{} AS scan_id, scan.{}", // NOTE: this is a pain // NOTE: Might as well keep everything in sql then
             card::Column::UserId.as_str(),
             scan::Column::ScanTime.as_str(),
             scan::Column::Id.as_str(),
