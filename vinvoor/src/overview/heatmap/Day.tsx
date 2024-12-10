@@ -95,10 +95,11 @@ export const Day: FC<DayProps> = ({
           <g key={idx}>
             {isDayVariant(variant)
               ? Array.from({ length: DAYS_IN_WEEK }, (_, cidx) => {
-                const currentDate = new Date(
-                  data.start.getTime()
-                  + MILLISECONDS_IN_DAY * (idx * DAYS_IN_WEEK + cidx),
-                );
+                const currentDate = new Date(data.start);
+                // This is a timezone safe way to add 1 day (see https://stackoverflow.com/questions/563406/how-to-add-days-to-date)
+                // The new date is guaranteed to have the same hour and minute value
+                // (in our case, already normalized to 0)
+                currentDate.setDate(currentDate.getDate() + (idx * DAYS_IN_WEEK + cidx));
 
                 if (currentDate.getTime() < startDate.getTime())
                   return null;
