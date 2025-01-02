@@ -76,7 +76,7 @@ export function Footer() {
         </Link>
       </TypographyG>
       <Link href="https://github.com/ZeusWPI/ZeSS" textAlign="end">
-        © 2024
+        {`© ${(new Date()).getFullYear()}`}
       </Link>
     </Box>
   );
