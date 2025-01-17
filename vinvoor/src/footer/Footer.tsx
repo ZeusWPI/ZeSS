@@ -44,7 +44,7 @@ export function Footer() {
               <img src={ReactIcon} />
             </Icon>
             v
-            {import.meta.env.VITE_APP_VERSION}
+            {__APP_VERSION__}
           </Link>
         </Tooltip>
       </TypographyG>
