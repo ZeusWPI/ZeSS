@@ -44,7 +44,7 @@ export function Footer() {
               <img src={ReactIcon} />
             </Icon>
             v
-            {/* @ts-ignore */}
+            {/* @ts-expect-error vite variable */}
             {__APP_VERSION__}
           </Link>
         </Tooltip>
