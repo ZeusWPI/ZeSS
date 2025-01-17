@@ -20,6 +20,7 @@ pub struct LeaderboardItem {
     total_days: i64,
     position: i64,
     position_change: Option<i64>,
+    checked_in: bool,
 }
 
 pub async fn get(
@@ -52,15 +53,25 @@ async fn leaderboard_from_db(
     season: &season::Model,
 ) -> ResponseResult<Vec<LeaderboardItem>> {
     let result = LeaderboardItem::find_by_statement(Statement::from_sql_and_values(DbBackend::Postgres,"
-            SELECT id, name, count as total_days, RANK() OVER (ORDER BY count desc) AS position
-                FROM (SELECT COUNT(DISTINCT ((scan_time - INTERVAL '4 hours') AT TIME ZONE 'Europe/Brussels')::date), \"user\".id, \"user\".name
-                    FROM scan
-                        LEFT JOIN card ON card_serial = serial
-                        LEFT JOIN \"user\" ON user_id = \"user\".id
-                        WHERE scan_time < $1
-                            AND scan_time > $2
-                            AND scan_time < $3
-                        GROUP BY \"user\".name, \"user\".id);", [before.into(), season.start.into(), season.end.into()]))
+            SELECT
+                id,
+                name,
+                count as total_days,
+                RANK() OVER (ORDER BY count desc) AS position,
+                (last_scan IS NOT NULL AND ((last_scan - INTERVAL '4 hours') AT TIME ZONE 'Europe/Brussels')::date = (NOW() - INTERVAL '4 hours')::date) AS checked_in
+            FROM (
+                SELECT
+                    COUNT(DISTINCT ((scan_time - INTERVAL '4 hours') AT TIME ZONE 'Europe/Brussels')::date),
+                    \"user\".id,
+                    \"user\".name,
+                    MAX(scan_time) as last_scan
+                FROM scan
+                LEFT JOIN card ON card_serial = serial
+                LEFT JOIN \"user\" ON user_id = \"user\".id
+                WHERE scan_time < $1
+                    AND scan_time > $2
+                    AND scan_time < $3
+                GROUP BY \"user\".name, \"user\".id);", [before.into(), season.start.into(), season.end.into()]))
         .all(&state.db)
         .await
         .or_log((StatusCode::INTERNAL_SERVER_ERROR, "could not select leaderboard items"))?;
