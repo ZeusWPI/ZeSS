@@ -44,6 +44,7 @@ export function Footer() {
               <img src={ReactIcon} />
             </Icon>
             v
+            {/* @ts-ignore */}
             {__APP_VERSION__}
           </Link>
         </Tooltip>
