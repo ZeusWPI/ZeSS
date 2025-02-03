@@ -43,6 +43,7 @@ ws2812-esp32-rmt-driver = { version = "0.9.0", features = ["smart-leds-trait"] }
 smart_led_effects = "0.1.7"
 palette = "0.7.6"
 rgb = "0.8.50"
+rand = "0.8.5"
 
 [build-dependencies]
 embuild = "0.32.0"

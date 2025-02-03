@@ -5,16 +5,11 @@ use core::str;
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 use embedded_svc::http::{client::Client, Method};
 use esp_idf_svc::{
-    eventloop::EspSystemEventLoop,
-    hal::{
-        gpio::{InputPin, OutputPin},
-        prelude::Peripherals,
-        spi::{
+    eventloop::EspSystemEventLoop, hal::{
+        gpio::{InputPin, OutputPin}, ledc::{config::TimerConfig, LedcChannel, LedcDriver, LedcTimer, LedcTimerDriver}, peripheral::Peripheral, prelude::Peripherals, spi::{
             self, SpiSingleDeviceDriver
-        },
-    },
-    http::client::{Configuration, EspHttpConnection},
-    sys::esp_task_wdt_deinit
+        }
+    }, http::client::{Configuration, EspHttpConnection}, io::Read, sys::esp_task_wdt_deinit
 };
 
 use mfrc522::{
@@ -67,6 +62,20 @@ impl StatusNotifier<'_> {
         std::thread::sleep(Duration::from_millis(500));
     }
 }
+
+/*struct Buzzer {
+    pwm_driver: LedcDriver,
+    pwm_timer_driver: LedcTimerDriver,
+}
+impl Buzzer {
+    fn new(pin: dyn Peripheral, timer: dyn LedcTimer, channel: dyn LedcChannel) -> Self {
+        let mut pwm_timer_driver = LedcTimerDriver::new(timer, &TimerConfig::new());
+        Buzzer {
+            pwm_driver: LedcDriver::new(channel, pwm_timer_driver, pin),
+            pwm_timer_driver,
+        }
+    }
+}*/
 
 fn get_time() -> u64 {
     SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs()
