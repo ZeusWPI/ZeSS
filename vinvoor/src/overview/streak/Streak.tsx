@@ -46,7 +46,7 @@ function getStreak(scans: readonly Scan[]): [boolean, number] {
 
   const isOnStreak
     = isTheSameDay(dates[dates.length - 1], new Date())
-    || isWeekendBetween(dates[dates.length - 1], new Date());
+      || isWeekendBetween(dates[dates.length - 1], new Date());
 
   if (isOnStreak) {
     let i = dates.length;
@@ -58,10 +58,10 @@ function getStreak(scans: readonly Scan[]): [boolean, number] {
     streak
       = dates.length > 0
         ? Math.floor(
-          (new Date().getTime() - dates[dates.length - 1].getTime())
-          / MILLISECONDS_IN_ONE_DAY
-          - 1,
-        )
+            (new Date().getTime() - dates[dates.length - 1].getTime())
+            / MILLISECONDS_IN_ONE_DAY
+            - 1,
+          )
         : 0;
   }
 

@@ -95,83 +95,83 @@ export const Day: FC<DayProps> = ({
           <g key={idx}>
             {isDayVariant(variant)
               ? Array.from({ length: DAYS_IN_WEEK }, (_, cidx) => {
-                const currentDate = new Date(data.start);
-                // This is a timezone safe way to add 1 day (see https://stackoverflow.com/questions/563406/how-to-add-days-to-date)
-                // The new date is guaranteed to have the same hour and minute value
-                // (in our case, already normalized to 0)
-                currentDate.setDate(currentDate.getDate() + (idx * DAYS_IN_WEEK + cidx));
+                  const currentDate = new Date(data.start);
+                  // This is a timezone safe way to add 1 day (see https://stackoverflow.com/questions/563406/how-to-add-days-to-date)
+                  // The new date is guaranteed to have the same hour and minute value
+                  // (in our case, already normalized to 0)
+                  currentDate.setDate(currentDate.getDate() + (idx * DAYS_IN_WEEK + cidx));
 
-                if (currentDate.getTime() < startDate.getTime())
-                  return null;
+                  if (currentDate.getTime() < startDate.getTime())
+                    return null;
 
-                if (currentDate.getTime() > endDate.getTime())
-                  return null;
+                  if (currentDate.getTime() > endDate.getTime())
+                    return null;
 
-                let colors = theme.heatmap.colorInActive;
-                if (data.data[currentDate.getTime()])
-                  colors = theme.heatmap.colorActive;
+                  let colors = theme.heatmap.colorInActive;
+                  if (data.data[currentDate.getTime()])
+                    colors = theme.heatmap.colorActive;
 
-                const dataTooltipContent = `${
-                  data.data[currentDate.getTime()] ? "Present" : "Absent"
-                } on ${DATE_FORMATTER.format(currentDate)}`;
+                  const dataTooltipContent = `${
+                    data.data[currentDate.getTime()] ? "Present" : "Absent"
+                  } on ${DATE_FORMATTER.format(currentDate)}`;
 
-                return (
-                  <Rect
-                    key={cidx}
-                    idx={idx}
-                    cidx={cidx}
-                    isSmallView={isSmallView}
-                    colors={colors}
-                    dataTooltipContent={dataTooltipContent}
-                  />
-                );
-              })
+                  return (
+                    <Rect
+                      key={cidx}
+                      idx={idx}
+                      cidx={cidx}
+                      isSmallView={isSmallView}
+                      colors={colors}
+                      dataTooltipContent={dataTooltipContent}
+                    />
+                  );
+                })
               : Array.from({ length: WEEKS_IN_MONTH }, (_, cidx) => {
-                const currentDate = new Date(
-                  data.startDates[idx].getTime()
-                  + MILLISECONDS_IN_DAY * cidx * DAYS_IN_WEEK,
-                );
+                  const currentDate = new Date(
+                    data.startDates[idx].getTime()
+                    + MILLISECONDS_IN_DAY * cidx * DAYS_IN_WEEK,
+                  );
 
-                // Week is no longer in the month
-                if (
-                  currentDate.getMonth() > startDate.getMonth() + idx
-                  && getMondayIndexedDay(currentDate)
-                  <= currentDate.getDate() - 1
-                ) {
-                  return null;
-                }
+                  // Week is no longer in the month
+                  if (
+                    currentDate.getMonth() > startDate.getMonth() + idx
+                    && getMondayIndexedDay(currentDate)
+                    <= currentDate.getDate() - 1
+                  ) {
+                    return null;
+                  }
 
-                // Week is after end date
-                if (currentDate.getTime() >= data.endWeek.getTime())
-                  return null;
+                  // Week is after end date
+                  if (currentDate.getTime() >= data.endWeek.getTime())
+                    return null;
 
-                const count = Array.from(
-                  { length: DAYS_IN_WEEK },
-                  (_, i) =>
-                    new Date(currentDate.getTime() + i * MILLISECONDS_IN_DAY),
-                ).filter(
-                  date =>
-                    date.getTime() <= endDate.getTime()
-                    && data.data[date.getTime()],
-                ).length;
+                  const count = Array.from(
+                    { length: DAYS_IN_WEEK },
+                    (_, i) =>
+                      new Date(currentDate.getTime() + i * MILLISECONDS_IN_DAY),
+                  ).filter(
+                    date =>
+                      date.getTime() <= endDate.getTime()
+                      && data.data[date.getTime()],
+                  ).length;
 
-                const colors = styleMonth[Math.min(count, 5)](theme); // Can be higher than 5 if multiple scans in a day or scanned during the weekend
+                  const colors = styleMonth[Math.min(count, 5)](theme); // Can be higher than 5 if multiple scans in a day or scanned during the weekend
 
-                const dataTooltipContent = `${count} scan${
-                  count !== 1 ? "s" : ""
-                } in the week of ${DATE_FORMATTER.format(currentDate)}`;
+                  const dataTooltipContent = `${count} scan${
+                    count !== 1 ? "s" : ""
+                  } in the week of ${DATE_FORMATTER.format(currentDate)}`;
 
-                return (
-                  <Rect
-                    key={cidx}
-                    idx={idx}
-                    cidx={cidx}
-                    isSmallView={isSmallView}
-                    colors={colors}
-                    dataTooltipContent={dataTooltipContent}
-                  />
-                );
-              })}
+                  return (
+                    <Rect
+                      key={cidx}
+                      idx={idx}
+                      cidx={cidx}
+                      isSmallView={isSmallView}
+                      colors={colors}
+                      dataTooltipContent={dataTooltipContent}
+                    />
+                  );
+                })}
           </g>
         );
       })}
