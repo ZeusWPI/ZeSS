@@ -134,7 +134,7 @@ fn main() {
     let mut scanner = Mfrc522::new(scan_interface).init().unwrap();
 
     // esp32s2
-    let led_pin = pins.gpio18;
+    let led_pin = pins.gpio17;
     // esp32
     //let led_pin = pins.gpio5;
     let channel = peripherals.rmt.channel0;
