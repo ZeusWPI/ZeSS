@@ -38,7 +38,7 @@ struct StatusNotifier<'a> {
     led_strip: LedPixelEsp32Rmt::<'a, RGB8, LedPixelColorGrb24>,
     leds: usize,
     idle_effect: Box<dyn EffectIterator>,
-    //buzzer: Buzzer<'a>,
+    //buzzer: Buzzer<'a, TIMER0>
 }
 impl StatusNotifier<'_> {
     fn idle(&mut self) {
@@ -64,16 +64,24 @@ impl StatusNotifier<'_> {
     }
 }
 
-/*struct Buzzer<'a> {
-    pwm_driver: LedcDriver<'a>,
-    pwm_timer_driver: LedcTimerDriver<'a, TIMER0>,
+/*struct Buzzer<'a, T: LedcTimer> {
+    timer_driver: LedcTimerDriver<'a, T>,
+    channel: LedcDriver<'a>
 }
-impl Buzzer<'_> {
-    fn new(pin: impl OutputPin, timer: TIMER0, channel: esp_idf_svc::hal::ledc::CHANNEL0) -> Self {
-        let mut pwm_timer_driver = LedcTimerDriver::new(timer, &TimerConfig::new()).as_mut().unwrap();
+impl<T: LedcTimer> Buzzer<'_, T> {
+    fn new(peripherals: &Peripherals) -> Self {
+        let mut timer_driver = LedcTimerDriver::new(
+            peripherals.ledc.timer0,
+            &config::TimerConfig::new().frequency(0.into())
+        ).unwrap();
+        let mut channel = LedcDriver::new(
+            peripherals.ledc.channel0,
+            &timer_driver,
+            peripherals.pins.gpio19.downgrade_output()
+        ).unwrap();
         Buzzer {
-            pwm_driver: LedcDriver::new(channel, pwm_timer_driver.borrow(), pin).unwrap(),
-            pwm_timer_driver,
+            timer_driver,
+            channel
         }
     }
 }*/
@@ -136,16 +144,16 @@ fn main() {
         led_strip,
         leds: 8,
         idle_effect: Box::new(PingPong::new(8, vec![Srgb::new(0xff, 0x7f, 0x00)])),
-        //buzzer: Buzzer::new(pins.gpio19.downgrade_output(), peripherals.ledc.timer0, peripherals.ledc.channel0)
+        //buzzer: Buzzer::new(&peripherals)
     };
 
     let mut last_uid = hex::encode([0_u8]);
     let mut last_time = 0;
     // buzzer testing {{{
-    {
+    /*{
         let mut timer_driver = LedcTimerDriver::new(
             peripherals.ledc.timer0,
-            &config::TimerConfig::new().frequency(440.into())
+            &config::TimerConfig::new().frequency(0.into())
         ).unwrap();
         let mut channel = LedcDriver::new(
             peripherals.ledc.channel0,
@@ -163,7 +171,7 @@ fn main() {
             timer_driver.set_frequency(Into::<Hertz>::into(numerator * 100));
             FreeRtos::delay_ms(2000);
         }
-    }
+    }*/
     // buzzer testing }}}
 
     loop {
