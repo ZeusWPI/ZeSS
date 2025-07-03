@@ -2,7 +2,7 @@ ono
 
 # Hardware:
 
-- ESP32-S2
+- [ESP32-S2](https://web.archive.org/web/20241012003116/https://docs.espressif.com/projects/esp-idf/en/latest/esp32s2/hw-reference/esp32s2/user-guide-saola-1-v1.2.html)
 - RFID-RC522
 
 Connect RFID-RC522 Rfid reader on these pins:

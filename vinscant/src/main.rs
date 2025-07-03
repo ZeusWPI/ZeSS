@@ -112,21 +112,21 @@ fn main() {
     let scan_spi_device = SpiSingleDeviceDriver::new_single(
         peripherals.spi2,
         // esp32s2
-        //pins.gpio34.downgrade_output(), // SCK
+        pins.gpio34.downgrade_output(), // SCK
         // esp32
-        pins.gpio0.downgrade_output(), // SCK
+        //pins.gpio0.downgrade_output(), // SCK
         // esp32s2
-        //pins.gpio35.downgrade_output(), // MOSI
+        pins.gpio35.downgrade_output(), // MOSI
         // esp32
-        pins.gpio4.downgrade_output(), // MOSI
+        //pins.gpio4.downgrade_output(), // MOSI
         // esp32s2
-        //Some(pins.gpio36.downgrade_input()), // MISO
+        Some(pins.gpio36.downgrade_input()), // MISO
         // esp32
-        Some(pins.gpio27.downgrade_input()), // MISO
+        //Some(pins.gpio27.downgrade_input()), // MISO
         // esp32s2
-        //Some(pins.gpio33.downgrade_output()), // CS/SDA
+        Some(pins.gpio33.downgrade_output()), // CS/SDA
         // esp32
-        Some(pins.gpio13.downgrade_output()), // CS/SDA
+        //Some(pins.gpio13.downgrade_output()), // CS/SDA
         &spi::config::DriverConfig::new(),
         &spi::config::Config::new()
     ).unwrap();
@@ -134,9 +134,9 @@ fn main() {
     let mut scanner = Mfrc522::new(scan_interface).init().unwrap();
 
     // esp32s2
-    //let led_pin = pins.gpio?;
+    let led_pin = pins.gpio18;
     // esp32
-    let led_pin = pins.gpio5;
+    //let led_pin = pins.gpio5;
     let channel = peripherals.rmt.channel0;
     let mut led_strip = LedPixelEsp32Rmt::<RGB8, LedPixelColorGrb24>::new(channel, led_pin).unwrap();
 
