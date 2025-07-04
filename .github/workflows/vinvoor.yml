@@ -1,35 +1,33 @@
-name: Vinvoor Format, Lint & Typecheck
+name: "vinvoor: format, lint and typecheck"
 
 on:
   push:
-    branches:
-      - main
+    paths:
+      - ".github/workflows/vinvoor.yml"
+      - "vinvoor/**"
   pull_request:
+    paths:
+      - ".github/workflows/vinvoor.yml"
+      - "vinvoor/**"
+  workflow_dispatch:
 
 jobs:
-  format-and-lint:
-    runs-on: ubuntu-latest
-
+  format-lint-typecheck:
+    runs-on: "ubuntu-latest"
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      - uses: "actions/checkout@v4"
+      - uses: "actions/setup-node@v3"
         with:
-          node-version: 22.8.0
+          node-version: "22.8.0"
+      - run: "npm install -g pnpm"
 
-      - name: Install pnpm
-        run: npm install -g pnpm
+      - run: "pnpm install"
+        working-directory: "vinvoor/"
 
-      - name: Install dependencies
-        run: pnpm install
-        working-directory: vinvoor/
+      - name: "format and lint"
+        working-directory: "vinvoor/"
+        run: "pnpm eslint ."
 
-      - name: Run format & lint
-        run: pnpm eslint .
-        working-directory: vinvoor/
-
-      - name: Run typecheck
-        run: pnpm tsc --noEmit
-        working-directory: vinvoor/
+      - name: "typecheck"
+        working-directory: "vinvoor/"
+        run: "pnpm tsc --noEmit"
