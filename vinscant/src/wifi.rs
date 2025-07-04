@@ -12,13 +12,9 @@ pub fn wifi(
     modem: impl peripheral::Peripheral<P = esp_idf_svc::hal::modem::Modem> + 'static,
     sysloop: EspSystemEventLoop,
 ) -> Result<Box<EspWifi<'static>>> {
-    let mut auth_method = AuthMethod::WPA2Personal;
+    let auth_method = if !pass.is_empty() { AuthMethod::WPA2Personal } else { AuthMethod::None };
     if ssid.is_empty() {
         bail!("Missing WiFi name")
-    }
-    if pass.is_empty() {
-        auth_method = AuthMethod::None;
-        info!("Wifi password is empty");
     }
     let mut esp_wifi = EspWifi::new(modem, sysloop.clone(), None)?;
 
