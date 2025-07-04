@@ -6,33 +6,25 @@ use esp_idf_svc::{
         delay::FreeRtos,
         gpio::{InputPin, OutputPin},
         ledc::{
-            config::{self, TimerConfig},
-            LedcChannel, LedcDriver, LedcTimer, LedcTimerDriver, SpeedMode, TIMER0,
+            config::{self}, LedcDriver, LedcTimerDriver,
         },
-        peripheral::Peripheral,
         prelude::Peripherals,
-        rmt::CHANNEL0,
         spi::{self, SpiSingleDeviceDriver},
         units::Hertz,
     },
     http::client::{Configuration, EspHttpConnection},
-    io::{EspIOError, Read},
+    io::EspIOError,
     sys::esp_task_wdt_deinit,
 };
 use hex::ToHex;
 use smart_led_effects::{
-    strip::{EffectIterator, Wipe},
+    strip::EffectIterator,
     Srgb,
 };
-use std::{
-    borrow::{Borrow, BorrowMut},
-    str::FromStr,
-    time::{Duration, SystemTime, UNIX_EPOCH},
-};
+use std::time::{Duration, SystemTime, UNIX_EPOCH};
 use ws2812_esp32_rmt_driver::{driver::color::LedPixelColorGrb24, LedPixelEsp32Rmt, RGB8};
 
 use mfrc522::{comm::blocking::spi::SpiInterface, Mfrc522, Uid};
-use palette;
 
 use lib::{ping_pong::PingPong, wifi};
 
@@ -63,7 +55,7 @@ impl StatusNotifier<'_> {
         let _ = self.led_strip.write_nocopy(
             pixels
                 .iter()
-                .map(|color| from_palette_rgb_to_rgb_rgb(color)),
+                .map(from_palette_rgb_to_rgb_rgb),
         );
     }
     fn processing(&mut self) {
@@ -205,7 +197,7 @@ fn main() {
     // esp32
     //let led_pin = pins.gpio5;
     let channel = peripherals.rmt.channel0;
-    let mut led_strip =
+    let led_strip =
         LedPixelEsp32Rmt::<RGB8, LedPixelColorGrb24>::new(channel, led_pin).unwrap();
 
     let mut status_notifier = StatusNotifier {
@@ -230,7 +222,7 @@ fn main() {
         ).unwrap();
         for numerator in [1, 2, 3, 4, 5, 6].iter().cycle() {
             println!("Duty {numerator}/6");
-            if(numerator == &1) {
+            if numerator == &1 {
                 channel.set_duty(0);
             } else {
                 channel.set_duty(128);
