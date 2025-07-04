@@ -133,26 +133,22 @@ fn hannes_is_the_best_in_sending_requests(uid: Uid) -> Result<(), CardError> {
             crt_bundle_attach: Some(esp_idf_svc::sys::esp_crt_bundle_attach),
             ..Default::default()
         })
-        .unwrap(),
+            .unwrap(),
     );
-    return if let Ok(mut request) = client.request(
+    let mut request = client.request(
         Method::Post,
         "https://zess.zeus.gent/api/scans".as_ref(),
         &[],
-    ) {
-        let _ = request
-            .write(format!("{};{}", hex::encode(uid.as_bytes()), CONFIG.auth_key).as_bytes());
-        let response = request.submit()?;
-        log::info!("response code: {}", response.status());
-        if response.status() == 200 {
-            Ok(())
-        } else {
-            Err(CardError::NotFoundError)
-        }
+    )?;
+    let _ = request
+        .write(format!("{};{}", hex::encode(uid.as_bytes()), CONFIG.auth_key).as_bytes());
+    let response = request.submit()?;
+    log::info!("response code: {}", response.status());
+    if response.status() == 200 {
+        Ok(())
     } else {
-        Err(CardError::ConnectionError)
-    };
-    Ok(())
+        Err(CardError::NotFoundError)
+    }
 }
 
 fn main() {
@@ -260,6 +256,11 @@ fn main() {
                 log::info!("Card found: {}", hex::encode(uid.as_bytes()));
                 match hannes_is_the_best_in_sending_requests(uid) {
                     Ok(()) => status_notifier.good(),
+                    Err(CardError::ConnectionError) => {
+                        // allow retry on error
+                        last_uid = String::new();
+                        status_notifier.bad();
+                    }
                     Err(_) => status_notifier.bad(),
                 }
             }
