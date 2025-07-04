@@ -1,6 +1,6 @@
-use smart_led_effects::strip::EffectIterator;
 use palette::{FromColor, Hsv, Srgb};
 use rand::Rng;
+use smart_led_effects::strip::EffectIterator;
 
 #[derive(Debug)]
 pub struct PingPong {
