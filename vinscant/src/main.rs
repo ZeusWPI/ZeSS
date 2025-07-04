@@ -127,35 +127,37 @@ fn main() {
 
     let pins = peripherals.pins;
 
+    #[cfg(feature = "esp32s2")]
     let scan_spi_device = SpiSingleDeviceDriver::new_single(
         peripherals.spi2,
-        // esp32s2
         pins.gpio34.downgrade_output(), // SCK
-        // esp32
-        //pins.gpio0.downgrade_output(), // SCK
-        // esp32s2
         pins.gpio35.downgrade_output(), // MOSI
-        // esp32
-        //pins.gpio4.downgrade_output(), // MOSI
-        // esp32s2
         Some(pins.gpio36.downgrade_input()), // MISO
-        // esp32
-        //Some(pins.gpio27.downgrade_input()), // MISO
-        // esp32s2
         Some(pins.gpio33.downgrade_output()), // CS/SDA
-        // esp32
-        //Some(pins.gpio13.downgrade_output()), // CS/SDA
         &spi::config::DriverConfig::new(),
         &spi::config::Config::new(),
     )
     .unwrap();
+
+    #[cfg(feature = "esp32")]
+    let scan_spi_device = SpiSingleDeviceDriver::new_single(
+        peripherals.spi2,
+        pins.gpio0.downgrade_output(), // SCK
+        pins.gpio4.downgrade_output(), // MOSI
+        Some(pins.gpio27.downgrade_input()), // MISO
+        Some(pins.gpio13.downgrade_output()), // CS/SDA
+        &spi::config::DriverConfig::new(),
+        &spi::config::Config::new(),
+    )
+    .unwrap();
+
     let scan_interface = SpiInterface::new(scan_spi_device);
     let mut scanner = Mfrc522::new(scan_interface).init().unwrap();
 
-    // esp32s2
+    #[cfg(feature = "esp32s2")]
     let led_pin = pins.gpio17;
-    // esp32
-    //let led_pin = pins.gpio5;
+    #[cfg(feature = "esp32")]
+    let led_pin = pins.gpio5;
     let channel = peripherals.rmt.channel0;
     let led_strip = LedPixelEsp32Rmt::<RGB8, LedPixelColorGrb24>::new(channel, led_pin).unwrap();
 
@@ -175,10 +177,19 @@ fn main() {
             &config::TimerConfig::new().frequency(100.into()),
         )
         .unwrap();
+        #[cfg(feature = "esp32s2")]
         let mut channel = LedcDriver::new(
             peripherals.ledc.channel0,
             &timer_driver,
             pins.gpio37.downgrade_output(),
+        )
+        .unwrap();
+
+        #[cfg(feature = "esp32")]
+        let mut channel = LedcDriver::new(
+            peripherals.ledc.channel0,
+            &timer_driver,
+            pins.gpio19.downgrade_output(),
         )
         .unwrap();
         for numerator in [1, 2, 3, 4, 5, 6].iter().cycle() {
