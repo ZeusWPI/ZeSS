@@ -5,9 +5,7 @@ use esp_idf_svc::{
     hal::{
         delay::FreeRtos,
         gpio::{InputPin, OutputPin},
-        ledc::{
-            config::{self}, LedcDriver, LedcTimerDriver,
-        },
+        ledc::{config, LedcDriver, LedcTimerDriver},
         prelude::Peripherals,
         spi::{self, SpiSingleDeviceDriver},
         units::Hertz,
@@ -17,16 +15,17 @@ use esp_idf_svc::{
     sys::esp_task_wdt_deinit,
 };
 use hex::ToHex;
-use smart_led_effects::{
-    strip::EffectIterator,
-    Srgb,
-};
+use smart_led_effects::{strip::EffectIterator, Srgb};
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 use ws2812_esp32_rmt_driver::{driver::color::LedPixelColorGrb24, LedPixelEsp32Rmt, RGB8};
 
 use mfrc522::{comm::blocking::spi::SpiInterface, Mfrc522, Uid};
 
-use lib::{ping_pong::PingPong, wifi};
+use lib::{
+    card_request::{hannes_is_the_best_in_sending_requests, CardError},
+    ping_pong::PingPong,
+    wifi,
+};
 
 #[toml_cfg::toml_config]
 pub struct Config {
@@ -52,11 +51,9 @@ struct StatusNotifier<'a> {
 impl StatusNotifier<'_> {
     fn idle(&mut self) {
         let pixels = self.idle_effect.next().unwrap();
-        let _ = self.led_strip.write_nocopy(
-            pixels
-                .iter()
-                .map(from_palette_rgb_to_rgb_rgb),
-        );
+        let _ = self
+            .led_strip
+            .write_nocopy(pixels.iter().map(from_palette_rgb_to_rgb_rgb));
     }
     fn processing(&mut self) {
         let pixels = std::iter::repeat(RGB8::new(0xff, 0xff, 0x00)).take(self.leds);
@@ -104,43 +101,6 @@ fn get_time() -> u64 {
         .duration_since(UNIX_EPOCH)
         .unwrap()
         .as_secs()
-}
-
-enum CardError {
-    ServerError,
-    ConnectionError,
-    NotFoundError,
-}
-
-impl From<EspIOError> for CardError {
-    fn from(value: EspIOError) -> Self {
-        CardError::ConnectionError
-    }
-}
-
-fn hannes_is_the_best_in_sending_requests(uid: Uid) -> Result<(), CardError> {
-    let mut client = Client::wrap(
-        EspHttpConnection::new(&Configuration {
-            use_global_ca_store: true,
-            crt_bundle_attach: Some(esp_idf_svc::sys::esp_crt_bundle_attach),
-            ..Default::default()
-        })
-            .unwrap(),
-    );
-    let mut request = client.request(
-        Method::Post,
-        "https://zess.zeus.gent/api/scans".as_ref(),
-        &[],
-    )?;
-    let _ = request
-        .write(format!("{};{}", hex::encode(uid.as_bytes()), CONFIG.auth_key).as_bytes());
-    let response = request.submit()?;
-    log::info!("response code: {}", response.status());
-    if response.status() == 200 {
-        Ok(())
-    } else {
-        Err(CardError::NotFoundError)
-    }
 }
 
 fn main() {
@@ -197,8 +157,7 @@ fn main() {
     // esp32
     //let led_pin = pins.gpio5;
     let channel = peripherals.rmt.channel0;
-    let led_strip =
-        LedPixelEsp32Rmt::<RGB8, LedPixelColorGrb24>::new(channel, led_pin).unwrap();
+    let led_strip = LedPixelEsp32Rmt::<RGB8, LedPixelColorGrb24>::new(channel, led_pin).unwrap();
 
     let mut status_notifier = StatusNotifier {
         led_strip,
@@ -213,13 +172,15 @@ fn main() {
     if false {
         let mut timer_driver = LedcTimerDriver::new(
             peripherals.ledc.timer0,
-            &config::TimerConfig::new().frequency(100.into())
-        ).unwrap();
+            &config::TimerConfig::new().frequency(100.into()),
+        )
+        .unwrap();
         let mut channel = LedcDriver::new(
             peripherals.ledc.channel0,
             &timer_driver,
-            pins.gpio37.downgrade_output()
-        ).unwrap();
+            pins.gpio37.downgrade_output(),
+        )
+        .unwrap();
         for numerator in [1, 2, 3, 4, 5, 6].iter().cycle() {
             println!("Duty {numerator}/6");
             if numerator == &1 {
@@ -246,7 +207,7 @@ fn main() {
                 last_uid = uid.as_bytes().encode_hex();
                 status_notifier.processing();
                 log::info!("Card found: {}", hex::encode(uid.as_bytes()));
-                match hannes_is_the_best_in_sending_requests(uid) {
+                match hannes_is_the_best_in_sending_requests(uid, CONFIG.auth_key) {
                     Ok(()) => status_notifier.good(),
                     Err(CardError::ConnectionError) => {
                         // allow retry on error
