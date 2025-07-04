@@ -193,12 +193,15 @@ fn main() {
                     ..Default::default()
                 }).unwrap());
 
-                let mut request = client.request(Method::Post, "https://zess.zeus.gent/api/scans".as_ref(), &[]).unwrap();
-                let _ = request.write(format!("{};{}", hex::encode(uid.as_bytes()), CONFIG.auth_key).as_bytes());
-                if let Ok(response) = request.submit() {
-                    log::info!("response code: {}", response.status());
-                    if response.status() == 200 {
-                        status_notifier.good();
+                if let Ok(mut request) = client.request(Method::Post, "https://zess.zeus.gent/api/scans".as_ref(), &[]) {
+                    let _ = request.write(format!("{};{}", hex::encode(uid.as_bytes()), CONFIG.auth_key).as_bytes());
+                    if let Ok(response) = request.submit() {
+                        log::info!("response code: {}", response.status());
+                        if response.status() == 200 {
+                            status_notifier.good();
+                        } else {
+                            status_notifier.bad();
+                        }
                     } else {
                         status_notifier.bad();
                     }
