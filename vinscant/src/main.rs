@@ -206,6 +206,8 @@ fn main() {
                         status_notifier.bad();
                     }
                 } else {
+                    // allow for retry on error
+                    last_uid = String::new();
                     status_notifier.bad();
                 }
             }
