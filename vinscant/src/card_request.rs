@@ -4,7 +4,7 @@ use esp_idf_svc::{
         client::{Configuration, EspHttpConnection},
         Method,
     },
-    io::EspIOError,
+    io::EspIOError, sys::EspError,
 };
 use mfrc522::Uid;
 
@@ -15,7 +15,13 @@ pub enum CardError {
 }
 
 impl From<EspIOError> for CardError {
-    fn from(value: EspIOError) -> Self {
+    fn from(_: EspIOError) -> Self {
+        CardError::ConnectionError
+    }
+}
+
+impl From<EspError> for CardError {
+    fn from(_: EspError) -> Self {
         CardError::ConnectionError
     }
 }
@@ -26,8 +32,7 @@ pub fn hannes_is_the_best_in_sending_requests(uid: Uid, auth_key: &str) -> Resul
             use_global_ca_store: true,
             crt_bundle_attach: Some(esp_idf_svc::sys::esp_crt_bundle_attach),
             ..Default::default()
-        })
-        .unwrap(),
+        })?,
     );
     let mut request = client.request(
         Method::Post,
@@ -37,9 +42,11 @@ pub fn hannes_is_the_best_in_sending_requests(uid: Uid, auth_key: &str) -> Resul
     let _ = request.write(format!("{};{}", hex::encode(uid.as_bytes()), auth_key).as_bytes());
     let response = request.submit()?;
     log::info!("response code: {}", response.status());
-    if response.status() == 200 {
+    if 200 <= response.status() && response.status() < 300 {
         Ok(())
-    } else {
+    } else if response.status() == 404 {
         Err(CardError::NotFoundError)
+    } else {
+        Err(CardError::ServerError)
     }
 }
