@@ -1,17 +1,14 @@
 use core::str;
-use embedded_svc::http::{client::Client, Method};
 use esp_idf_svc::{
     eventloop::EspSystemEventLoop,
     hal::{
         delay::FreeRtos,
         gpio::{InputPin, OutputPin},
-        ledc::{config, LedcDriver, LedcTimerDriver},
+        ledc::{config, LedcDriver, LedcTimer, LedcTimerDriver},
         prelude::Peripherals,
         spi::{self, SpiSingleDeviceDriver},
         units::Hertz,
     },
-    http::client::{Configuration, EspHttpConnection},
-    io::EspIOError,
     sys::esp_task_wdt_deinit,
 };
 use hex::ToHex;
@@ -19,7 +16,7 @@ use smart_led_effects::{strip::EffectIterator, Srgb};
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 use ws2812_esp32_rmt_driver::{driver::color::LedPixelColorGrb24, LedPixelEsp32Rmt, RGB8};
 
-use mfrc522::{comm::blocking::spi::SpiInterface, Mfrc522, Uid};
+use mfrc522::{comm::blocking::spi::SpiInterface, Mfrc522};
 
 use lib::{
     card_request::{hannes_is_the_best_in_sending_requests, CardError},
