@@ -100,9 +100,9 @@ pub async fn add(state: State<AppState>, body: String) -> ResponseResult<String>
             StatusCode::INTERNAL_SERVER_ERROR,
             "failed to get user for card",
         ))?
-        .ok_or((StatusCode::INTERNAL_SERVER_ERROR, "no card"))?
+        .ok_or((StatusCode::NOT_FOUND, "no card"))?
         .1
-        .ok_or((StatusCode::INTERNAL_SERVER_ERROR, "no user for card"))?;
+        .ok_or((StatusCode::NOT_FOUND, "no user for card"))?;
 
     Ok(user.name)
 }
