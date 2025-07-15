@@ -7,7 +7,6 @@ use esp_idf_svc::{
         ledc::{config, LedcDriver, LedcTimer, LedcTimerDriver},
         prelude::Peripherals,
         spi::{self, SpiSingleDeviceDriver},
-        units::Hertz,
     },
     sys::esp_task_wdt_deinit,
 };
@@ -127,9 +126,9 @@ fn main() {
     #[cfg(feature = "esp32s2")]
     let scan_spi_device = SpiSingleDeviceDriver::new_single(
         peripherals.spi2,
-        pins.gpio34.downgrade_output(), // SCK
-        pins.gpio35.downgrade_output(), // MOSI
-        Some(pins.gpio36.downgrade_input()), // MISO
+        pins.gpio34.downgrade_output(),       // SCK
+        pins.gpio35.downgrade_output(),       // MOSI
+        Some(pins.gpio36.downgrade_input()),  // MISO
         Some(pins.gpio33.downgrade_output()), // CS/SDA
         &spi::config::DriverConfig::new(),
         &spi::config::Config::new(),
@@ -139,9 +138,9 @@ fn main() {
     #[cfg(feature = "esp32")]
     let scan_spi_device = SpiSingleDeviceDriver::new_single(
         peripherals.spi2,
-        pins.gpio0.downgrade_output(), // SCK
-        pins.gpio4.downgrade_output(), // MOSI
-        Some(pins.gpio27.downgrade_input()), // MISO
+        pins.gpio0.downgrade_output(),        // SCK
+        pins.gpio4.downgrade_output(),        // MOSI
+        Some(pins.gpio27.downgrade_input()),  // MISO
         Some(pins.gpio13.downgrade_output()), // CS/SDA
         &spi::config::DriverConfig::new(),
         &spi::config::Config::new(),
@@ -191,12 +190,12 @@ fn main() {
         .unwrap();
         for numerator in (1..=6).cycle() {
             println!("Duty {numerator}/6");
-            if numerator == &1 {
-                channel.set_duty(0);
+            if numerator == 1 {
+                let _ = channel.set_duty(0);
             } else {
-                channel.set_duty(128);
+                let _ = channel.set_duty(128);
             }
-            timer_driver.set_frequency(Into::<Hertz>::into(numerator * 100));
+            let _ = timer_driver.set_frequency((numerator * 100).into());
             FreeRtos::delay_ms(2000);
         }
     }
