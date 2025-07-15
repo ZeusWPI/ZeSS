@@ -18,18 +18,19 @@ Connect RFID-RC522 Rfid reader on these pins:
 
 - If you're on windows and the board is not detected: install the ESP32-S2 toolchain from https://dl.espressif.com/dl/esp-idf/
   - Or just install the usb chip driver for your board (eg. for CP2102N: https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers?tab=downloads)
-- Install micropython
-  - Get binary for correct chip. Current: https://micropython.org/download/ESP32_GENERIC_S2/
-  - install using commands on that website
+  - Or switch to Linux (recommended option)
+- Install [esp-rs](https://docs.espressif.com/projects/rust/book/installation/riscv-and-xtensa.html)
+  ```sh
+cargo install espup
+espup install
+  ```
 - connect to serial
-- connect to wifi and setup webrepl (see https://docs.micropython.org/en/latest/esp8266/tutorial/repl.html)
-- get `webrepl_cli.py` from https://github.com/micropython/webrepl
-- copy all the files in `mpfiles` and `key.txt` (with the correct key set on vingo) to the microcontroller using `upload_file.sh`
+- `cargo run`
 - beep boop
 
 # Future additions
 
-- Beeps
-- Boops
-- Status light based on server response
-- Switch to esp-rs
+- [ ] Beeps
+- [ ] Boops
+- [x] Status light based on server response
+- [x] Switch to esp-rs
