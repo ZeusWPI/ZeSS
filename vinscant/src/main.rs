@@ -19,7 +19,7 @@ use ws2812_esp32_rmt_driver::{driver::color::LedPixelColorGrb24, LedPixelEsp32Rm
 use mfrc522::{comm::blocking::spi::SpiInterface, Mfrc522};
 
 use lib::{
-    card_request::{hannes_is_the_best_in_sending_requests, CardError},
+    card_request::{send_card_to_server, CardError},
     ping_pong::PingPong,
     wifi,
 };
@@ -215,7 +215,7 @@ fn main() {
                 last_uid = uid.as_bytes().encode_hex();
                 status_notifier.processing();
                 log::info!("Card found: {}", hex::encode(uid.as_bytes()));
-                match hannes_is_the_best_in_sending_requests(uid, CONFIG.auth_key) {
+                match send_card_to_server(uid, CONFIG.auth_key) {
                     Ok(()) => status_notifier.good(),
                     Err(CardError::ConnectionError) => {
                         // allow retry on error
