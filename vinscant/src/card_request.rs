@@ -1,4 +1,4 @@
-use embedded_svc::http::{client::Client, Status};
+use embedded_svc::http::client::Client;
 use esp_idf_svc::{
     http::client::{Configuration, EspHttpConnection},
     io::EspIOError,
@@ -8,7 +8,7 @@ use mfrc522::Uid;
 
 pub enum CardError {
     ServerError,
-    ConnectionError,
+    ConnectionError(EspError),
     NotFoundError,
 }
 
@@ -19,8 +19,8 @@ impl From<EspIOError> for CardError {
 }
 
 impl From<EspError> for CardError {
-    fn from(_: EspError) -> Self {
-        CardError::ConnectionError
+    fn from(e: EspError) -> Self {
+        CardError::ConnectionError(e)
     }
 }
 

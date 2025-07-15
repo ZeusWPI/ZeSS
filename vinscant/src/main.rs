@@ -216,7 +216,7 @@ fn main() {
                 log::info!("Card found: {}", hex::encode(uid.as_bytes()));
                 match send_card_to_server(uid, CONFIG.auth_key) {
                     Ok(()) => status_notifier.good(),
-                    Err(CardError::ConnectionError) => {
+                    Err(CardError::ConnectionError(_)) => {
                         // allow retry on error
                         last_uid = String::new();
                         status_notifier.bad();
