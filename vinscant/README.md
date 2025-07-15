@@ -6,14 +6,13 @@ ono
 - RFID-RC522
 
 Connect RFID-RC522 Rfid reader on these pins:
-TODO update pins
-```
-SDA/CS: 34
-MOSI: 35
-SCK: 34
-MISO: 36
-RST: 16
-```
+|        | esp32s2 | esp32 |
+|--------|---------|-------|
+| SDA/CS |      33 |    13 |
+| MOSI   |      35 |     4 |
+| SCK    |      34 |     0 |
+| MISO   |      36 |    27 |
+| RST    |       / |     / |
 
 # Setup:
 
