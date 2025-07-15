@@ -2,6 +2,7 @@ use anyhow::{bail, Result};
 use esp_idf_svc::{
     eventloop::EspSystemEventLoop,
     hal::peripheral,
+    sys::{esp_wifi_set_ps, wifi_ps_type_t_WIFI_PS_NONE},
     wifi::{AuthMethod, BlockingWifi, ClientConfiguration, Configuration, EspWifi},
 };
 use log::info;
@@ -12,6 +13,10 @@ pub fn wifi(
     modem: impl peripheral::Peripheral<P = esp_idf_svc::hal::modem::Modem> + 'static,
     sysloop: EspSystemEventLoop,
 ) -> Result<Box<EspWifi<'static>>> {
+    unsafe {
+        // disable modem sleep / power save
+        esp_wifi_set_ps(wifi_ps_type_t_WIFI_PS_NONE);
+    }
     let auth_method = if !pass.is_empty() {
         AuthMethod::WPA2Personal
     } else {
