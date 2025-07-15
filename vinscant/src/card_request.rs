@@ -4,7 +4,7 @@ use esp_idf_svc::{
         client::{Configuration, EspHttpConnection},
         Method,
     },
-    io::EspIOError, sys::EspError,
+    io::EspIOError, sys::{esp_crt_bundle_attach, EspError},
 };
 use mfrc522::Uid;
 
@@ -15,8 +15,8 @@ pub enum CardError {
 }
 
 impl From<EspIOError> for CardError {
-    fn from(_: EspIOError) -> Self {
-        CardError::ConnectionError
+    fn from(e: EspIOError) -> Self {
+        e.0.into()
     }
 }
 
@@ -30,7 +30,7 @@ pub fn send_card_to_server(uid: Uid, auth_key: &str) -> Result<(), CardError> {
     let mut client = Client::wrap(
         EspHttpConnection::new(&Configuration {
             use_global_ca_store: true,
-            crt_bundle_attach: Some(esp_idf_svc::sys::esp_crt_bundle_attach),
+            crt_bundle_attach: Some(esp_crt_bundle_attach),
             ..Default::default()
         })?,
     );
