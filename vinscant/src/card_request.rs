@@ -1,4 +1,4 @@
-use embedded_svc::http::client::Client;
+use embedded_svc::http::{client::Client, Status};
 use esp_idf_svc::{
     http::{
         client::{Configuration, EspHttpConnection},
@@ -26,7 +26,7 @@ impl From<EspError> for CardError {
     }
 }
 
-pub fn hannes_is_the_best_in_sending_requests(uid: Uid, auth_key: &str) -> Result<(), CardError> {
+pub fn send_card_to_server(uid: Uid, auth_key: &str) -> Result<(), CardError> {
     let mut client = Client::wrap(
         EspHttpConnection::new(&Configuration {
             use_global_ca_store: true,
@@ -34,19 +34,16 @@ pub fn hannes_is_the_best_in_sending_requests(uid: Uid, auth_key: &str) -> Resul
             ..Default::default()
         })?,
     );
-    let mut request = client.request(
-        Method::Post,
+    let mut request = client.post(
         "https://zess.zeus.gent/api/scans".as_ref(),
         &[],
     )?;
     let _ = request.write(format!("{};{}", hex::encode(uid.as_bytes()), auth_key).as_bytes());
     let response = request.submit()?;
     log::info!("response code: {}", response.status());
-    if 200 <= response.status() && response.status() < 300 {
-        Ok(())
-    } else if response.status() == 404 {
-        Err(CardError::NotFoundError)
-    } else {
-        Err(CardError::ServerError)
+    match response.status() {
+        200..300 => Ok(()), // 200 <= status < 300
+        404      => Err(CardError::NotFoundError),
+        _        => Err(CardError::ServerError),
     }
 }
