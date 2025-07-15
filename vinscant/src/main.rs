@@ -189,7 +189,7 @@ fn main() {
             pins.gpio19.downgrade_output(),
         )
         .unwrap();
-        for numerator in [1, 2, 3, 4, 5, 6].iter().cycle() {
+        for numerator in (1..=6).cycle() {
             println!("Duty {numerator}/6");
             if numerator == &1 {
                 channel.set_duty(0);
