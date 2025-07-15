@@ -20,10 +20,10 @@ Connect RFID-RC522 Rfid reader on these pins:
   - Or just install the usb chip driver for your board (eg. for CP2102N: https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers?tab=downloads)
   - Or switch to Linux (recommended option)
 - Install [esp-rs](https://docs.espressif.com/projects/rust/book/installation/riscv-and-xtensa.html)
-  ```sh
+```sh
 cargo install espup
 espup install
-  ```
+```
 - connect to serial
 - `cargo run`
 - beep boop
