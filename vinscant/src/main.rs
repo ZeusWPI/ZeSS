@@ -58,16 +58,22 @@ impl StatusNotifier<'_> {
         let pixels = std::iter::repeat(RGB8::new(0x00, 0xff, 0x00)).take(self.leds);
         let _ = self.led_strip.write_nocopy(pixels);
         self.buzzer.on(440.into());
-        self.sleep();
+        self.sleep(166);
+        self.buzzer.on(880.into());
+        self.sleep(166);
+        self.buzzer.on(1760.into());
+        self.sleep(166);
     }
     fn bad(&mut self) {
         let pixels = std::iter::repeat(RGB8::new(0xff, 0x00, 0x00)).take(self.leds);
         let _ = self.led_strip.write_nocopy(pixels);
         self.buzzer.on(220.into());
-        self.sleep();
+        self.sleep(250);
+        self.buzzer.on(110.into());
+        self.sleep(250);
     }
-    fn sleep(&self) {
-        std::thread::sleep(Duration::from_millis(500));
+    fn sleep(&self, miliseconds: u64) {
+        std::thread::sleep(Duration::from_millis(miliseconds));
     }
 }
 
