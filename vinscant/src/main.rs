@@ -138,6 +138,8 @@ fn main() {
 
     #[cfg(feature = "esp32")]
     let mut buzzer = Buzzer::new(peripherals.ledc.timer0, peripherals.ledc.channel0, pins.gpio19);
+    #[cfg(feature = "esp32s2")]
+    let mut buzzer = Buzzer::new(peripherals.ledc.timer0, peripherals.ledc.channel0, pins.gpio37);
 
     let mut status_notifier = StatusNotifier {
         led_strip,
