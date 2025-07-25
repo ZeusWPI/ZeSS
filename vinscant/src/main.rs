@@ -8,7 +8,7 @@ use esp_idf_svc::{
         prelude::Peripherals,
         spi::{self, SpiSingleDeviceDriver},
     },
-    sys::esp_task_wdt_deinit,
+    sys::{esp_task_wdt_deinit, periph_rcc_release_enter},
 };
 use hex::ToHex;
 use smart_led_effects::{strip::EffectIterator, Srgb};
@@ -18,9 +18,7 @@ use ws2812_esp32_rmt_driver::{driver::color::LedPixelColorGrb24, LedPixelEsp32Rm
 use mfrc522::{comm::blocking::spi::SpiInterface, Mfrc522};
 
 use lib::{
-    card_request::{send_card_to_server, CardError},
-    ping_pong::PingPong,
-    wifi,
+    buzzer::{self, Buzzer}, card_request::{send_card_to_server, CardError}, ping_pong::PingPong, wifi
 };
 
 #[toml_cfg::toml_config]
@@ -42,7 +40,7 @@ struct StatusNotifier<'a> {
     led_strip: LedPixelEsp32Rmt<'a, RGB8, LedPixelColorGrb24>,
     leds: usize,
     idle_effect: Box<dyn EffectIterator>,
-    //buzzer: Buzzer<'a, TIMER0>
+    buzzer: Buzzer<'a>
 }
 impl StatusNotifier<'_> {
     fn idle(&mut self) {
@@ -50,6 +48,7 @@ impl StatusNotifier<'_> {
         let _ = self
             .led_strip
             .write_nocopy(pixels.iter().map(from_palette_rgb_to_rgb_rgb));
+        self.buzzer.off();
     }
     fn processing(&mut self) {
         let pixels = std::iter::repeat(RGB8::new(0xff, 0xff, 0x00)).take(self.leds);
@@ -58,39 +57,19 @@ impl StatusNotifier<'_> {
     fn good(&mut self) {
         let pixels = std::iter::repeat(RGB8::new(0x00, 0xff, 0x00)).take(self.leds);
         let _ = self.led_strip.write_nocopy(pixels);
+        self.buzzer.on(440.into());
         self.sleep();
     }
     fn bad(&mut self) {
         let pixels = std::iter::repeat(RGB8::new(0xff, 0x00, 0x00)).take(self.leds);
         let _ = self.led_strip.write_nocopy(pixels);
+        self.buzzer.on(220.into());
         self.sleep();
     }
     fn sleep(&self) {
         std::thread::sleep(Duration::from_millis(500));
     }
 }
-
-/*struct Buzzer<'a, T: LedcTimer> {
-    timer_driver: LedcTimerDriver<'a, T>,
-    channel: LedcDriver<'a>
-}
-impl<T: LedcTimer> Buzzer<'_, T> {
-    fn new(peripherals: &Peripherals) -> Self {
-        let mut timer_driver = LedcTimerDriver::new(
-            peripherals.ledc.timer0,
-            &config::TimerConfig::new().frequency(0.into())
-        ).unwrap();
-        let mut channel = LedcDriver::new(
-            peripherals.ledc.channel0,
-            &timer_driver,
-            peripherals.pins.gpio19.downgrade_output()
-        ).unwrap();
-        Buzzer {
-            timer_driver,
-            channel
-        }
-    }
-}*/
 
 fn get_time() -> u64 {
     SystemTime::now()
@@ -157,48 +136,30 @@ fn main() {
     let channel = peripherals.rmt.channel0;
     let led_strip = LedPixelEsp32Rmt::<RGB8, LedPixelColorGrb24>::new(channel, led_pin).unwrap();
 
+    #[cfg(feature = "esp32")]
+    let mut buzzer = Buzzer::new(peripherals.ledc.timer0, peripherals.ledc.channel0, pins.gpio19);
+
     let mut status_notifier = StatusNotifier {
         led_strip,
         leds: 8,
         idle_effect: Box::new(PingPong::new(8, vec![Srgb::new(0xff, 0x7f, 0x00)])),
-        //buzzer: Buzzer::new(&peripherals)
+        buzzer
     };
 
     let mut last_uid = hex::encode([0_u8]);
     let mut last_time = 0;
     // buzzer testing {{{
-    if false {
-        let mut timer_driver = LedcTimerDriver::new(
-            peripherals.ledc.timer0,
-            &config::TimerConfig::new().frequency(100.into()),
-        )
-        .unwrap();
-        #[cfg(feature = "esp32s2")]
-        let mut channel = LedcDriver::new(
-            peripherals.ledc.channel0,
-            &timer_driver,
-            pins.gpio37.downgrade_output(),
-        )
-        .unwrap();
-
-        #[cfg(feature = "esp32")]
-        let mut channel = LedcDriver::new(
-            peripherals.ledc.channel0,
-            &timer_driver,
-            pins.gpio19.downgrade_output(),
-        )
-        .unwrap();
-        for numerator in (1..=6).cycle() {
-            println!("Duty {numerator}/6");
-            if numerator == 1 {
-                let _ = channel.set_duty(0);
-            } else {
-                let _ = channel.set_duty(128);
-            }
-            let _ = timer_driver.set_frequency((numerator * 100).into());
-            FreeRtos::delay_ms(2000);
-        }
-    }
+    // if false {
+    //     let mut buzzer = Buzzer::new(peripherals.ledc.timer0, peripherals.ledc.channel0, pins.gpio19);
+    //     loop {
+    //         buzzer.on(440.into());
+    //         status_notifier.sleep();
+    //         buzzer.on(880.into());
+    //         status_notifier.sleep();
+    //         buzzer.off();
+    //         status_notifier.sleep();
+    //     }
+    // }
     // buzzer testing }}}
 
     loop {
