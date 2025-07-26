@@ -8,7 +8,6 @@ use esp_idf_svc::{
     },
     sys::esp_task_wdt_deinit,
 };
-use hex::ToHex;
 use smart_led_effects::{strip::EffectIterator, Srgb};
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 use ws2812_esp32_rmt_driver::{driver::color::LedPixelColorGrb24, LedPixelEsp32Rmt, RGB8};
@@ -163,27 +162,27 @@ fn main() {
         buzzer,
     };
 
-    let mut last_uid = hex::encode([0_u8]);
+    let mut last_uid: &mut [u8] = &mut [];
     let mut last_time = 0;
 
     loop {
         if let Ok(answer) = scanner.reqa() {
             if let Ok(uid) = scanner.select(&answer) {
-                if hex::encode(uid.as_bytes()) == last_uid && get_time() - last_time <= 15 {
+                if uid.as_bytes() == last_uid && get_time() - last_time <= 15 {
                     log::error!("Card already seen!");
                     last_time = get_time();
                     status_notifier.bad();
                     continue;
                 }
                 last_time = get_time();
-                last_uid = uid.as_bytes().encode_hex();
+                last_uid.copy_from_slice(uid.as_bytes());
                 status_notifier.processing();
                 log::info!("Card found: {}", hex::encode(uid.as_bytes()));
                 match send_card_to_server(uid, CONFIG.auth_key) {
                     Ok(_) => status_notifier.good(),
                     Err(CardError::ConnectionError(_)) => {
                         // allow retry on error
-                        last_uid = String::new();
+                        last_uid = &mut [];
                         status_notifier.bad();
                     }
                     Err(_) => status_notifier.bad(),
