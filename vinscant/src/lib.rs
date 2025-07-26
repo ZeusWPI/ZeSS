@@ -1,4 +1,4 @@
+pub mod buzzer;
 pub mod card_request;
 pub mod ping_pong;
 pub mod wifi;
-pub mod buzzer;
