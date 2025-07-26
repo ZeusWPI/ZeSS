@@ -1,8 +1,7 @@
-
 use embedded_svc::http::client::Client;
 use esp_idf_svc::{
     http::client::{Configuration, EspHttpConnection},
-    io::{EspIOError, Read},
+    io::EspIOError,
     sys::{esp_crt_bundle_attach, EspError},
 };
 use mfrc522::Uid;

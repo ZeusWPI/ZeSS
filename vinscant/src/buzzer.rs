@@ -1,7 +1,7 @@
 use esp_idf_svc::hal::{
     gpio::OutputPin,
     ledc::{
-        config, LedcChannel, LedcDriver, LedcTimerDriver, CHANNEL0,
+        config, LedcDriver, LedcTimerDriver, CHANNEL0,
         TIMER0,
     },
     peripheral::Peripheral,
