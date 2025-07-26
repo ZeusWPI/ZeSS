@@ -2,13 +2,11 @@ use core::str;
 use esp_idf_svc::{
     eventloop::EspSystemEventLoop,
     hal::{
-        delay::FreeRtos,
         gpio::{InputPin, OutputPin},
-        ledc::{config, LedcDriver, LedcTimer, LedcTimerDriver},
         prelude::Peripherals,
         spi::{self, SpiSingleDeviceDriver},
     },
-    sys::{esp_task_wdt_deinit, periph_rcc_release_enter},
+    sys::esp_task_wdt_deinit,
 };
 use hex::ToHex;
 use smart_led_effects::{strip::EffectIterator, Srgb};
@@ -18,7 +16,10 @@ use ws2812_esp32_rmt_driver::{driver::color::LedPixelColorGrb24, LedPixelEsp32Rm
 use mfrc522::{comm::blocking::spi::SpiInterface, Mfrc522};
 
 use lib::{
-    buzzer::{self, Buzzer}, card_request::{send_card_to_server, CardError}, ping_pong::PingPong, wifi
+    buzzer::Buzzer,
+    card_request::{send_card_to_server, CardError},
+    ping_pong::PingPong,
+    wifi,
 };
 
 #[toml_cfg::toml_config]
@@ -40,7 +41,7 @@ struct StatusNotifier<'a> {
     led_strip: LedPixelEsp32Rmt<'a, RGB8, LedPixelColorGrb24>,
     leds: usize,
     idle_effect: Box<dyn EffectIterator>,
-    buzzer: Buzzer<'a>
+    buzzer: Buzzer<'a>,
 }
 impl StatusNotifier<'_> {
     fn idle(&mut self) {
@@ -136,39 +137,34 @@ fn main() {
     let mut scanner = Mfrc522::new(scan_interface).init().unwrap();
 
     #[cfg(feature = "esp32s2")]
-    let led_pin = pins.gpio17;
+    let led_pin = pins.gpio17.downgrade_output();
     #[cfg(feature = "esp32")]
-    let led_pin = pins.gpio5;
+    let led_pin = pins.gpio5.downgrade_output();
     let channel = peripherals.rmt.channel0;
     let led_strip = LedPixelEsp32Rmt::<RGB8, LedPixelColorGrb24>::new(channel, led_pin).unwrap();
 
-    #[cfg(feature = "esp32")]
-    let mut buzzer = Buzzer::new(peripherals.ledc.timer0, peripherals.ledc.channel0, pins.gpio19);
     #[cfg(feature = "esp32s2")]
-    let mut buzzer = Buzzer::new(peripherals.ledc.timer0, peripherals.ledc.channel0, pins.gpio37);
+    let buzzer = Buzzer::new(
+        peripherals.ledc.timer0,
+        peripherals.ledc.channel0,
+        pins.gpio37.downgrade_output(),
+    );
+    #[cfg(feature = "esp32")]
+    let mut buzzer = Buzzer::new(
+        peripherals.ledc.timer0,
+        peripherals.ledc.channel0,
+        pins.gpio19.downgrade_output(),
+    );
 
     let mut status_notifier = StatusNotifier {
         led_strip,
         leds: 8,
         idle_effect: Box::new(PingPong::new(8, vec![Srgb::new(0xff, 0x7f, 0x00)])),
-        buzzer
+        buzzer,
     };
 
     let mut last_uid = hex::encode([0_u8]);
     let mut last_time = 0;
-    // buzzer testing {{{
-    // if false {
-    //     let mut buzzer = Buzzer::new(peripherals.ledc.timer0, peripherals.ledc.channel0, pins.gpio19);
-    //     loop {
-    //         buzzer.on(440.into());
-    //         status_notifier.sleep();
-    //         buzzer.on(880.into());
-    //         status_notifier.sleep();
-    //         buzzer.off();
-    //         status_notifier.sleep();
-    //     }
-    // }
-    // buzzer testing }}}
 
     loop {
         if let Ok(answer) = scanner.reqa() {
@@ -184,7 +180,7 @@ fn main() {
                 status_notifier.processing();
                 log::info!("Card found: {}", hex::encode(uid.as_bytes()));
                 match send_card_to_server(uid, CONFIG.auth_key) {
-                    Ok(()) => status_notifier.good(),
+                    Ok(_) => status_notifier.good(),
                     Err(CardError::ConnectionError(_)) => {
                         // allow retry on error
                         last_uid = String::new();

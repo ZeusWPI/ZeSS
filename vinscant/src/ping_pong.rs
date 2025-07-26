@@ -69,7 +69,11 @@ impl EffectIterator for PingPong {
             .copied()
             .collect::<Vec<Srgb<u8>>>();
 
-        self.position = if self.reverse { self.position - 1 } else { self.position + 1 };
+        self.position = if self.reverse {
+            self.position - 1
+        } else {
+            self.position + 1
+        };
         if (self.reverse && self.position == 0) || (!self.reverse && self.position >= self.end) {
             self.reverse = !self.reverse;
             if self.randomize {
