@@ -24,7 +24,7 @@ impl From<EspError> for CardError {
     }
 }
 
-pub fn send_card_to_server(uid: Uid, auth_key: &str) -> Result<String, CardError> {
+pub fn send_card_to_server(uid: &Uid, auth_key: &str) -> Result<String, CardError> {
     let mut client = Client::wrap(EspHttpConnection::new(&Configuration {
         use_global_ca_store: true,
         crt_bundle_attach: Some(esp_crt_bundle_attach),
