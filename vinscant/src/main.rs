@@ -1,24 +1,19 @@
 use core::str;
 use esp_idf_svc::{
-    eventloop::EspSystemEventLoop,
-    hal::{
+    eventloop::EspSystemEventLoop, hal::{
         gpio::{InputPin, OutputPin},
         prelude::Peripherals,
         spi::{self, SpiSingleDeviceDriver},
-    },
-    sys::esp_task_wdt_deinit,
+    }, mqtt::client::{EspMqttClient, MqttClientConfiguration}, sys::esp_task_wdt_deinit
 };
-use smart_led_effects::{strip::EffectIterator, Srgb};
-use std::time::{Duration, SystemTime, UNIX_EPOCH};
+use smart_led_effects::Srgb;
+use std::time::{SystemTime, UNIX_EPOCH};
 use ws2812_esp32_rmt_driver::{driver::color::LedPixelColorGrb24, LedPixelEsp32Rmt, RGB8};
 
 use mfrc522::{comm::blocking::spi::SpiInterface, GenericUid, Mfrc522, Uid};
 
 use lib::{
-    buzzer::Buzzer,
-    card_request::{send_card_to_server, CardError},
-    ping_pong::PingPong,
-    wifi,
+    buzzer::Buzzer, card_request::{send_card_to_server, CardError}, ping_pong::PingPong, status_notifier::StatusNotifier, wifi
 };
 
 #[toml_cfg::toml_config]
@@ -29,52 +24,6 @@ pub struct Config {
     wifi_psk: &'static str,
     #[default("")]
     auth_key: &'static str,
-}
-
-fn from_palette_rgb_to_rgb_rgb(value: &palette::rgb::Rgb<palette::encoding::Srgb, u8>) -> RGB8 {
-    let [red, green, blue] = [value.red, value.green, value.blue];
-    RGB8::new(red / 8, green / 8, blue / 8)
-}
-
-struct StatusNotifier<'a> {
-    led_strip: LedPixelEsp32Rmt<'a, RGB8, LedPixelColorGrb24>,
-    leds: usize,
-    idle_effect: Box<dyn EffectIterator>,
-    buzzer: Buzzer<'a>,
-}
-impl StatusNotifier<'_> {
-    fn idle(&mut self) {
-        let pixels = self.idle_effect.next().unwrap();
-        let _ = self
-            .led_strip
-            .write_nocopy(pixels.iter().map(from_palette_rgb_to_rgb_rgb));
-        self.buzzer.off();
-    }
-    fn processing(&mut self) {
-        let pixels = std::iter::repeat(RGB8::new(0xff, 0xff, 0x00)).take(self.leds);
-        let _ = self.led_strip.write_nocopy(pixels);
-    }
-    fn good(&mut self) {
-        let pixels = std::iter::repeat(RGB8::new(0x00, 0xff, 0x00)).take(self.leds);
-        let _ = self.led_strip.write_nocopy(pixels);
-        self.buzzer.on(440.into());
-        self.sleep(166);
-        self.buzzer.on(880.into());
-        self.sleep(166);
-        self.buzzer.on(1760.into());
-        self.sleep(166);
-    }
-    fn bad(&mut self) {
-        let pixels = std::iter::repeat(RGB8::new(0xff, 0x00, 0x00)).take(self.leds);
-        let _ = self.led_strip.write_nocopy(pixels);
-        self.buzzer.on(220.into());
-        self.sleep(250);
-        self.buzzer.on(110.into());
-        self.sleep(250);
-    }
-    fn sleep(&self, miliseconds: u64) {
-        std::thread::sleep(Duration::from_millis(miliseconds));
-    }
 }
 
 fn get_time() -> u64 {
@@ -149,7 +98,7 @@ fn main() {
         pins.gpio37.downgrade_output(),
     );
     #[cfg(feature = "esp32")]
-    let mut buzzer = Buzzer::new(
+    let buzzer = Buzzer::new(
         peripherals.ledc.timer0,
         peripherals.ledc.channel0,
         pins.gpio19.downgrade_output(),
@@ -160,6 +109,10 @@ fn main() {
         leds: 8,
         idle_effect: Box::new(PingPong::new(8, vec![Srgb::new(0xff, 0x7f, 0x00)])),
         buzzer,
+        mqtt_client: EspMqttClient::new("mqtt://koin.kelder.local", &MqttClientConfiguration{
+            keep_alive_interval: Some(1),
+            ..Default::default()
+        }).unwrap().0
     };
 
     let mut last_uid: Uid = Uid::Single(GenericUid::new([0_u8; 4], 0));
@@ -181,7 +134,7 @@ fn main() {
                 match send_card_to_server(&last_uid, CONFIG.auth_key) {
                     Ok(username) => {
                         log::info!("Hello {username}!");
-                        status_notifier.good();
+                        status_notifier.good(username);
                     },
                     Err(CardError::ConnectionError(_)) => {
                         // allow retry on error

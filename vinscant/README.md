@@ -30,7 +30,7 @@ espup install
 
 # Future additions
 
-- [ ] Beeps
-- [ ] Boops
+- [x] Beeps
+- [x] Boops
 - [x] Status light based on server response
 - [x] Switch to esp-rs
