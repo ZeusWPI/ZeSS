@@ -36,9 +36,9 @@ pub fn send_card_to_server(uid: &Uid, auth_key: &str) -> Result<String, CardErro
     log::info!("response code: {}", response.status());
     match response.status() {
         200..300 => { // 200 <= status < 300
-            let mut username = [0_u8; 128];
-            let _ = response.read(&mut username)?;
-            Ok(String::from_utf8(username.into()).unwrap())
+            let mut username = [0_u8; 254];
+            let size = response.read(&mut username)?;
+            Ok(String::from_utf8(username[..size].into()).unwrap())
         }
         404 => Err(CardError::NotFoundError),
         _ => Err(CardError::ServerError),

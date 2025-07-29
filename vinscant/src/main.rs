@@ -4,10 +4,11 @@ use esp_idf_svc::{
         gpio::{InputPin, OutputPin},
         prelude::Peripherals,
         spi::{self, SpiSingleDeviceDriver},
-    }, mqtt::client::{EspMqttClient, MqttClientConfiguration}, sys::esp_task_wdt_deinit
+    }, mqtt::client::{EspMqttClient, MqttClientConfiguration, QoS}, sys::esp_task_wdt_deinit
 };
+use log::LevelFilter;
 use smart_led_effects::Srgb;
-use std::time::{SystemTime, UNIX_EPOCH};
+use std::time::{Duration, SystemTime, UNIX_EPOCH};
 use ws2812_esp32_rmt_driver::{driver::color::LedPixelColorGrb24, LedPixelEsp32Rmt, RGB8};
 
 use mfrc522::{comm::blocking::spi::SpiInterface, GenericUid, Mfrc522, Uid};
@@ -109,8 +110,8 @@ fn main() {
         leds: 8,
         idle_effect: Box::new(PingPong::new(8, vec![Srgb::new(0xff, 0x7f, 0x00)])),
         buzzer,
-        mqtt_client: EspMqttClient::new("mqtt://koin.kelder.local", &MqttClientConfiguration{
-            keep_alive_interval: Some(1),
+        mqtt_client: EspMqttClient::new("mqtt://192.168.0.12:1883", &MqttClientConfiguration{
+            keep_alive_interval: Some(Duration::from_secs(1)),
             ..Default::default()
         }).unwrap().0
     };
