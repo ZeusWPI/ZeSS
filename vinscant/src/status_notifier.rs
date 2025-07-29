@@ -1,7 +1,6 @@
-use embedded_svc::mqtt::client::Publish;
 use esp_idf_svc::mqtt::client::{EspMqttClient, QoS};
 use smart_led_effects::strip::EffectIterator;
-use std::{fmt::format, time::Duration};
+use std::time::Duration;
 use ws2812_esp32_rmt_driver::{driver::color::LedPixelColorGrb24, LedPixelEsp32Rmt, RGB8};
 
 use crate::buzzer::Buzzer;
@@ -33,7 +32,8 @@ impl StatusNotifier<'_> {
     pub fn good(&mut self, username: String) {
         let pixels = std::iter::repeat(RGB8::new(0x00, 0xff, 0x00)).take(self.leds);
         let _ = self.led_strip.write_nocopy(pixels);
-        self.mqtt_client.publish("kelderapi/leddy", QoS::AtMostOnce, false, format!("{\"username\":\"{username}\"}").into());
+        let payload = format!("{{\"username\":\"{username}\"}}");
+        let _ = self.mqtt_client.publish("kelderapi/leddy", QoS::AtMostOnce, false, payload.as_bytes());
         self.buzzer.on(440.into());
         self.sleep(166);
         self.buzzer.on(880.into());
