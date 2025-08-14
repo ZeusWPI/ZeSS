@@ -1,6 +1,6 @@
 [build]
-#target = "xtensa-esp32s2-espidf"
-target = "xtensa-esp32-espidf"
+target = "xtensa-esp32s2-espidf"
+#target = "xtensa-esp32-espidf"
 
 [target.xtensa-esp32s2-espidf]
 linker = "ldproxy"
@@ -16,8 +16,8 @@ rustflags = [ "--cfg",  "espidf_time64"] # Extending time_t for ESP IDF 5: https
 build-std = ["std", "panic_abort"]
 
 [env]
-#MCU="esp32s2"
-MCU="esp32"
+MCU="esp32s2"
+#MCU="esp32"
 # Note: this variable is not used by the pio builder (`cargo build --features pio`)
 ESP_IDF_VERSION = "v5.2.2"
 
