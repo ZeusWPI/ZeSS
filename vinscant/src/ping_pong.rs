@@ -1,5 +1,5 @@
 use palette::{FromColor, Hsv, Srgb};
-use rand::Rng;
+use rand::{rng, Rng};
 use smart_led_effects::strip::EffectIterator;
 
 #[derive(Debug)]
@@ -47,9 +47,9 @@ impl PingPong {
     }
 
     fn randomize_colour_ping_pong(&mut self) {
-        let mut rng = rand::thread_rng();
+        let mut rng = rng();
         let colour: Srgb<u8> =
-            Srgb::from_color(Hsv::new(rng.gen_range(0.0..360.0), 1.0, 1.0)).into_format();
+            Srgb::from_color(Hsv::new(rng.random_range(0.0..360.0), 1.0, 1.0)).into_format();
         self.fill_ping_pong(colour);
         self.randomize = true;
     }

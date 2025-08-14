@@ -4,9 +4,8 @@ use esp_idf_svc::{
         gpio::{InputPin, OutputPin},
         prelude::Peripherals,
         spi::{self, SpiSingleDeviceDriver},
-    }, mqtt::client::{EspMqttClient, MqttClientConfiguration, QoS}, sys::esp_task_wdt_deinit
+    }, mqtt::client::{EspMqttClient, MqttClientConfiguration}, sys::esp_task_wdt_deinit
 };
-use log::LevelFilter;
 use smart_led_effects::Srgb;
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 use ws2812_esp32_rmt_driver::{driver::color::LedPixelColorGrb24, LedPixelEsp32Rmt, RGB8};
@@ -84,6 +83,7 @@ fn main() {
 
     let scan_interface = SpiInterface::new(scan_spi_device);
     let mut scanner = Mfrc522::new(scan_interface).init().unwrap();
+    let _ = scanner.set_antenna_gain(mfrc522::RxGain::DB48);
 
     #[cfg(feature = "esp32s2")]
     let led_pin = pins.gpio17.downgrade_output();
