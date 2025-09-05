@@ -1,14 +1,10 @@
-mod entities;
-mod middleware;
-mod routes;
-
 use std::{
     env,
     sync::{Arc, LazyLock},
 };
 
 use chrono::Local;
-use routes::{auth, cards, days, info, leaderboard, scans, seasons, settings};
+use routes::{auth, cards, days, leaderboard, scans, seasons, settings};
 
 use axum::{
     middleware::from_fn,
@@ -26,9 +22,16 @@ use tower_sessions::{cookie::SameSite, MemoryStore, SessionManagerLayer};
 
 use migration::{Migrator, MigratorTrait};
 
+use crate::handlers::version::VersionHandler;
+
 static DB_URL: LazyLock<String> = LazyLock::new(|| {
     env::var("POSTGRES_CONNECTION_STRING").expect("POSTGRES_CONNECTION_STRING not present")
 });
+
+mod entities;
+mod handlers;
+mod middleware;
+mod routes;
 
 #[derive(Clone, Debug)]
 struct AppState {
@@ -104,7 +107,7 @@ fn open_routes() -> Router<AppState> {
         .route("/login", post(auth::login))
         .route("/auth/callback", get(auth::callback))
         .route("/scans", post(scans::add))
-        .route("/version", get(info::version))
+        .route("/version", get(VersionHandler::version))
         .route("/recent_scans", get(scans::recent))
         .route("/seasons", get(seasons::get_until_now))
 }
