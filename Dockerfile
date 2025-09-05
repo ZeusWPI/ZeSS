@@ -1,4 +1,4 @@
-FROM docker.io/rust:1.81-alpine3.20 AS base-rust
+FROM docker.io/rust:1.88-alpine3.20 AS base-rust
 RUN apk add upx musl-dev
 RUN cargo install cargo-chef@0.1.72
 WORKDIR /build
