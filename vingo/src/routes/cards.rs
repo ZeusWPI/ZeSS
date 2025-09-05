@@ -1,8 +1,9 @@
 use axum::{
-    extract::{Path, State},
     Json,
+    extract::{Path, State},
 };
 use chrono::{Local, TimeDelta};
+use database::{models::card::Card as RCard, repos::card::CardRepo};
 use reqwest::StatusCode;
 use sea_orm::*;
 use serde::{Deserialize, Serialize};
@@ -13,20 +14,16 @@ use super::util::{
     session::get_user,
 };
 use crate::{
-    entities::{prelude::*, *},
     AppState,
+    entities::{prelude::*, *},
 };
 
 pub async fn get_for_current_user(
     session: Session,
     state: State<AppState>,
-) -> ResponseResult<Json<Vec<card::Model>>> {
+) -> ResponseResult<Json<Vec<RCard>>> {
     let user = get_user(&session).await?;
-    let cards = Card::find()
-        .filter(card::Column::UserId.eq(user.id))
-        .all(&state.db)
-        .await
-        .or_log((StatusCode::INTERNAL_SERVER_ERROR, "failed to get cards"))?;
+    let cards = state.database.cards().for_user(user.id).await.unwrap();
 
     Ok(Json(cards))
 }

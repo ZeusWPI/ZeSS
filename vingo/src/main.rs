@@ -7,18 +7,19 @@ use chrono::Local;
 use routes::{auth, cards, days, leaderboard, scans, seasons, settings};
 
 use axum::{
+    Router,
     middleware::from_fn,
     routing::{delete, get, patch, post},
-    Router,
 };
-use sea_orm::{prelude::DateTimeWithTimeZone, Database, DatabaseConnection};
+use database::Database as AppDatabase;
+use sea_orm::{Database, DatabaseConnection, prelude::DateTimeWithTimeZone};
 use tokio::sync::Mutex;
 use tower_http::cors::CorsLayer;
 use tower_http::{
     services::{ServeDir, ServeFile},
     trace::TraceLayer,
 };
-use tower_sessions::{cookie::SameSite, MemoryStore, SessionManagerLayer};
+use tower_sessions::{MemoryStore, SessionManagerLayer, cookie::SameSite};
 
 use migration::{Migrator, MigratorTrait};
 
@@ -36,6 +37,7 @@ mod routes;
 #[derive(Clone, Debug)]
 struct AppState {
     db: DatabaseConnection,
+    database: AppDatabase,
     registering: Arc<Mutex<RegisterState>>,
 }
 
@@ -62,6 +64,8 @@ async fn main() {
     let db = Database::connect(DB_URL.to_string()).await.unwrap();
     Migrator::up(&db, None).await.unwrap();
 
+    let database = AppDatabase::create_connect_migrate(&DB_URL).await.unwrap();
+
     let registering_state = RegisterState {
         user: -1,
         end: Local::now().fixed_offset(),
@@ -69,6 +73,7 @@ async fn main() {
     };
     let state = AppState {
         db,
+        database,
         registering: Arc::new(Mutex::new(registering_state)),
     };
 
