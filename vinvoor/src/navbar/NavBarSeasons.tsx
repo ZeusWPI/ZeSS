@@ -77,7 +77,7 @@ export function NavBarSeasons() {
             open={Boolean(anchorElUser)}
             onClose={handleCloseUserMenu}
           >
-            {seasons.map(season => (
+            {seasons.sort((a, b) => a.start.getTime() - b.start.getTime()).map(season => (
               <MenuItem
                 key={season.id}
                 onClick={() => handleClickSeason(season.id)}
