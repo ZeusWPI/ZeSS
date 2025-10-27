@@ -4,9 +4,13 @@ import { useVersion } from "../hooks/useVersion";
 import FerrisIcon from "/ferris.svg";
 import ReactIcon from "/react.svg";
 import ZeusIcon from "/zeus.svg";
+import useWindowDimensions from "../hooks/useWindowSize";
 
 export function Footer() {
   const { data: version } = useVersion();
+  const { width } = useWindowDimensions()
+
+  const small = width < 450
 
   return (
     <Box
@@ -16,39 +20,41 @@ export function Footer() {
         alignItems: "center",
       }}
     >
-      <TypographyG sx={{ display: "flex" }}>
-        <Tooltip title="Backend version" arrow>
-          <Link href="https://github.com/ZeusWPI/ZeSS/tree/main/vingo" style={{ color: "inherit" }} underline="hover">
-            <Icon sx={{
-              pr: "4px",
-              pl: "5px",
-              alignItems: "center",
-              overflow: "visible",
-            }}
-            >
-              <img src={FerrisIcon} />
-            </Icon>
-            v
-            {version?.version ?? ""}
-          </Link>
-        </Tooltip>
-        <Tooltip title="Frontend version" arrow>
-          <Link href="https://github.com/ZeusWPI/ZeSS/tree/main/vinvoor" style={{ color: "inherit" }} underline="hover">
-            <Icon sx={{
-              pr: "4px",
-              pl: "5px",
-              alignItems: "center",
-              overflow: "visible",
-            }}
-            >
-              <img src={ReactIcon} />
-            </Icon>
-            v
-            {/* @ts-expect-error vite variable */}
-            {__APP_VERSION__}
-          </Link>
-        </Tooltip>
-      </TypographyG>
+      {!small && (
+        <TypographyG sx={{ display: "flex" }}>
+          <Tooltip title="Backend version" arrow>
+            <Link href="https://github.com/ZeusWPI/ZeSS/tree/main/vingo" style={{ color: "inherit" }} underline="hover">
+              <Icon sx={{
+                pr: "4px",
+                pl: "5px",
+                alignItems: "center",
+                overflow: "visible",
+              }}
+              >
+                <img src={FerrisIcon} />
+              </Icon>
+              v
+              {version?.version ?? ""}
+            </Link>
+          </Tooltip>
+          <Tooltip title="Frontend version" arrow>
+            <Link href="https://github.com/ZeusWPI/ZeSS/tree/main/vinvoor" style={{ color: "inherit" }} underline="hover">
+              <Icon sx={{
+                pr: "4px",
+                pl: "5px",
+                alignItems: "center",
+                overflow: "visible",
+              }}
+              >
+                <img src={ReactIcon} />
+              </Icon>
+              v
+              {/* @ts-expect-error vite variable */}
+              {__APP_VERSION__}
+            </Link>
+          </Tooltip>
+        </TypographyG>
+      )}
       <TypographyG
         sx={{
           height: "100%",
@@ -76,9 +82,11 @@ export function Footer() {
           </Icon>
         </Link>
       </TypographyG>
-      <Link href="https://github.com/ZeusWPI/ZeSS" textAlign="end">
-        {`© ${(new Date()).getFullYear()}`}
-      </Link>
+      {!small && (
+        <Link href="https://github.com/ZeusWPI/ZeSS" textAlign="end">
+          {`© ${(new Date()).getFullYear()}`}
+        </Link>
+      )}
     </Box>
   );
 }
