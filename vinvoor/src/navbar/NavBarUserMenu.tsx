@@ -45,7 +45,7 @@ export const NavBarUserMenu: FC<NavBarUserMenuProps> = ({
 
   return (
     <>
-      {user
+      {user?.name
         ? (
           <>
             <Button
