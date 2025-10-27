@@ -3,7 +3,7 @@ RUN apk add upx musl-dev
 RUN cargo install cargo-chef@0.1.72
 WORKDIR /build
 
-FROM docker.io/node:20.15.1-alpine3.20 AS base-node
+FROM docker.io/node:24.8.0-alpine3.21 AS base-node
 RUN npm install -g pnpm
 WORKDIR /build
 

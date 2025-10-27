@@ -1,16 +1,15 @@
 #!/bin/sh
-set -euo pipefail
 
 if git diff --staged --name-only | grep -q "^vinvoor"; then
-    echo "Frontend linting"
-    if ! (cd vinvoor && pnpm --silent run precommit:lint); then
-        echo "Frontend linting failed. Please fix the errors before committing."
-        exit 1
-    fi
+  echo "Frontend linting"
+  if ! (cd vinvoor && pnpm --silent run precommit:lint); then
+    echo "Frontend linting failed. Please fix the errors before committing."
+    exit 1
+  fi
 
-    echo "Frontend typecheck"
-    if ! (cd vinvoor && pnpm --silent run precommit:typecheck); then
-        echo "Frontend type checking failed. Please fix the errors before committing."
-        exit 1
-    fi
+  echo "Frontend typecheck"
+  if ! (cd vinvoor && pnpm --silent run precommit:typecheck); then
+    echo "Frontend type checking failed. Please fix the errors before committing."
+    exit 1
+  fi
 fi
