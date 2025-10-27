@@ -1,5 +1,3 @@
-import type { FC, MouseEvent } from "react";
-import type { PageIcon } from "./NavBar";
 import {
   Button,
   Divider,
@@ -9,13 +7,15 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { Cow, ExitRun, ShieldAccountOutline } from "mdi-material-ui";
+import { Cow, ExitRun } from "mdi-material-ui";
+import type { FC, MouseEvent } from "react";
 import { useState } from "react";
 import { Login } from "../auth/Login";
 import { Logout } from "../auth/Logout";
 import { BrowserView } from "../components/BrowserView";
 import { UnstyledLink } from "../components/UnstyledLink";
 import { useUser } from "../hooks/useUser";
+import type { PageIcon } from "./NavBar";
 
 interface NavBarUserMenuProps {
   pageIcons: readonly PageIcon[];
@@ -47,107 +47,107 @@ export const NavBarUserMenu: FC<NavBarUserMenuProps> = ({
     <>
       {user
         ? (
-            <>
-              <Button
-                onClick={handleOpenUserMenu}
-                sx={{
-                  textTransform: "none",
-                  color: "secondary.contrastText",
-                  borderTop: "2px solid transparent",
-                  borderBottom: "2px solid transparent",
-                  ...(selectedPage === "user" && {
-                    borderBottom: theme =>
-                      `2px solid ${theme.palette.secondary.main}`,
-                  }),
-                }}
-              >
-                <ShieldAccountOutline sx={{ mr: "3px" }} />
-                <BrowserView>
-                  <Typography variant="h6">{user.name}</Typography>
-                </BrowserView>
-              </Button>
-              <Menu
-                sx={{ mt: "45px" }}
-                anchorEl={anchorElUser}
-                anchorOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                open={Boolean(anchorElUser)}
-                onClose={handleCloseUserMenu}
-              >
-                {pageIcons.map(({ page, icon }) => (
-                  <UnstyledLink key={page} to={page.toLowerCase()}>
-                    <MenuItem
-                      onClick={() => {
-                        handleCloseUserMenu();
-                        if (isBrowserView)
-                          handleSelectedPage("user");
-                      }}
-                    >
-                      {icon}
-                      <Typography>{page}</Typography>
-                    </MenuItem>
-                  </UnstyledLink>
-                ))}
-                <Divider />
-                {user.admin && (
-                  <UnstyledLink to="admin">
-                    <MenuItem
-                      onClick={() => {
-                        handleCloseUserMenu();
-                        if (isBrowserView)
-                          handleSelectedPage("user");
-                      }}
-                      sx={{
-                        "paddingX": "0",
-                        "justifyContent": "center",
-                        "backgroundColor": "error.dark",
-                        "&:hover": {
-                          backgroundColor: "error.light",
-                        },
-                      }}
-                    >
-                      <Cow sx={{ mr: ".3rem", ml: "-12px" }} />
-                      <Typography>Admin</Typography>
-                    </MenuItem>
-                  </UnstyledLink>
-                )}
-                <MenuItem
-                  onClick={handleCloseUserMenu}
-                  sx={{
-                    paddingX: "0",
-                    justifyContent: "center",
-                  }}
-                >
-                  <Logout
+          <>
+            <Button
+              onClick={handleOpenUserMenu}
+              sx={{
+                textTransform: "none",
+                color: "secondary.contrastText",
+                borderTop: "2px solid transparent",
+                borderBottom: "2px solid transparent",
+                ...(selectedPage === "user" && {
+                  borderBottom: theme =>
+                    `2px solid ${theme.palette.secondary.main}`,
+                }),
+              }}
+            >
+              <img src={`https://zpi.zeus.gent/image/${user.id}?size=64&placeholder=true`} alt={user.name[0]} style={{ aspectRatio: "1 / 1", height: "2rem", width: "2rem", borderRadius: "0.5rem", marginRight: "3px" }} />
+              <BrowserView>
+                <Typography variant="h6">{user.name}</Typography>
+              </BrowserView>
+            </Button>
+            <Menu
+              sx={{ mt: "45px" }}
+              anchorEl={anchorElUser}
+              anchorOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              open={Boolean(anchorElUser)}
+              onClose={handleCloseUserMenu}
+            >
+              {pageIcons.map(({ page, icon }) => (
+                <UnstyledLink key={page} to={page.toLowerCase()}>
+                  <MenuItem
+                    onClick={() => {
+                      handleCloseUserMenu();
+                      if (isBrowserView)
+                        handleSelectedPage("user");
+                    }}
+                  >
+                    {icon}
+                    <Typography>{page}</Typography>
+                  </MenuItem>
+                </UnstyledLink>
+              ))}
+              <Divider />
+              {user.admin && (
+                <UnstyledLink to="admin">
+                  <MenuItem
+                    onClick={() => {
+                      handleCloseUserMenu();
+                      if (isBrowserView)
+                        handleSelectedPage("user");
+                    }}
                     sx={{
-                      "color": "inherit",
-                      "textTransform": "none",
-                      "width": "100%",
+                      "paddingX": "0",
+                      "justifyContent": "center",
+                      "backgroundColor": "error.dark",
                       "&:hover": {
-                        backgroundColor: "transparent",
+                        backgroundColor: "error.light",
                       },
                     }}
                   >
-                    <ExitRun sx={{ mr: ".3rem", ml: "-9px" }} />
-                    {/* Hacky way to center it with the other icons */}
-                    <Typography>Logout</Typography>
-                  </Logout>
-                </MenuItem>
-              </Menu>
-            </>
-          )
+                    <Cow sx={{ mr: ".3rem", ml: "-12px" }} />
+                    <Typography>Admin</Typography>
+                  </MenuItem>
+                </UnstyledLink>
+              )}
+              <MenuItem
+                onClick={handleCloseUserMenu}
+                sx={{
+                  paddingX: "0",
+                  justifyContent: "center",
+                }}
+              >
+                <Logout
+                  sx={{
+                    "color": "inherit",
+                    "textTransform": "none",
+                    "width": "100%",
+                    "&:hover": {
+                      backgroundColor: "transparent",
+                    },
+                  }}
+                >
+                  <ExitRun sx={{ mr: ".3rem", ml: "-9px" }} />
+                  {/* Hacky way to center it with the other icons */}
+                  <Typography>Logout</Typography>
+                </Logout>
+              </MenuItem>
+            </Menu>
+          </>
+        )
         : (
-            <Login sx={{ color: "inherit", size: "large" }}>
-              <Typography>Login</Typography>
-            </Login>
-          )}
+          <Login sx={{ color: "inherit", size: "large" }}>
+            <Typography>Login</Typography>
+          </Login>
+        )}
     </>
   );
 };
