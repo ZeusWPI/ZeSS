@@ -22,6 +22,7 @@ const baseTheme: ThemeOptions = {
     color5: { fill: "#ba5f02", stroke: "#934b01" },
     colorActive: { fill: "#ff7f00", stroke: "#ba5f02" },
     colorInActive: { fill: "#eeeeee", stroke: "#fcce9f" },
+    colorUnreachable: { fill: "#b0b0b0", stroke: "" },
   },
   days: {
     color0: "#fcbb79",
@@ -109,6 +110,7 @@ export const kakTheme = createTheme({
     color5: { fill: "#5c300f", stroke: "#381b06" },
     colorActive: { fill: "#8B4513", stroke: "#5c300f" },
     colorInActive: { fill: "#EADDCA", stroke: "#DAA06D" },
+    colorUnreachable: { fill: "#b0b0b0", stroke: "" },
   },
   days: {
     color0: "#d68c3c",
@@ -203,6 +205,7 @@ export const retroTheme = createTheme({
     color5: { fill: "#244855", stroke: "#193540" },
     colorActive: { fill: "#50686d", stroke: "#244855" },
     colorInActive: { fill: "#e9ded1", stroke: "#ccc1b1" },
+    colorUnreachable: { fill: "#b0b0b0", stroke: "" },
   },
   days: {
     color0: "#a3bfd0",
@@ -253,6 +256,7 @@ declare module "@mui/material/styles" {
       color5: HeatmapRectStyle;
       colorActive: HeatmapRectStyle;
       colorInActive: HeatmapRectStyle;
+      colorUnreachable: HeatmapRectStyle;
     };
     days: {
       color0: string;
@@ -277,6 +281,7 @@ declare module "@mui/material/styles" {
       color5: HeatmapRectStyle;
       colorInActive: HeatmapRectStyle;
       colorActive: HeatmapRectStyle;
+      colorUnreachable: HeatmapRectStyle;
     };
     days: {
       color0: string;
