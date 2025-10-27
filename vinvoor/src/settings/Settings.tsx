@@ -42,8 +42,8 @@ export function Settings() {
   const confirm = useConfirm();
 
   useEffect(() => {
-    setSettings({ ...settingsTruth, season: settingsTruth?.season });
-  }, [settingsTruth?.season]);
+    if (settingsTruth) setSettings(settingsTruth); // eslint-disable-line react-hooks/set-state-in-effect
+  }, [settingsTruth]);
 
   if (!settingsTruth || !seasons)
     return null; // Can never happen

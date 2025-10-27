@@ -34,41 +34,41 @@ export function DaysTable() {
 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
-  const filterDays = (): readonly Day[] => {
-    let filteredDays = [...days ?? []];
-    if (dateFilter[0] !== undefined && dateFilter[1] !== undefined) {
-      filteredDays = filteredDays.filter(
-        day =>
-          day.date.getTime() >= dateFilter[0]!.getTime()
-          && day.date.getTime() <= dateFilter[1]!.getTime(),
-      );
-    }
-    if (seasonsFilter) {
-      const season = seasons?.find(season => season.id === seasonsFilter);
-      if (season) {
+
+  useEffect(() => {
+    const filterDays = (): readonly Day[] => {
+      let filteredDays = [...days ?? []];
+      if (dateFilter[0] !== undefined && dateFilter[1] !== undefined) {
         filteredDays = filteredDays.filter(
-          day => day.date >= season.start && day.date <= season.end,
+          day =>
+            day.date.getTime() >= dateFilter[0]!.getTime()
+            && day.date.getTime() <= dateFilter[1]!.getTime(),
         );
       }
-    }
-    if (weekdaysFilter) {
-      filteredDays = filteredDays.filter(
-        day => day.date.getDay() !== 0 && day.date.getDay() !== 6,
-      );
-    }
-    if (weekendsFilter) {
-      filteredDays = filteredDays.filter(
-        day => day.date.getDay() === 0 || day.date.getDay() === 6,
-      );
-    }
+      if (seasonsFilter) {
+        const season = seasons?.find(season => season.id === seasonsFilter);
+        if (season) {
+          filteredDays = filteredDays.filter(
+            day => day.date >= season.start && day.date <= season.end,
+          );
+        }
+      }
+      if (weekdaysFilter) {
+        filteredDays = filteredDays.filter(
+          day => day.date.getDay() !== 0 && day.date.getDay() !== 6,
+        );
+      }
+      if (weekendsFilter) {
+        filteredDays = filteredDays.filter(
+          day => day.date.getDay() === 0 || day.date.getDay() === 6,
+        );
+      }
 
-    return filteredDays;
-  };
+      return filteredDays;
+    };
 
-  useEffect(
-    () => setRows(filterDays()),
-    [days, dateFilter, seasonsFilter, weekdaysFilter, weekendsFilter],
-  );
+    setRows(filterDays())
+  }, [days, dateFilter, seasonsFilter, weekdaysFilter, weekendsFilter, seasons]);
 
   if (!days)
     return null; // Can never happen

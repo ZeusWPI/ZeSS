@@ -19,7 +19,7 @@ export const Admin: FC = () => {
           sx={{ display: "flex", justifyContent: "center" }}
         >
           <Typography variant="h4">
-            This page doesn't ask for confirmation when modifying data !
+            {`This page doesn't ask for confirmation when modifying data !`}
           </Typography>
         </Alert>
       </Grid>

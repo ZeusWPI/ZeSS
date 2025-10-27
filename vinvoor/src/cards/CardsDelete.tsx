@@ -18,15 +18,7 @@ export const CardsDelete: FC<CardDeleteProps> = ({ selected }) => {
   const title = `Delete card${numSelected > 1 ? "s" : ""}`;
   const content = (
     <Typography component="span">
-      Are you sure you want to delete
-      {" "}
-      {numSelected}
-      {" "}
-      card
-      {numSelected > 1 ? "s" : ""}
-      ? Unfortunately, this feature isn't available
-      yet. Let's convince Hannes to add this feature by signing this
-      {" "}
+      {`Are you sure you want to delete ${numSelected} card${numSelected > 1 ? 's' : ""}? Unfortunately, this feature isn't available yet. Let's convince Hannes to add this feature by signing this `}
       <Link href="https://chng.it/nQ6GSXVRMJ">petition!</Link>
     </Typography>
   );

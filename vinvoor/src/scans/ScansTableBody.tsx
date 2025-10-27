@@ -1,6 +1,5 @@
-import type { ScanCard } from "../types/scans";
 import { TableBody, TableCell, TableRow, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import { useCards } from "../hooks/useCard";
 import { useScans } from "../hooks/useScan";
 import { mergeScansCards, scanCardHeadCells } from "../types/scans";
@@ -9,18 +8,13 @@ export function ScansTableBody() {
   const { data: scans } = useScans();
   const { data: cards } = useCards();
 
-  const [scanCards, setScanCards] = useState<readonly ScanCard[]>([]);
-
-  useEffect(() => {
+  const scanCards = useMemo(() => {
     const mergedScansCards = mergeScansCards(scans ?? [], cards ?? []);
     mergedScansCards.sort(
       (a, b) => b.scanTime.getTime() - a.scanTime.getTime(),
     );
-    setScanCards(mergedScansCards);
+    return mergedScansCards;
   }, [scans, cards]);
-
-  if (!scans || !cards)
-    return null; // Can never happen
 
   return (
     <TableBody>

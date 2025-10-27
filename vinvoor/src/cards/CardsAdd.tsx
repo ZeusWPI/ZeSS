@@ -169,7 +169,7 @@ export function CardsAdd() {
 
   useEffect(() => {
     handleRegister(false);
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Button

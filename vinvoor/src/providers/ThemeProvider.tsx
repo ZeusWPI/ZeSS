@@ -5,9 +5,6 @@ import Cookies from "js-cookie";
 import { createContext, useEffect, useState } from "react";
 import { themeModes } from "../themes/theme";
 
-/* eslint-disable  react-refresh/only-export-components, react/no-unstable-context-value */
-// TODO
-
 interface ThemeProviderProps {
   children: ReactNode;
 }
@@ -17,6 +14,7 @@ interface ThemeContextProps {
   setTheme: (theme: ThemeMode) => void;
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const ThemeContext = createContext<ThemeContextProps>({
   themeMode: "light",
   setTheme: () => {
@@ -42,7 +40,7 @@ export const ThemeProvider: FC<ThemeProviderProps> = ({ children }) => {
     const storedTheme = Cookies.get("theme");
 
     if (storedTheme) {
-      setThemeMode(storedTheme as ThemeMode);
+      setThemeMode(storedTheme as ThemeMode); // eslint-disable-line react-hooks/set-state-in-effect
     }
   }, []);
 

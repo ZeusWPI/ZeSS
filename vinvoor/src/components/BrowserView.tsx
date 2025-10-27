@@ -20,7 +20,7 @@ export const BrowserView: FC<BrowserViewProps> = ({
     if (isMobileView)
       onMobileView?.();
     else onBrowserView?.();
-  }, [isMobileView]);
+  }, [isMobileView]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (isMobileView)
     return null;

@@ -76,7 +76,7 @@ export const LabelsMonth: FC<LablesMonthProps> = ({
       {(isDayVariant(variant) ? data.day : data.month).map((item, idx) => {
         return (
           <text
-            key={idx} // eslint-disable-line react/no-array-index-key
+            key={idx}
             x={2 * SPACE(isSmallView) + LEFT_PAD(isSmallView)}
             y={MONTH_RECT_Y(isSmallView)}
             dx={
