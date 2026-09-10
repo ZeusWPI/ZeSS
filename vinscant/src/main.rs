@@ -110,7 +110,7 @@ fn main() {
         leds: 8,
         idle_effect: Box::new(PingPong::new(8, vec![Srgb::new(0xff, 0x7f, 0x00)])),
         buzzer,
-        mqtt_client: EspMqttClient::new("mqtt://192.168.0.12:1883", &MqttClientConfiguration{
+        mqtt_client: EspMqttClient::new("mqtt://mqtt.local", &MqttClientConfiguration{
             keep_alive_interval: Some(Duration::from_secs(1)),
             ..Default::default()
         }).unwrap().0
