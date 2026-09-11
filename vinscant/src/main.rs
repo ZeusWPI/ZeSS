@@ -145,21 +145,31 @@ fn main() {
                 last_time = get_time();
                 last_uid = uid;
                 status_notifier.processing();
-                if !wifi_thing.is_connected().unwrap() {
-                    wifi_thing.disconnect().unwrap();
-                    wifi_thing.connect().unwrap();
-                }
-                match send_card_to_server(&last_uid, CONFIG.auth_key) {
-                    Ok(username) => {
-                        log::info!("Hello {username}!");
-                        status_notifier.good(username);
+
+                let mut num_retry = 0;
+                let mut should_retry = true;
+                while should_retry && num_retry < 5 {
+                    match send_card_to_server(&last_uid, CONFIG.auth_key) {
+                        Ok(username) => {
+                            log::info!("Hello {username}!");
+                            status_notifier.good(username);
+                            should_retry = false;
+                        }
+                        Err(CardError::ConnectionError(_)) => {
+                            wifi_thing.stop().unwrap();
+                            wifi_thing.start().unwrap();
+                            while !wifi_thing.is_connected().unwrap() {
+                                log::info!("Retrying wifi connection...");
+                                std::thread::sleep(Duration::from_millis(1000));
+                            }
+                            should_retry = true;
+                        }
+                        Err(_) => {
+                            status_notifier.bad();
+                            should_retry = false;
+                        }
                     }
-                    Err(CardError::ConnectionError(_)) => {
-                        // allow retry on error
-                        last_uid = Uid::Single(GenericUid::new([0_u8; 4], 0));
-                        status_notifier.bad();
-                    }
-                    Err(_) => status_notifier.bad(),
+                    num_retry += 1;
                 }
             }
         } else {
