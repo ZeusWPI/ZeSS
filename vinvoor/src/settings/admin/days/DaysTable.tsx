@@ -1,9 +1,8 @@
 import type { ChangeEvent } from "react";
-import type { Day } from "../../../types/days";
 import type { Optional } from "../../../types/general";
 import { Paper, Stack, Table, TableContainer } from "@mui/material";
 import { useSnackbar } from "notistack";
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import { TypographyG } from "../../../components/TypographyG";
 import {
   useAdminDays,
@@ -20,7 +19,6 @@ export function DaysTable() {
   const { data: seasons } = useAdminSeasons();
 
   const deleteDay = useAdminDeleteDay();
-  const [rows, setRows] = useState<readonly Day[]>(days ?? []);
   const [selected, setSelected] = useState<readonly number[]>([]);
   const [deleting, setDeleting] = useState<boolean>(false);
 
@@ -34,40 +32,35 @@ export function DaysTable() {
 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
-
-  useEffect(() => {
-    const filterDays = (): readonly Day[] => {
-      let filteredDays = [...days ?? []];
-      if (dateFilter[0] !== undefined && dateFilter[1] !== undefined) {
+  const rows = useMemo(() => {
+    let filteredDays = [...(days ?? [])];
+    if (dateFilter[0] !== undefined && dateFilter[1] !== undefined) {
+      filteredDays = filteredDays.filter(
+        day =>
+          day.date.getTime() >= dateFilter[0]!.getTime()
+          && day.date.getTime() <= dateFilter[1]!.getTime(),
+      );
+    }
+    if (seasonsFilter) {
+      const season = seasons?.find(season => season.id === seasonsFilter);
+      if (season) {
         filteredDays = filteredDays.filter(
-          day =>
-            day.date.getTime() >= dateFilter[0]!.getTime()
-            && day.date.getTime() <= dateFilter[1]!.getTime(),
+          day => day.date >= season.start && day.date <= season.end,
         );
       }
-      if (seasonsFilter) {
-        const season = seasons?.find(season => season.id === seasonsFilter);
-        if (season) {
-          filteredDays = filteredDays.filter(
-            day => day.date >= season.start && day.date <= season.end,
-          );
-        }
-      }
-      if (weekdaysFilter) {
-        filteredDays = filteredDays.filter(
-          day => day.date.getDay() !== 0 && day.date.getDay() !== 6,
-        );
-      }
-      if (weekendsFilter) {
-        filteredDays = filteredDays.filter(
-          day => day.date.getDay() === 0 || day.date.getDay() === 6,
-        );
-      }
+    }
+    if (weekdaysFilter) {
+      filteredDays = filteredDays.filter(
+        day => day.date.getDay() !== 0 && day.date.getDay() !== 6,
+      );
+    }
+    if (weekendsFilter) {
+      filteredDays = filteredDays.filter(
+        day => day.date.getDay() === 0 || day.date.getDay() === 6,
+      );
+    }
 
-      return filteredDays;
-    };
-
-    setRows(filterDays())
+    return filteredDays;
   }, [days, dateFilter, seasonsFilter, weekdaysFilter, weekendsFilter, seasons]);
 
   if (!days)
