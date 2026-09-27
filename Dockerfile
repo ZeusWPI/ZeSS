@@ -1,4 +1,4 @@
-FROM docker.io/rust:1.81-alpine3.20 AS base-rust
+FROM docker.io/rust:1.98-alpine3.24 AS base-rust
 RUN apk add upx musl-dev
 RUN rustup install nightly && rustup default nightly
 RUN cargo install cargo-chef@0.1.72
@@ -39,7 +39,7 @@ COPY vinvoor/production.env .env
 RUN pnpm run build
 
 
-FROM alpine:3.20 AS runner
+FROM alpine:3.24 AS runner
 
 WORKDIR /work
 COPY --from=vingo-build /build/target/release/vingo vingo
