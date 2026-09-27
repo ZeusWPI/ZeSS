@@ -129,8 +129,8 @@ fn authenticated_routes() -> Router<AppState> {
 fn admin_routes() -> Router<AppState> {
     Router::new()
         .route("/days", get(days::get).post(days::add_multiple))
-        .route("/days/:day_id", delete(days::delete))
+        .route("/days/{day_id}", delete(days::delete))
         .route("/seasons", get(seasons::get_all).post(seasons::add))
-        .route("/seasons/:season_id", delete(seasons::delete))
+        .route("/seasons/{season_id}", delete(seasons::delete))
         .route_layer(from_fn(middleware::is_admin))
 }
