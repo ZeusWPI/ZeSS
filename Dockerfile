@@ -32,6 +32,7 @@ WORKDIR /build
 
 COPY vinvoor/package.json package.json
 COPY vinvoor/pnpm-lock.yaml pnpm-lock.yaml
+COPY vinvoor/pnpm-workspace.yaml pnpm-workspace.yaml
 RUN pnpm i
 
 COPY vinvoor/ ./
