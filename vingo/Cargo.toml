@@ -15,7 +15,7 @@ axum = { version = "=0.7", default-features = false, features = [
     "json",
 ] }
 chrono = { version = "=0.4", default-features = false, features = ["serde"] }
-rand = { version = "=0.8", default-features = false }
+rand = { version = "=0.10", default-features = false, features = ["thread_rng"] }
 reqwest = { version = "=0.12", default-features = false, features = [
     "json",
     "rustls-tls",

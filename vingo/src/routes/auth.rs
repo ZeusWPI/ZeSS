@@ -5,7 +5,7 @@ use axum::extract::{Query, State};
 use axum::response::Redirect;
 use axum::Json;
 use chrono::Local;
-use rand::distributions::{Alphanumeric, DistString};
+use rand::distr::{Alphanumeric, SampleString};
 use reqwest::StatusCode;
 use sea_orm::sea_query::OnConflict;
 use sea_orm::{EntityTrait, Set};
@@ -36,7 +36,7 @@ pub async fn current_user(session: Session) -> ResponseResult<Json<Model>> {
 }
 
 pub async fn login(session: Session) -> ResponseResult<Redirect> {
-    let state = Alphanumeric.sample_string(&mut rand::thread_rng(), 16);
+    let state = Alphanumeric.sample_string(&mut rand::rng(), 16);
     // insert state so we can check it in the callback
     session.insert("state", state.clone()).await.or_log((
         StatusCode::INTERNAL_SERVER_ERROR,
