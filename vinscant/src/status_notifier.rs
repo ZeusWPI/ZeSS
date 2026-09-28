@@ -40,6 +40,8 @@ impl StatusNotifier<'_> {
         self.sleep(166);
         self.buzzer.on(1760.into());
         self.sleep(166);
+        self.buzzer.off();
+        self.sleep(1000);
     }
     pub fn bad(&mut self) {
         let pixels = std::iter::repeat(RGB8::new(0xff, 0x00, 0x00)).take(self.leds);

@@ -6,7 +6,12 @@ use esp_idf_svc::{
     wifi::{AuthMethod, BlockingWifi, ClientConfiguration, Configuration, EspWifi},
 };
 use log::info;
-
+pub struct WifiThing<'a> {
+    ssid: &'a str,
+    pass: &'a str,
+    modem: impl peripheral::Peripheral<P = esp_idf_svc::hal::modem::Modem> + 'static,
+    sysloop: EspSystemEventLoop,
+}
 pub fn wifi(
     ssid: &str,
     pass: &str,

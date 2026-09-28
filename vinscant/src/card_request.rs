@@ -30,9 +30,12 @@ pub fn send_card_to_server(uid: &Uid, auth_key: &str) -> Result<String, CardErro
         crt_bundle_attach: Some(esp_crt_bundle_attach),
         ..Default::default()
     })?);
+    log::info!("Yo 0");
     let mut request = client.post("https://zess.zeus.gent/api/scans".as_ref(), &[])?;
+    log::info!("Yo 1");
     let _ = request.write(format!("{};{}", hex::encode(uid.as_bytes()), auth_key).as_bytes());
     let mut response = request.submit()?;
+    log::info!("Yo 2");
     log::info!("response code: {}", response.status());
     match response.status() {
         200..300 => { // 200 <= status < 300
@@ -41,6 +44,7 @@ pub fn send_card_to_server(uid: &Uid, auth_key: &str) -> Result<String, CardErro
             Ok(String::from_utf8(username[..size].into()).unwrap_or("utf8 error".into()))
         }
         404 => Err(CardError::NotFoundError),
+        500 => Err(CardError::NotFoundError),
         _ => Err(CardError::ServerError),
     }
 }
