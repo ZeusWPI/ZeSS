@@ -94,8 +94,8 @@ async fn main() {
 
 fn routes() -> Router<AppState> {
     Router::new()
-        .nest("", open_routes())
-        .nest("", authenticated_routes())
+        .merge(open_routes())
+        .merge(authenticated_routes())
         .nest("/admin", admin_routes())
 }
 
@@ -115,7 +115,7 @@ fn authenticated_routes() -> Router<AppState> {
         .route("/logout", post(auth::logout))
         .route("/user", get(auth::current_user))
         .route("/cards", get(cards::get_for_current_user))
-        .route("/cards/:card_id", patch(cards::update))
+        .route("/cards/{card_id}", patch(cards::update))
         .route(
             "/cards/register",
             get(cards::register_status).post(cards::start_register),
