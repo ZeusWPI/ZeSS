@@ -46,7 +46,7 @@ pub async fn login(session: Session) -> ResponseResult<Redirect> {
     let zauth_url = ZAUTH_URL.to_string();
     let callback_url = CALLBACK_URL.to_string();
     let zauth_client_id = ZAUTH_CLIENT_ID.to_string();
-    Ok(Redirect::to(&format!("{zauth_url}/oauth/authorize?client_id={zauth_client_id}&response_type=code&state={state}&redirect_uri={callback_url}")))
+    Ok(Redirect::to(&format!("{zauth_url}/oauth/authorize?client_id={zauth_client_id}&scope=roles&response_type=code&state={state}&redirect_uri={callback_url}")))
 }
 
 pub async fn logout(session: Session) -> ResponseResult<Json<bool>> {
