@@ -46,7 +46,7 @@ pub async fn login(session: Session) -> ResponseResult<Redirect> {
     let zauth_url = ZAUTH_URL.to_string();
     let callback_url = CALLBACK_URL.to_string();
     let zauth_client_id = ZAUTH_CLIENT_ID.to_string();
-    Ok(Redirect::to(&format!("{zauth_url}/oauth/authorize?client_id={zauth_client_id}&response_type=code&state={state}&redirect_uri={callback_url}")))
+    Ok(Redirect::to(&format!("{zauth_url}/oauth/authorize?client_id={zauth_client_id}&scope=roles&response_type=code&state={state}&redirect_uri={callback_url}")))
 }
 
 pub async fn logout(session: Session) -> ResponseResult<Json<bool>> {
@@ -70,6 +70,7 @@ pub struct ZauthToken {
 pub struct ZauthUser {
     id: i32,
     username: String,
+    roles: Vec<String>,
 }
 
 pub async fn callback(
@@ -135,15 +136,16 @@ pub async fn callback(
     let db_user = user::ActiveModel {
         id: Set(zauth_user.id),
         name: Set(zauth_user.username),
-        admin: Set(false), // cant insert if not set, even if default
+        admin: Set(zauth_user.roles.contains(&String::from("bestuur"))), // cant insert if not set, even if default
         created_at: Set(Local::now().into()),
     };
 
-    // update name if user already exists
+    // update name & admin state if user already exists
     let db_user = User::insert(db_user.clone())
         .on_conflict(
             OnConflict::column(user::Column::Id)
                 .update_column(user::Column::Name)
+                .update_column(user::Column::Admin)
                 .to_owned(),
         )
         .exec_with_returning(&state.db)
